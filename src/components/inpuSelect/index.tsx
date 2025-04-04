@@ -1,13 +1,15 @@
 interface Props {
+  name: string
   placeholder: string
   options?: string[]
   bg?: string
   textColor?: string
 }
 
-const InputSelct = ({ placeholder, bg = '#ffff', textColor }: Props) => {
+const InputSelct = ({ name, placeholder, bg = '#ffff', textColor }: Props) => {
   return (
     <select
+      name={name}
       style={{ background: bg, color: textColor ?? textColor }}
       id="countries"
       className={`border-2 border-gray-300

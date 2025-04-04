@@ -2,11 +2,12 @@ import { X } from '@phosphor-icons/react'
 
 interface Props {
   onClose: () => void
+  handleSubmit: () => void
   children: React.ReactNode
   title?: string
 }
 
-const Modal = ({ onClose, children, title }: Props) => {
+const Modal = ({ onClose, children, title, handleSubmit }: Props) => {
   return (
     <div
       onClick={(e) => e.stopPropagation()}
@@ -22,23 +23,25 @@ const Modal = ({ onClose, children, title }: Props) => {
             <X size={20} weight="bold" />
           </button>
         </div>
-        <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
-          {children}
-        </div>
-        <div className="flex justify-end gap-8 mx-8 mt-4">
-          <button
-            onClick={onClose}
-            className="rounded-full bg-red-500 p-2 w-48 text-white dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
-          >
-            Cancelar
-          </button>
-          <button
-            onClick={onClose}
-            className="rounded-full bg-green-600 p-2 w-48 text-white dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
-          >
-            Guardar
-          </button>
-        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
+            {children}
+          </div>
+          <div className="flex justify-end gap-8 mx-8 mt-4">
+            <button
+              onClick={onClose}
+              className="rounded-full bg-red-500 p-2 w-48 text-white dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="rounded-full bg-green-600 p-2 w-48 text-white dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
+            >
+              Guardar
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   )

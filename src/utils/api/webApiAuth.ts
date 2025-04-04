@@ -1,7 +1,7 @@
 import WebApi from './webApi'
 
-class WebApiCompany {
-  static getCompany() {
+class WebApiAuth {
+  static getAuth() {
     return WebApi.ApisType({ url: '/company', method: 'GET' })
   }
 
@@ -10,4 +10,4 @@ class WebApiCompany {
   }
 }
 
-export default WebApiCompany
+export default WebApiAuth

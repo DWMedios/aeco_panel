@@ -3,6 +3,8 @@ import InputUpload from '../../../components/inputUpload'
 import InputSelct from '../../../components/inpuSelect'
 import Button from '../../../components/button'
 import Table from '../../../components/table'
+import { ICompanyForm } from '../interface'
+import { useFormHelper } from '../../../hooks/useForm'
 
 interface Props {
   onClose: () => void
@@ -10,20 +12,25 @@ interface Props {
 }
 
 const ModalCompanies = ({ onClose, title }: Props) => {
+  const { handleChange, handleSubmit } = useFormHelper<Partial<ICompanyForm>>(
+    {}
+  )
+
   const handleImageUpload = (file: File) => {
     console.log('Imagen subida:', file)
   }
 
+  const handleFormSubmit = (data: Partial<ICompanyForm>) => {
+    console.log('Formulario enviado con:', data)
+    // Aquí puedes hacer la petición API
+  }
+
   return (
-    <Modal onClose={onClose} title={`${title} empresa`}>
-      <div className="flex gap-4">
-        <div className="flex justify-center bg-gray-300 p-3 rounded-full w-36">
-          Folio: 1234567
-        </div>
-        <div className="flex justify-center bg-gray-300 p-3 rounded-full w-40">
-          Fecha: {new Date().toLocaleDateString()}
-        </div>
-      </div>
+    <Modal
+      onClose={onClose}
+      title={`${title} empresa`}
+      handleSubmit={() => handleSubmit(handleFormSubmit)}
+    >
       <div className="mt-8">
         <InputUpload
           title="Personalización"
@@ -40,42 +47,59 @@ const ModalCompanies = ({ onClose, title }: Props) => {
         </span>
         <div className="flex items-center justify-start gap-4 flex-wrap">
           <input
+            name="name"
+            onChange={handleChange}
             type="text"
             className="w-3/6 rounded-full border-2 border-gray-300 p-2"
             placeholder="Nombre de la empresa"
+            required
           />
           <input
+            name="rfc"
+            onChange={handleChange}
             type="text"
             className="w-2/6 rounded-full border-2 border-gray-300 p-2"
             placeholder="Rfc"
           />
           <input
+            name="satte"
+            onChange={handleChange}
             type="text"
             className="w-1/6 rounded-full border-2 border-gray-300 p-2"
             placeholder="Estado"
           />
           <input
-            type="email"
+            name="city"
+            onChange={handleChange}
+            type="text"
             className="w-1/6 rounded-full border-2 border-gray-300 p-2"
             placeholder="Ciudad"
           />
           <input
-            type="email"
+            name="postalCode"
+            onChange={handleChange}
+            type="text"
             className="w-1/6 rounded-full border-2 border-gray-300 p-2"
             placeholder="Codigo postal"
           />
           <input
-            type="email"
+            name="address"
+            onChange={handleChange}
+            type="text"
             className="w-2/5 rounded-full border-2 border-gray-300 p-2"
             placeholder="Dirección"
           />
           <input
+            name="email"
+            onChange={handleChange}
             type="email"
             className="w-2/4 rounded-full border-2 border-gray-300 p-2"
             placeholder="Correo"
           />
           <input
-            type="email"
+            name="phone"
+            onChange={handleChange}
+            type="text"
             className="w-1/4 rounded-full border-2 border-gray-300 p-2"
             placeholder="Telefono"
           />
@@ -91,16 +115,22 @@ const ModalCompanies = ({ onClose, title }: Props) => {
         </div>
         <div className="flex items-center justify-start gap-2 mt-6">
           <input
+            name="user.email"
+            onChange={handleChange}
             type="text"
             className="w-1/3 rounded-full border-2 border-gray-300 p-2"
             placeholder="Correo"
           />
           <input
+            name="user.password"
+            onChange={handleChange}
             type="text"
             className="w-1/3 rounded-full border-2 border-gray-300 p-2"
             placeholder="Contraseña"
           />
           <input
+            name="user.passwordConfirmation"
+            onChange={handleChange}
             type="text"
             className="w-1/3 rounded-full border-2 border-gray-300 p-2"
             placeholder="Confirmación de contraseña"
@@ -118,21 +148,29 @@ const ModalCompanies = ({ onClose, title }: Props) => {
         </span>
         <div className="flex items-center justify-start gap-4 flex-wrap">
           <input
+            name="legalRepresentative.name"
+            onChange={handleChange}
             type="text"
             className="w-2/4 rounded-full border-2 border-gray-300 p-2"
             placeholder="Nombre del encargado"
           />
           <input
+            name="legalRepresentative.position"
+            onChange={handleChange}
             type="text"
             className="w-1/4 rounded-full border-2 border-gray-300 p-2"
             placeholder="Puesto"
           />
           <input
+            name="legalRepresentative.phone"
+            onChange={handleChange}
             type="text"
             className="w-1/4 rounded-full border-2 border-gray-300 p-2"
             placeholder="Teléfono"
           />
           <input
+            name="legalRepresentative.email"
+            onChange={handleChange}
             type="email"
             className="w-2/4 rounded-full border-2 border-gray-300 p-2"
             placeholder="Correo"
@@ -145,7 +183,7 @@ const ModalCompanies = ({ onClose, title }: Props) => {
         </div>
         <div className="flex items-center justify-start gap-4 flex-wrap">
           <div className="w-2/4">
-            <InputSelct placeholder="" key={1} />
+            <InputSelct placeholder="" key={1} name="machine" />
           </div>
           <div className="w-1/4">
             <Button action={() => {}} text="Añadir" />

@@ -6,6 +6,7 @@ import Pagination from './components/table/Pagination'
 import TBody from './components/table/TBody'
 import THeader from './components/table/THeader'
 import ModalDelete from '../modals/Delete'
+import { ApiResponseList } from '../../interfaces/types'
 
 interface Props {
   filters?: string[]
@@ -14,7 +15,8 @@ interface Props {
   columns: (string | ColumnType)[]
   openModal?: () => void
   setTitleModal?: (title: string) => void
-  pagination?: boolean
+  pagination?: Omit<ApiResponseList, 'records'> | null
+  changePage?: (page: number) => void
 }
 const Table = ({
   filters,
@@ -23,9 +25,9 @@ const Table = ({
   columns,
   openModal,
   setTitleModal,
-  pagination = true,
+  pagination = null,
+  changePage,
 }: Props) => {
-  const [page, setPage] = useState(1)
   const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false)
 
   return (
@@ -50,7 +52,11 @@ const Table = ({
       </div>
       <div className="w-[90%] m-6 flex justify-center content-center">
         {pagination && (
-          <Pagination page={page} setPage={setPage} totalPage={10} />
+          <Pagination
+            page={pagination.page}
+            changePage={() => changePage}
+            totalPage={pagination.totalpages}
+          />
         )}
       </div>
       {isOpenDelete && <ModalDelete onClose={() => setIsOpenDelete(false)} />}

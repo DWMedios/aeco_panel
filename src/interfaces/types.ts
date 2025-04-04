@@ -1,3 +1,11 @@
+export interface ApiResponseList {
+  page: number
+  perpage?: number
+  total?: number
+  totalpages: number
+  records: any[]
+}
+
 export interface User {
   id: number
   name: string

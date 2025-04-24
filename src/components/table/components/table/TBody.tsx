@@ -1,21 +1,25 @@
 import { ColumnType } from '../../../../interfaces/table'
-import { Company, Rewards, User } from '../../../../interfaces/types'
+import { Aeco, Company, Rewards, User } from '../../../../interfaces/types'
 import ActtionMenu from '../ActionMenu'
 
 interface Props {
-  content: (User | Company | Rewards)[]
+  content: (User | Company | Aeco | Rewards | Record<string, any>)[]
   columns: (string | ColumnType)[]
   setTitleModal?: (title: string) => void
   openModal?: () => void
   openModalDelete?: () => void
+  setDeleteId: (id: number) => void
+  setFormData?: (data: any) => void
 }
 
 const TBody = ({
-  content,
+  content = [],
   columns,
   setTitleModal,
   openModal,
   openModalDelete,
+  setDeleteId,
+  setFormData,
 }: Props) => {
   return (
     <tbody className="relative overflow-visible ">
@@ -75,6 +79,9 @@ const TBody = ({
               setTitleModal={setTitleModal}
               openModal={openModal}
               openModalDelete={openModalDelete}
+              item={item}
+              setDeleteId={(id: number) => setDeleteId(id)}
+              setFormData={setFormData}
             />
           </td>
         </tr>

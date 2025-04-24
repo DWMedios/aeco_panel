@@ -23,7 +23,7 @@ exports.processPageImage = async (page) => {
     await traverseObject(page)
     return json
   } catch (error) {
-    console.log('🚀 ~ exports.processPageImage= ~ error:', error)
+    console.log('~ exports.processPageImage= ~ error:', error)
     throw error
   }
 }

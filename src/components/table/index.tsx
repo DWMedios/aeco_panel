@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { ColumnType, TableContent } from '../../interfaces/table'
 import ButtonAdd from './components/ButtonAdd'
 import Filters from './components/Filters'
@@ -6,17 +6,21 @@ import Pagination from './components/table/Pagination'
 import TBody from './components/table/TBody'
 import THeader from './components/table/THeader'
 import ModalDelete from '../modals/Delete'
-import { ApiResponseList } from '../../interfaces/types'
+import { ApiResponseBase, FilterOption } from '../../interfaces/types'
 
 interface Props {
-  filters?: string[]
   addButton?: boolean
   tableContent: TableContent
   columns: (string | ColumnType)[]
   openModal?: () => void
   setTitleModal?: (title: string) => void
-  pagination?: Omit<ApiResponseList, 'records'> | null
+  pagination?: ApiResponseBase | null
   changePage?: (page: number) => void
+  filters?: FilterOption[] | null
+  setFilters?: (filters: Record<string, any> | null) => void
+  refresh?: () => void
+  handleDelete?: (id: number) => void
+  setFormData?: (data: any) => void
 }
 const Table = ({
   filters,
@@ -27,15 +31,26 @@ const Table = ({
   setTitleModal,
   pagination = null,
   changePage,
+  setFilters,
+  refresh,
+  handleDelete,
+  setFormData,
 }: Props) => {
   const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false)
+  const [deleteId, setDeleteId] = useState<number>(0)
 
   return (
     <>
       <div className="flex justify-between items-center my-4 w-[90%]">
         <div>{addButton && <ButtonAdd openModal={openModal} />}</div>
         <div className="justify-end">
-          {filters && <Filters filters={filters} />}
+          {filters && (
+            <Filters
+              filters={filters}
+              setFilters={setFilters}
+              refresh={refresh}
+            />
+          )}
         </div>
       </div>
       <div className="relative overflow-x-auto">
@@ -47,6 +62,8 @@ const Table = ({
             setTitleModal={setTitleModal}
             openModal={openModal}
             openModalDelete={() => setIsOpenDelete(true)}
+            setDeleteId={setDeleteId}
+            setFormData={setFormData}
           />
         </table>
       </div>
@@ -59,7 +76,17 @@ const Table = ({
           />
         )}
       </div>
-      {isOpenDelete && <ModalDelete onClose={() => setIsOpenDelete(false)} />}
+      {isOpenDelete && (
+        <ModalDelete
+          onClose={() => setIsOpenDelete(false)}
+          onDelete={() => {
+            if (handleDelete) {
+              handleDelete(deleteId)
+            }
+            setIsOpenDelete(false)
+          }}
+        />
+      )}
     </>
   )
 }

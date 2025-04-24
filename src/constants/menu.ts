@@ -29,7 +29,7 @@ export const menu = [
     subMenu: [
       {
         title: 'Control',
-        route: '/machines',
+        route: '/aecos',
       },
       {
         title: 'Reportes',

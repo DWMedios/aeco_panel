@@ -17,14 +17,19 @@ const Rewards = () => {
       <Title title="Recompensas" />
       <div className="flex justify-between items-center mt-10 w-full">
         <Tabs
-          tabs={['Todas', 'Disponíveis', 'Resgatadas']}
+          tabs={['Todas', 'Descuentos', 'Donativos', 'Servicios']}
           action={(data) => setTab(data)}
         />
       </div>
       <ContentTabs>
         <Table
           addButton={true}
-          filters={['Folio', 'Nombre', 'Dirección', 'Rfc']}
+          filters={[
+            { label: 'Folio', name: 'folio' },
+            { label: 'Nombre', name: 'nombre' },
+            { label: 'Dirección', name: 'direccion' },
+            { label: 'Rfc', name: 'rfc' },
+          ]}
           tableContent={{
             headers: ['Folio', 'Nombre', 'Categoría', 'Empresa', 'Estatus'],
             data: rewards,
@@ -38,6 +43,7 @@ const Rewards = () => {
           ]}
           openModal={() => setIsOpen(true)}
           setTitleModal={setTitleModal}
+          handleDelete={() => {}}
         />
       </ContentTabs>
       {isOpen && (

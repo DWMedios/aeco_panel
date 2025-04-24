@@ -3,43 +3,48 @@ import MainLayout from '../../components/layout'
 import Table from '../../components/table'
 import Title from '../../components/title'
 import ModalCompanies from './components/ModalCompanies'
-import { ApiResponseList, Company } from '../../interfaces/types'
-import { fetchRequest } from '../../utils/api/fetch'
+import { Company } from '../../interfaces/types'
 import usePagination from '../../hooks/usePagination'
+import { useWebApiCompany } from '../../utils/api/webApiCompany'
 
 const Companies = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [titleModal, setTitleModal] = useState<string>('Crear')
   const [companies, setCompanies] = useState<Company[]>([])
+  const [formData, setFormData] = useState<Company | Record<string, any>>({})
+  const { getCompanies, deleteCompany } = useWebApiCompany()
 
-  const { page, totalPages, setPage } = usePagination<Company>(
-    '/companies',
-    10,
-    setCompanies
-  )
+  const { page, totalPages, setPage, refresh, setFilters } =
+    usePagination<Company>(getCompanies, 10, setCompanies)
 
-  useEffect(() => {
-    getCompanies()
-  }, [])
-
-  const getCompanies = async () => {
+  const handleDelete = async (id: number) => {
     try {
-      const response = await fetchRequest<ApiResponseList>({
-        url: '/companies',
-        method: 'GET',
-      })
-      setCompanies(response?.records)
+      await deleteCompany(id)
+      refresh()
+      setIsOpen(false)
     } catch (error) {
-      console.error('Error fetching companies:', error)
+      console.error('Error deleting user:', error)
     }
   }
+
+  useEffect(() => {
+    if (formData.id) {
+      setTitleModal('Editar')
+    }
+  }, [formData])
 
   return (
     <MainLayout>
       <Title title="Empresas" />
       <Table
         addButton={true}
-        filters={['Folio', 'Nombre', 'RFC', 'Estatus']}
+        filters={[
+          { name: 'name', label: 'Nombre' },
+          { name: 'rfc', label: 'RFC' },
+          { name: 'status', label: 'Estatus' },
+        ]}
+        refresh={refresh}
+        setFilters={setFilters}
         tableContent={{
           headers: [
             'Folio',
@@ -59,13 +64,23 @@ const Companies = () => {
           'rfc',
           { column: 'status', type: 'chip' },
         ]}
-        openModal={() => setIsOpen(true)}
+        openModal={() => {
+          setIsOpen(true)
+          setFormData({})
+        }}
         setTitleModal={setTitleModal}
         pagination={{ page, totalpages: totalPages }}
         changePage={setPage}
+        handleDelete={handleDelete}
+        setFormData={setFormData}
       />
       {isOpen && (
-        <ModalCompanies onClose={() => setIsOpen(false)} title={titleModal} />
+        <ModalCompanies
+          onClose={() => setIsOpen(false)}
+          title={titleModal}
+          onSaved={refresh}
+          formData={formData}
+        />
       )}
     </MainLayout>
   )

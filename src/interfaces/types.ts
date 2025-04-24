@@ -1,20 +1,35 @@
-export interface ApiResponseList {
+import { AecoStatusEnum } from '../enums/aecoEnums'
+
+export interface ApiResponseBase {
   page: number
   perpage?: number
   total?: number
   totalpages: number
-  records: any[]
+}
+export interface ApiResponseList<T> extends ApiResponseBase {
+  records: T[]
+}
+
+export interface FilterOption {
+  name: string
+  label: string
 }
 
 export interface User {
   id: number
   name: string
   email: string
-  role: string
-  status: string
-  password?: string
-  company?: string
-  phone?: string
+  phone: string
+  position: string
+  isActive: boolean
+  company: {
+    id: number
+    name: string
+  }
+  role: {
+    id: number
+    role: string
+  }
 }
 
 export interface Company {
@@ -30,6 +45,25 @@ export interface Company {
   machines: number
   rfc: string
   folio: string
+}
+
+export interface Aeco {
+  id: number
+  folio: string
+  name: string
+  status: AecoStatusEnum
+  isOnline: boolean
+  initialSetup: boolean
+  needsUpdate: boolean
+  serialNumber: string
+  currentCoords?: AecoCoords
+  companyId?: number
+  company?: Company
+}
+
+export interface AecoCoords {
+  latitude: string
+  longitude: string
 }
 
 export interface Rewards {

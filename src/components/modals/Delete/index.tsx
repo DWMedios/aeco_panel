@@ -1,8 +1,9 @@
 interface Props {
   onClose: () => void
+  onDelete: () => void
 }
 
-const ModalDelete = ({ onClose }: Props) => {
+const ModalDelete = ({ onClose, onDelete }: Props) => {
   return (
     <div
       onClick={(e) => e.stopPropagation()}
@@ -22,7 +23,7 @@ const ModalDelete = ({ onClose }: Props) => {
             No
           </button>
           <button
-            onClick={onClose}
+            onClick={onDelete}
             className="rounded-2xl bg-green-600 p-4 w-28 text-white dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
           >
             Si

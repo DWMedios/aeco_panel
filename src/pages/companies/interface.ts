@@ -1,4 +1,5 @@
 export interface ICompanyForm {
+  id?: number
   name: string
   rfc: string
   state?: string
@@ -12,4 +13,10 @@ export interface ICompanyForm {
     phone: string
     position: string
   }
+  userAdmin: {
+    name: string
+    email: string
+    password: string
+  }
+  aecos?: number[]
 }

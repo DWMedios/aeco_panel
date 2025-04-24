@@ -1,8 +1,24 @@
-import { EnvelopeSimple, LockKey } from '@phosphor-icons/react'
-import { useNavigate } from 'react-router-dom'
+import { CircleNotch, EnvelopeSimple, LockKey } from '@phosphor-icons/react'
+import { ILoginForm } from '../interface'
+import { useFormHelper } from '../../../hooks/useForm'
+import { useLoading } from '../../../hooks/loading'
+import { useAuth } from '../../../hooks/useAuth'
+import { useWebApiAuth } from '../../../utils/api/webApiAuth'
 
 const LoginForm = () => {
-  const navigate = useNavigate()
+  const { withLoading, loading } = useLoading()
+  const { login } = useAuth()
+  const { handleChange, handleSubmit } = useFormHelper<Partial<ILoginForm>>({})
+  const { login: loginApi } = useWebApiAuth()
+
+  const handleFormSubmit = async (data: Partial<ILoginForm>) => {
+    try {
+      const response = await withLoading(() => loginApi(data as ILoginForm))
+      login(response?.access_token)
+    } catch (error) {
+      console.log('error:', error)
+    }
+  }
 
   return (
     <>
@@ -13,14 +29,19 @@ const LoginForm = () => {
         </h2>
       </div>
 
-      <form className="space-y-10 w-[70%]">
+      <form
+        className="space-y-10 w-[70%]"
+        onSubmit={handleSubmit(handleFormSubmit)}
+      >
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Correo Electrónico
           </label>
           <div className="relative mt-1">
             <input
+              name="email"
               type="email"
+              onChange={handleChange}
               className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
               placeholder="Escribe tu correo"
             />
@@ -36,7 +57,9 @@ const LoginForm = () => {
           </label>
           <div className="relative mt-1">
             <input
+              name="password"
               type="password"
+              onChange={handleChange}
               className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
               placeholder="Contraseña"
             />
@@ -48,9 +71,16 @@ const LoginForm = () => {
 
         <button
           type="submit"
-          onClick={() => navigate('/dashboard')}
-          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+          className=" flex justify-center w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+          disabled={loading}
         >
+          {loading && (
+            <CircleNotch
+              className="size-5 mr-3 animate-spin text-gray-500"
+              weight="bold"
+              color="white"
+            />
+          )}
           Iniciar Sesión
         </button>
 

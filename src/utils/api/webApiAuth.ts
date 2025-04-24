@@ -1,13 +1,14 @@
-import WebApi from './webApi'
+import { ILoginForm } from '../../pages/login/interface'
+import { useFetchWithAuth } from './fetch'
 
-class WebApiAuth {
-  static getAuth() {
-    return WebApi.ApisType({ url: '/company', method: 'GET' })
+export const useWebApiAuth = () => {
+  const { fetchRequest } = useFetchWithAuth()
+
+  const login = async (data: ILoginForm) => {
+    return fetchRequest({ url: '/auth/login', method: 'POST', body: data })
   }
 
-  static getCompanies() {
-    return WebApi.ApisType({ url: '/company', method: 'GET' })
+  return {
+    login,
   }
 }
-
-export default WebApiAuth

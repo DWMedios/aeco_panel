@@ -1,10 +1,10 @@
 import { Navigate, Outlet } from 'react-router-dom'
-import Cookies from 'js-cookie'
+import { useAuth } from '../../hooks/useAuth'
 
 const PrivateRoute = () => {
-  const token = Cookies.get('token')
+  const { isAuthenticated } = useAuth()
 
-  if (!token) {
+  if (!isAuthenticated) {
     return <Navigate to="/" />
   }
 

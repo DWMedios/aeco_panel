@@ -1,8 +1,8 @@
-import { Company, Rewards, User } from './types'
+import { Aeco, Company, Rewards, User } from './types'
 
 export interface TableContent {
   headers: string[]
-  data: User[] | Company[] | Rewards[]
+  data: User[] | Company[] | Aeco[] | Rewards[] | Record<string, any>[]
 }
 
 export interface ColumnType {

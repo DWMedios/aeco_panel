@@ -4,9 +4,19 @@ interface Props {
   openModal?: () => void
   setTitleModal?: (title: string) => void
   openModalDelete?: () => void
+  item: any
+  setDeleteId: (id: number) => void
+  setFormData?: (data: any) => void
 }
 
-const ActtionMenu = ({ openModal, setTitleModal, openModalDelete }: Props) => {
+const ActtionMenu = ({
+  openModal,
+  setTitleModal,
+  openModalDelete,
+  item,
+  setDeleteId,
+  setFormData,
+}: Props) => {
   return (
     <div className="absolute top-1/2 right-[-150px] -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
       <div className="flex justify-between gap-2">
@@ -15,6 +25,7 @@ const ActtionMenu = ({ openModal, setTitleModal, openModalDelete }: Props) => {
             onClick={() => {
               setTitleModal?.('Editar')
               openModal?.()
+              setFormData?.(item)
             }}
             size={25}
             color="black"
@@ -23,7 +34,10 @@ const ActtionMenu = ({ openModal, setTitleModal, openModalDelete }: Props) => {
         </div>
         <div className="flex justify-center items-center w-10 h-10 rounded-full bg-red-500 shadow-md">
           <Trash
-            onClick={() => openModalDelete?.()}
+            onClick={() => {
+              openModalDelete?.()
+              setDeleteId(item.id)
+            }}
             size={25}
             color="white"
             weight="bold"

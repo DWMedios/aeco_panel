@@ -2,7 +2,7 @@ import InputSelct from '../../../components/inpuSelect'
 import Modal from '../../../components/modals/Form'
 import ActionsButtons from '../../../components/modals/Form/components/actionsButtons'
 import { useLoading } from '../../../hooks/loading'
-import { useFormHelper } from '../../../hooks/useForm'
+import useFormWithValidation from '../../../hooks/useForm'
 import { useWebApiUser } from '../../../utils/api/webApiUser'
 import { IUserForm } from '../interface'
 
@@ -14,7 +14,7 @@ interface Props {
 
 const ModalUsers = ({ onClose, title, onSaved }: Props) => {
   const { withLoading, loading } = useLoading()
-  const { handleChange, handleSubmit, passwordsMatch } = useFormHelper<
+  const { handleChange, handleSubmit } = useFormWithValidation<
     Partial<IUserForm>
   >({})
   const { createUser } = useWebApiUser()
@@ -143,17 +143,17 @@ const ModalUsers = ({ onClose, title, onSaved }: Props) => {
                 name="passwordConfirmation"
                 onChange={handleChange}
                 type="password"
-                className={`w-full rounded-full border-2 ${
-                  passwordsMatch ? 'border-gray-300' : 'border-red-500'
-                } p-2`}
+                // className={`w-full rounded-full border-2 ${
+                //   passwordsMatch ? 'border-gray-300' : 'border-red-500'
+                // } p-2`}
                 placeholder="Confirmación de contraseña"
                 required
               />
-              {!passwordsMatch && (
+              {/* {!passwordsMatch && (
                 <p className="text-red-500 text-sm">
                   Las contraseñas no coinciden
                 </p>
-              )}
+              )} */}
             </div>
           </div>
         </div>

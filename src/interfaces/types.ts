@@ -45,6 +45,7 @@ export interface Company {
   machines: number
   rfc: string
   folio: string
+  aecos: any[]
 }
 
 export interface Aeco {

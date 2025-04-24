@@ -1,60 +1,159 @@
+import { useState, useEffect } from 'react'
 import Modal from '../../../components/modals/Form'
 import InputUpload from '../../../components/inputUpload'
-import { ICompanyForm } from '../interface'
-import { useFormHelper } from '../../../hooks/useForm'
-import { useLoading } from '../../../hooks/loading'
 import ActionsButtons from '../../../components/modals/Form/components/actionsButtons'
 import SearchableSelect from '../../../components/inpuSelect'
-import { useEffect, useState } from 'react'
+import { useLoading } from '../../../hooks/loading'
 import { useWebApiAeco } from '../../../utils/api/webApiAeco'
 import { useWebApiCompany } from '../../../utils/api/webApiCompany'
 import { cleanEmptyFields } from '../../../utils/cleanObject'
+import useFormWithValidation from '../../../hooks/useForm'
+import InputField from '../../../components/inputField'
 
 interface Props {
   onClose: () => void
   onSaved: () => void
   title?: string
-  formData: Partial<ICompanyForm>
+  companyId?: number | null
 }
 
-const ModalCompanies = ({ onClose, title, onSaved, formData }: Props) => {
+const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
   const { withLoading, loading } = useLoading()
-  const {
-    handleChange,
-    handleSubmit,
-    passwordsMatch,
-    fillFormWithData,
-    formData: formValues,
-  } = useFormHelper<Partial<ICompanyForm>>({})
-
-  const { createCompany, updateCompany } = useWebApiCompany()
+  const { createCompany, updateCompany, getCompany } = useWebApiCompany()
   const { getAecos } = useWebApiAeco()
-  const [options, setOptions] = useState<any>([])
   const [selectedAeco, setSelectedAeco] = useState<any>([])
+  const [aecoOptions, setAecoOptions] = useState<any>([])
+  const [companyData, setCompanyData] = useState<any>({})
+  const initialValues = {
+    name: '',
+    rfc: '',
+    state: '',
+    city: '',
+    postalCode: '',
+    address: '',
+    phone: '',
+    legalRepresentative: {
+      name: '',
+      position: '',
+      phone: '',
+      email: '',
+    },
+    userAdmin: {
+      name: '',
+      email: '',
+      password: '',
+    },
+    passwordConfirmation: '',
+  }
+  const mergedValues = { ...initialValues, ...companyData }
+  const validationRules = {
+    name: {
+      required: true,
+      errorMessages: {
+        required: 'El nombre de la empresa es obligatorio',
+      },
+    },
+    rfc: {
+      required: true,
+      errorMessages: {
+        required: 'El RFC es obligatorio',
+      },
+    },
+    'userAdmin.name': {
+      required: Object.keys(companyData).length === 0, // Solo requerido para nuevos registros
+      errorMessages: {
+        required: 'El nombre de usuario es obligatorio',
+      },
+    },
+    'userAdmin.email': {
+      required: Object.keys(companyData).length === 0,
+      pattern: /\S+@\S+\.\S+/,
+      errorMessages: {
+        required: 'El correo electrónico es obligatorio',
+        pattern: 'Por favor ingresa un correo electrónico válido',
+      },
+    },
+    'userAdmin.password': {
+      required: Object.keys(companyData).length === 0,
+      minLength: 6,
+      errorMessages: {
+        required: 'La contraseña es obligatoria',
+        minLength: 'La contraseña debe tener al menos 6 caracteres',
+      },
+    },
+    passwordConfirmation: {
+      required: Object.keys(companyData).length === 0,
+      validate: (value: any, allValues: any) =>
+        value !== allValues.userAdmin?.password
+          ? 'Las contraseñas no coinciden'
+          : undefined,
+    },
+    'legalRepresentative.email': {
+      pattern: /\S+@\S+\.\S+/,
+      errorMessages: {
+        pattern: 'Por favor ingresa un correo electrónico válido',
+      },
+    },
+  }
+  const {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    setValues,
+  } = useFormWithValidation(mergedValues, { validationRules })
 
   useEffect(() => {
-    if (formData) {
-      fillFormWithData(formData)
+    if (companyId) getCompanyData(companyId)
+  }, [companyId])
+
+  useEffect(() => {
+    if (companyData && Object.keys(companyData).length > 0) {
+      setValues({ ...initialValues, ...companyData })
     }
-  }, [formData])
+  }, [companyData, setValues])
 
   const handleImageUpload = (file: File) => {
     console.log('Imagen subida:', file)
   }
 
-  const handleFormSubmit = async (data: Partial<ICompanyForm>) => {
+  const getCompanyData = async (id: number) => {
     try {
-      data = cleanEmptyFields(data)
-      data = { ...data, aecos: selectedAeco.map((item: any) => item.value) }
-      if (formData && Object.keys(formData).length > 0) {
-        await withLoading(() =>
-          updateCompany(formData.id, data as ICompanyForm)
+      const response = await getCompany(id)
+      setCompanyData(response)
+      if (response.aecos) {
+        setSelectedAeco(
+          response.aecos.map((item: any) => ({
+            label: item.name,
+            value: item.id,
+            status: item.status,
+          }))
         )
-      } else await withLoading(() => createCompany(data as ICompanyForm))
+      }
+    } catch (error) {
+      console.log('Error al obtener los datos de la empresa:', error)
+    }
+  }
+
+  const onFormSubmit = async (data: any) => {
+    try {
+      const cleanedData: any = cleanEmptyFields({
+        ...data,
+        aecos: selectedAeco.map((item: any) => item.value),
+      })
+
+      if (companyData && Object.keys(companyData).length > 0) {
+        await withLoading(() => updateCompany(companyData.id, cleanedData))
+      } else {
+        await withLoading(() => createCompany(cleanedData))
+      }
+
       onSaved()
       onClose()
     } catch (error) {
-      console.log('~ handleFormSubmit ~ error:', error)
+      console.log('Error en el envío del formulario:', error)
     }
   }
 
@@ -63,7 +162,7 @@ const ModalCompanies = ({ onClose, title, onSaved, formData }: Props) => {
       const response = await getAecos(
         `?serialNumber=${value}&folio=${value}&withoutCompany=true`
       )
-      setOptions(
+      setAecoOptions(
         response.records.map((item: any) => ({
           label: item.name,
           value: item.id,
@@ -71,13 +170,19 @@ const ModalCompanies = ({ onClose, title, onSaved, formData }: Props) => {
         }))
       )
     } catch (error) {
-      console.log('~ filterAecos ~ error:', error)
+      console.log('Error buscando AECOs:', error)
     }
+  }
+
+  // Helper para obtener valores anidados
+  const getValue = (path: string) => {
+    const keys = path.split('.')
+    return keys.reduce((o, k) => (o || {})[k], values)
   }
 
   return (
     <Modal onClose={onClose} title={`${title} empresa`}>
-      <form onSubmit={handleSubmit(handleFormSubmit)}>
+      <form onSubmit={handleSubmit(onFormSubmit)}>
         <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
           <div className="mt-8">
             <InputUpload
@@ -85,6 +190,8 @@ const ModalCompanies = ({ onClose, title, onSaved, formData }: Props) => {
               onImageUpload={handleImageUpload}
             />
           </div>
+
+          {/* Datos de la empresa */}
           <div className="flex flex-col gap-4 rounded-xl mt-8 p-4 flex-wrap">
             <div className="flex items-center justify-start gap-6">
               <span className="text-2xl">Datos de la empresa</span>
@@ -94,75 +201,89 @@ const ModalCompanies = ({ onClose, title, onSaved, formData }: Props) => {
               necesaria de la empresa a ingresar
             </span>
             <div className="flex items-center justify-start gap-4 flex-wrap">
-              <input
-                value={formValues?.name || ''}
+              <InputField
                 name="name"
-                onChange={handleChange}
-                type="text"
-                className="w-3/6 rounded-full border-2 border-gray-300 p-2"
                 placeholder="Nombre de la empresa"
-                required
+                value={values.name}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.name}
+                touched={touched.name}
+                divClassName="w-3/6"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
+                required={true}
               />
-              <input
-                value={formValues?.rfc || ''}
+              <InputField
                 name="rfc"
+                placeholder="RFC"
+                value={values.rfc}
                 onChange={handleChange}
-                type="text"
-                className="w-2/6 rounded-full border-2 border-gray-300 p-2"
-                placeholder="Rfc"
-                required
+                onBlur={handleBlur}
+                error={errors.rfc}
+                touched={touched.rfc}
+                divClassName="w-2/6"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
+                required={true}
               />
-              <input
-                value={formValues?.state || ''}
+              <InputField
                 name="state"
-                onChange={handleChange}
-                type="text"
-                className="w-1/6 rounded-full border-2 border-gray-300 p-2"
                 placeholder="Estado"
+                value={values.state}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.state}
+                touched={touched.state}
+                divClassName="w-1/6"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
               />
-              <input
-                value={formValues?.city || ''}
+              <InputField
                 name="city"
-                onChange={handleChange}
-                type="text"
-                className="w-1/6 rounded-full border-2 border-gray-300 p-2"
                 placeholder="Ciudad"
+                value={values.city}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.city}
+                touched={touched.city}
+                divClassName="w-1/6"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
               />
-              <input
-                value={formValues?.postalCode || ''}
+              <InputField
                 name="postalCode"
+                placeholder="Código postal"
+                value={values.postalCode}
                 onChange={handleChange}
-                type="text"
-                className="w-1/6 rounded-full border-2 border-gray-300 p-2"
-                placeholder="Codigo postal"
+                onBlur={handleBlur}
+                error={errors.postalCode}
+                touched={touched.postalCode}
+                divClassName="w-1/6"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
               />
-              <input
-                value={formValues?.address || ''}
+              <InputField
                 name="address"
-                onChange={handleChange}
-                type="text"
-                className="w-2/5 rounded-full border-2 border-gray-300 p-2"
                 placeholder="Dirección"
+                value={values.address}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.address}
+                touched={touched.address}
+                divClassName="w-2/5"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
               />
-              {/* <input
-              value={formValues?.name || ''}
-                name="email"
-                onChange={handleChange}
-                type="email"
-                className="w-2/4 rounded-full border-2 border-gray-300 p-2"
-                placeholder="Correo"
-              /> */}
-              <input
-                value={formValues?.phone || ''}
+              <InputField
                 name="phone"
+                placeholder="Teléfono"
+                value={values.phone}
                 onChange={handleChange}
-                type="text"
-                className="w-1/4 rounded-full border-2 border-gray-300 p-2"
-                placeholder="Telefono"
+                onBlur={handleBlur}
+                error={errors.phone}
+                touched={touched.phone}
+                divClassName="w-1/4"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
               />
             </div>
           </div>
 
+          {/* Datos del representante */}
           <div className="flex flex-col gap-4 rounded-xl bg-[#F8F8F8] mt-8 p-4">
             <div className="flex items-center justify-start gap-6">
               <img src="/images/user.png" alt="" />
@@ -175,41 +296,56 @@ const ModalCompanies = ({ onClose, title, onSaved, formData }: Props) => {
               principal
             </span>
             <div className="flex items-center justify-start gap-4 flex-wrap">
-              <input
-                value={formValues?.legalRepresentative?.name || ''}
+              <InputField
                 name="legalRepresentative.name"
-                onChange={handleChange}
-                type="text"
-                className="w-2/4 rounded-full border-2 border-gray-300 p-2"
                 placeholder="Nombre del encargado"
+                value={getValue('legalRepresentative.name')}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors['legalRepresentative.name']}
+                touched={touched['legalRepresentative.name']}
+                divClassName="w-2/4"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
               />
-              <input
-                value={formValues?.legalRepresentative?.position || ''}
+              <InputField
                 name="legalRepresentative.position"
-                onChange={handleChange}
-                type="text"
-                className="w-1/4 rounded-full border-2 border-gray-300 p-2"
                 placeholder="Puesto"
+                value={getValue('legalRepresentative.position')}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors['legalRepresentative.position']}
+                touched={touched['legalRepresentative.position']}
+                divClassName="w-1/4"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
               />
-              <input
-                value={formValues?.legalRepresentative?.phone || ''}
+              <InputField
                 name="legalRepresentative.phone"
-                onChange={handleChange}
-                type="text"
-                className="w-1/4 rounded-full border-2 border-gray-300 p-2"
                 placeholder="Teléfono"
-              />
-              <input
-                value={formValues?.legalRepresentative?.email || ''}
-                name="legalRepresentative.email"
+                value={getValue('legalRepresentative.phone')}
                 onChange={handleChange}
-                type="email"
-                className="w-2/4 rounded-full border-2 border-gray-300 p-2"
+                onBlur={handleBlur}
+                error={errors['legalRepresentative.phone']}
+                touched={touched['legalRepresentative.phone']}
+                divClassName="w-1/4"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
+              />
+              <InputField
+                name="legalRepresentative.email"
                 placeholder="Correo"
+                type="email"
+                value={String(getValue('legalRepresentative.email') || '')}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors['legalRepresentative.email']}
+                touched={touched['legalRepresentative.email']}
+                divClassName="w-2/4"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
               />
             </div>
           </div>
-          {Object.keys(formData).length === 0 && (
+
+          {/* Credenciales (sólo para nuevos registros) */}
+          {!companyId && (
             <div>
               <div className="flex flex-col mt-6">
                 <span className="text-2xl">Credenciales de acceso</span>
@@ -219,61 +355,71 @@ const ModalCompanies = ({ onClose, title, onSaved, formData }: Props) => {
                 </span>
               </div>
               <div className="flex flex-wrap justify-start gap-2 mt-6">
-                <input
-                  value={formValues?.userAdmin?.name || ''}
+                <InputField
                   name="userAdmin.name"
-                  onChange={handleChange}
-                  type="text"
-                  className="w-2/5 rounded-full border-2 border-gray-300 p-2"
                   placeholder="Nombre de usuario"
-                  required
-                />{' '}
-                <input
-                  value={formValues?.userAdmin?.email || ''}
+                  value={getValue('userAdmin.name')}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={errors['userAdmin.name']}
+                  touched={touched['userAdmin.name']}
+                  divClassName="w-2/5"
+                  className="w-full rounded-full border-2 border-gray-300 p-2"
+                  required={true}
+                />
+                <InputField
                   name="userAdmin.email"
-                  onChange={handleChange}
-                  type="email"
-                  className="w-2/5 rounded-full border-2 border-gray-300 p-2"
                   placeholder="Correo"
-                  required
-                />
-                <input
-                  value={formValues?.userAdmin?.password || ''}
-                  name="userAdmin.password"
+                  type="email"
+                  value={getValue('userAdmin.email')}
                   onChange={handleChange}
-                  type="password"
-                  className="w-2/5 rounded-full border-2 border-gray-300 p-2"
-                  placeholder="Contraseña"
-                  required
+                  onBlur={handleBlur}
+                  error={errors['userAdmin.email']}
+                  touched={touched['userAdmin.email']}
+                  divClassName="w-2/5"
+                  className="w-full rounded-full border-2 border-gray-300 p-2"
+                  required={true}
                 />
-                <div className="w-2/5">
-                  <input
-                    name="passwordConfirmation"
-                    onChange={handleChange}
-                    type="password"
-                    className={`w-full rounded-full border-2 ${
-                      passwordsMatch ? 'border-gray-300' : 'border-red-500'
-                    } p-2`}
-                    placeholder="Confirmación de contraseña"
-                    required
-                  />
-                  {!passwordsMatch && (
-                    <p className="text-red-500 text-sm">
-                      Las contraseñas no coinciden
-                    </p>
-                  )}
-                </div>
+                <InputField
+                  name="userAdmin.password"
+                  placeholder="Contraseña"
+                  type="password"
+                  value={getValue('userAdmin.password')}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={errors['userAdmin.password']}
+                  touched={touched['userAdmin.password']}
+                  divClassName="w-2/5"
+                  className="w-full rounded-full border-2 border-gray-300 p-2"
+                  required={true}
+                />
+                <InputField
+                  name="passwordConfirmation"
+                  placeholder="Confirmación de contraseña"
+                  type="password"
+                  value={values.passwordConfirmation}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={errors.passwordConfirmation}
+                  touched={touched.passwordConfirmation}
+                  divClassName="w-2/5"
+                  className="w-full rounded-full border-2 border-gray-300 p-2"
+                  required={true}
+                />
               </div>
             </div>
           )}
-          <SearchableSelect
-            title="maquinas"
-            options={options}
-            search={filterAecos}
-            className={'w-2/4'}
-            setSelected={setSelectedAeco}
-            selected={selectedAeco}
-          />
+
+          <div className="mt-6">
+            <SearchableSelect
+              title="Máquinas"
+              options={aecoOptions}
+              search={filterAecos}
+              className="w-2/4"
+              setSelected={setSelectedAeco}
+              selected={selectedAeco}
+            />
+          </div>
         </div>
         <ActionsButtons loading={loading} onClose={onClose} />
       </form>

@@ -6,7 +6,7 @@ import Modal from '../../../components/modals/Form'
 import ActionsButtons from '../../../components/modals/Form/components/actionsButtons'
 import Table from '../../../components/table'
 import { useLoading } from '../../../hooks/loading'
-import { useFormHelper } from '../../../hooks/useForm'
+import useFormWithValidation from '../../../hooks/useForm'
 import { IAecoForm } from '../interface'
 import { useWebApiAeco } from '../../../utils/api/webApiAeco'
 
@@ -18,7 +18,9 @@ interface Props {
 
 const ModalAeco = ({ onClose, title, onSaved }: Props) => {
   const { withLoading, loading } = useLoading()
-  const { handleChange, handleSubmit } = useFormHelper<Partial<IAecoForm>>({})
+  const { handleChange, handleSubmit } = useFormWithValidation<
+    Partial<IAecoForm>
+  >({})
   const [markerCoordinates, setMarkerCoordinates] = useState<{
     lat: number
     lng: number

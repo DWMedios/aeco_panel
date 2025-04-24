@@ -15,11 +15,12 @@ const Dashboard = () => {
       <Title title="Inicio" />
       <div className="flex justify-end mt-8 ">
         <div className="w-[10%]">
-          <InputSelct
+          aqui va un select
+          {/* <InputSelct
             placeholder="Periodicidad"
             bg={'#bbb8b8'}
             textColor="black"
-          />
+          /> */}
         </div>
       </div>
       <div className="flex justify-center items-center bg-gray-200 mt-8 rounded-full py-4">

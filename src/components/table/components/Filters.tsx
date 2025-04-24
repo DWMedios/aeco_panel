@@ -1,5 +1,4 @@
-import { useLoading } from '../../../hooks/loading'
-import { useFormHelper } from '../../../hooks/useForm'
+import useFormWithValidation from '../../../hooks/useForm'
 import { FilterOption } from '../../../interfaces/types'
 
 interface props {
@@ -9,7 +8,7 @@ interface props {
 }
 
 const Filters = ({ filters, setFilters, refresh }: props) => {
-  const { handleChange, handleSubmit } = useFormHelper<T>({})
+  const { handleChange, handleSubmit } = useFormWithValidation<T>({})
 
   const handleFormSubmit = async (data: Record<string, any>) => {
     setFilters(data)

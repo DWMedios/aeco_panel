@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react'
 import Modal from '../../../components/modals/Form'
 import InputUpload from '../../../components/inputUpload'
 import ActionsButtons from '../../../components/modals/Form/components/actionsButtons'
-import SearchableSelect from '../../../components/inpuSelect'
+import SearchableSelect from '../../../components/searchableSelect'
 import { useLoading } from '../../../hooks/loading'
 import { useWebApiAeco } from '../../../utils/api/webApiAeco'
 import { useWebApiCompany } from '../../../utils/api/webApiCompany'
 import { cleanEmptyFields } from '../../../utils/cleanObject'
 import useFormWithValidation from '../../../hooks/useForm'
 import InputField from '../../../components/inputField'
+import { initialValues, validationRulesCompany } from './formValidations'
 
 interface Props {
   onClose: () => void
@@ -24,77 +25,9 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
   const [selectedAeco, setSelectedAeco] = useState<any>([])
   const [aecoOptions, setAecoOptions] = useState<any>([])
   const [companyData, setCompanyData] = useState<any>({})
-  const initialValues = {
-    name: '',
-    rfc: '',
-    state: '',
-    city: '',
-    postalCode: '',
-    address: '',
-    phone: '',
-    legalRepresentative: {
-      name: '',
-      position: '',
-      phone: '',
-      email: '',
-    },
-    userAdmin: {
-      name: '',
-      email: '',
-      password: '',
-    },
-    passwordConfirmation: '',
-  }
+
   const mergedValues = { ...initialValues, ...companyData }
-  const validationRules = {
-    name: {
-      required: true,
-      errorMessages: {
-        required: 'El nombre de la empresa es obligatorio',
-      },
-    },
-    rfc: {
-      required: true,
-      errorMessages: {
-        required: 'El RFC es obligatorio',
-      },
-    },
-    'userAdmin.name': {
-      required: Object.keys(companyData).length === 0, // Solo requerido para nuevos registros
-      errorMessages: {
-        required: 'El nombre de usuario es obligatorio',
-      },
-    },
-    'userAdmin.email': {
-      required: Object.keys(companyData).length === 0,
-      pattern: /\S+@\S+\.\S+/,
-      errorMessages: {
-        required: 'El correo electrónico es obligatorio',
-        pattern: 'Por favor ingresa un correo electrónico válido',
-      },
-    },
-    'userAdmin.password': {
-      required: Object.keys(companyData).length === 0,
-      minLength: 6,
-      errorMessages: {
-        required: 'La contraseña es obligatoria',
-        minLength: 'La contraseña debe tener al menos 6 caracteres',
-      },
-    },
-    passwordConfirmation: {
-      required: Object.keys(companyData).length === 0,
-      validate: (value: any, allValues: any) =>
-        value !== allValues.userAdmin?.password
-          ? 'Las contraseñas no coinciden'
-          : undefined,
-    },
-    'legalRepresentative.email': {
-      pattern: /\S+@\S+\.\S+/,
-      errorMessages: {
-        pattern: 'Por favor ingresa un correo electrónico válido',
-      },
-    },
-  }
+  const validationRules = validationRulesCompany(companyData)
   const {
     values,
     errors,
@@ -174,7 +107,6 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
     }
   }
 
-  // Helper para obtener valores anidados
   const getValue = (path: string) => {
     const keys = path.split('.')
     return keys.reduce((o, k) => (o || {})[k], values)
@@ -191,7 +123,6 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
             />
           </div>
 
-          {/* Datos de la empresa */}
           <div className="flex flex-col gap-4 rounded-xl mt-8 p-4 flex-wrap">
             <div className="flex items-center justify-start gap-6">
               <span className="text-2xl">Datos de la empresa</span>
@@ -211,7 +142,6 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
                 touched={touched.name}
                 divClassName="w-3/6"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
-                required={true}
               />
               <InputField
                 name="rfc"
@@ -223,7 +153,6 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
                 touched={touched.rfc}
                 divClassName="w-2/6"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
-                required={true}
               />
               <InputField
                 name="state"
@@ -283,7 +212,6 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
             </div>
           </div>
 
-          {/* Datos del representante */}
           <div className="flex flex-col gap-4 rounded-xl bg-[#F8F8F8] mt-8 p-4">
             <div className="flex items-center justify-start gap-6">
               <img src="/images/user.png" alt="" />
@@ -344,7 +272,6 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
             </div>
           </div>
 
-          {/* Credenciales (sólo para nuevos registros) */}
           {!companyId && (
             <div>
               <div className="flex flex-col mt-6">
@@ -365,7 +292,6 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
                   touched={touched['userAdmin.name']}
                   divClassName="w-2/5"
                   className="w-full rounded-full border-2 border-gray-300 p-2"
-                  required={true}
                 />
                 <InputField
                   name="userAdmin.email"
@@ -378,7 +304,6 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
                   touched={touched['userAdmin.email']}
                   divClassName="w-2/5"
                   className="w-full rounded-full border-2 border-gray-300 p-2"
-                  required={true}
                 />
                 <InputField
                   name="userAdmin.password"
@@ -391,7 +316,6 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
                   touched={touched['userAdmin.password']}
                   divClassName="w-2/5"
                   className="w-full rounded-full border-2 border-gray-300 p-2"
-                  required={true}
                 />
                 <InputField
                   name="passwordConfirmation"
@@ -404,7 +328,6 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
                   touched={touched.passwordConfirmation}
                   divClassName="w-2/5"
                   className="w-full rounded-full border-2 border-gray-300 p-2"
-                  required={true}
                 />
               </div>
             </div>

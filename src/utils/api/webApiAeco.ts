@@ -20,6 +20,14 @@ export const useWebApiAeco = () => {
     return fetchRequest<Aeco>({ url: `/aecos`, method: 'POST', body: aeco })
   }
 
+  const updateAeco = async (id: number, aeco: IAecoForm) => {
+    return fetchRequest<Aeco>({
+      url: `/aecos/${id}`,
+      method: 'PUT',
+      body: aeco,
+    })
+  }
+
   const deleteAeco = async (id: number) => {
     return fetchRequest<any>({ url: `/aecos/${id}`, method: 'DELETE' })
   }
@@ -28,6 +36,7 @@ export const useWebApiAeco = () => {
     getAecos,
     getAeco,
     createAeco,
+    updateAeco,
     deleteAeco,
   }
 }

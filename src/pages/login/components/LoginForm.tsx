@@ -1,31 +1,26 @@
-import { CircleNotch, EnvelopeSimple, LockKey } from '@phosphor-icons/react'
 import { ILoginForm } from '../interface'
 import { useLoading } from '../../../hooks/loading'
 import { useAuth } from '../../../hooks/useAuth'
 import { useWebApiAuth } from '../../../utils/api/webApiAuth'
 import useFormWithValidation from '../../../hooks/useForm'
 import InputField from '../../../components/inputField'
+import { initialValues, validationRules } from './formValidations'
+import { CircleNotch, EnvelopeSimple, LockKey } from '@phosphor-icons/react'
 
 const LoginForm = () => {
   const { withLoading, loading } = useLoading()
   const { login } = useAuth()
-
   const { login: loginApi } = useWebApiAuth()
-  const initialValues = {
-    email: '',
-    password: '',
-  }
-
-  const mergedValues = {
-    ...initialValues,
-    ...{ email: 'superadmin@example.com', password: 'super_admin_password' },
-  }
-  const { handleSubmit, handleChange } = useFormWithValidation(mergedValues)
+  const mergedValues = { ...initialValues }
+  const { values, errors, touched, handleChange, handleBlur, handleSubmit } =
+    useFormWithValidation(mergedValues, { validationRules })
 
   const handleFormSubmit = async (data: Partial<ILoginForm>) => {
     console.log('🚀 ~ handleFormSubmit ~ data:', data)
     try {
-      const response = await withLoading(() => loginApi(data as ILoginForm))
+      const response: any = await withLoading(() =>
+        loginApi(data as ILoginForm)
+      )
       login(response?.access_token)
     } catch (error) {
       console.log('error:', error)
@@ -46,20 +41,19 @@ const LoginForm = () => {
         onSubmit={handleSubmit(handleFormSubmit)}
       >
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          {/* <label className="block text-sm font-medium text-gray-700 mb-2">
             Correo Electrónico
-          </label>
+          </label> */}
           <div className="relative mt-1">
             <InputField
               name="email"
-              type="email"
+              placeholder="Correo electrónico"
+              value={values.email}
               onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.email}
+              touched={touched.email}
               className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Escribe tu correo"
-              error=""
-              touched={false}
-              value={mergedValues.email}
-              onBlur={() => {}}
             />
             <span className="absolute inset-y-0 right-3 flex items-center text-gray-400">
               <EnvelopeSimple size={20} />
@@ -74,14 +68,13 @@ const LoginForm = () => {
           <div className="relative mt-1">
             <InputField
               name="password"
-              type="password"
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
               placeholder="Contraseña"
-              error=""
-              touched={false}
-              value={mergedValues.password}
-              onBlur={() => {}}
+              value={values.password}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.password}
+              touched={touched.password}
+              className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
             />
             <span className="absolute inset-y-0 right-3 flex items-center text-gray-400">
               <LockKey size={20} />

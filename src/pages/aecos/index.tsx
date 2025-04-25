@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import MainLayout from '../../components/layout'
 import Table from '../../components/table'
 import Title from '../../components/title'
@@ -11,6 +11,8 @@ const Aecos = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [titleModal, setTitleModal] = useState<string>('Crear')
   const [aecos, setAecos] = useState<Aeco[]>([])
+  const [formData, setFormData] = useState<Aeco | Record<string, any>>({})
+
   const { getAecos, deleteAeco } = useWebApiAeco()
 
   const { page, totalPages, setPage, refresh, setFilters } =
@@ -25,6 +27,12 @@ const Aecos = () => {
       console.error('Error deleting user:', error)
     }
   }
+
+  useEffect(() => {
+    if (formData.id) {
+      setTitleModal('Editar')
+    }
+  }, [formData])
 
   return (
     <MainLayout>
@@ -46,19 +54,24 @@ const Aecos = () => {
           'serialNumber',
           { column: 'status', type: 'chip' },
         ]}
-        openModal={() => setIsOpen(true)}
+        openModal={() => {
+          setIsOpen(true)
+          setFormData({})
+        }}
         setTitleModal={setTitleModal}
         pagination={{ page, totalpages: totalPages }}
         changePage={setPage}
         refresh={refresh}
         setFilters={setFilters}
         handleDelete={handleDelete}
+        setFormData={setFormData}
       />
       {isOpen && (
         <ModalMachines
           onClose={() => setIsOpen(false)}
           title={titleModal}
           onSaved={refresh}
+          aeco={formData}
         />
       )}
     </MainLayout>

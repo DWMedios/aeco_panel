@@ -1,5 +1,6 @@
 import { ColumnType } from '../../../../interfaces/table'
 import { Aeco, Company, Rewards, User } from '../../../../interfaces/types'
+import { chipColor, chipText } from '../../../../utils/chipColor'
 import ActtionMenu from '../ActionMenu'
 
 interface Props {
@@ -57,15 +58,11 @@ const TBody = ({
                 {columnType === 'chip' ? (
                   <span
                     id="badge-dismiss-green"
-                    className={`inline-flex justify-center items-center px-2 py-1 me-2 text-sm font-medium text-white ${
-                      item[columnName as keyof typeof item]
-                        ? 'bg-green-600'
-                        : 'bg-red-600'
-                    } rounded-full w-[70px]`}
+                    className={`inline-flex justify-center items-center px-2 py-1 me-2 text-sm font-medium text-white ${chipColor(
+                      item[columnName as keyof typeof item] as string
+                    )} rounded-full min-w-[70px]`}
                   >
-                    {item[columnName as keyof typeof item]
-                      ? 'Activo'
-                      : 'Inactivo'}
+                    {chipText(item[columnName as keyof typeof item])}
                   </span>
                 ) : (
                   item[columnName as keyof typeof item] ?? '-'

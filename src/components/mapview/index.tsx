@@ -43,7 +43,7 @@ const MapView = ({ large = 90, onCoordinatesChange }: Props) => {
   const initializeMap = () => {
     if (!mapContainerRef.current || !coordinates || initialized.current) return
 
-    console.log('Inicializando mapa con coordenadas:', coordinates)
+    // console.log('Inicializando mapa con coordenadas:', coordinates)
 
     // Crear el mapa
     const map = new Map({

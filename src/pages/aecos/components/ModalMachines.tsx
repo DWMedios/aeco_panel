@@ -1,38 +1,76 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Button from '../../../components/button'
-import InputSelct from '../../../components/inpuSelect'
 import MapView from '../../../components/mapview'
 import Modal from '../../../components/modals/Form'
 import ActionsButtons from '../../../components/modals/Form/components/actionsButtons'
 import Table from '../../../components/table'
 import { useLoading } from '../../../hooks/loading'
 import useFormWithValidation from '../../../hooks/useForm'
-import { IAecoForm } from '../interface'
 import { useWebApiAeco } from '../../../utils/api/webApiAeco'
+import InputField from '../../../components/inputField'
+import { initialValues, validationRules } from './formValidations'
+import { cleanEmptyFields } from '../../../utils/cleanObject'
+import { useWebApiCompany } from '../../../utils/api/webApiCompany'
+import InputSelect from '../../../components/inputSelect'
 
 interface Props {
   onClose: () => void
   title?: string
   onSaved: () => void
+  aeco: any
 }
 
-const ModalAeco = ({ onClose, title, onSaved }: Props) => {
-  const { withLoading, loading } = useLoading()
-  const { handleChange, handleSubmit } = useFormWithValidation<
-    Partial<IAecoForm>
-  >({})
+const ModalAeco = ({ onClose, title, onSaved, aeco }: Props) => {
+  const aecoStatus = [
+    { value: 'enabled', label: 'Activo' },
+    { value: 'disabled', label: 'Inactivo' },
+    { value: 'suspended', label: 'Suspendido' },
+    { value: 'deactivated', label: 'Desactivado' },
+    { value: 'maintenance', label: 'Mantenimiento' },
+  ]
+  const [companies, setCompanies] = useState<any[]>([])
   const [markerCoordinates, setMarkerCoordinates] = useState<{
     lat: number
     lng: number
   }>({ lat: 0, lng: 0 })
+  const { withLoading, loading } = useLoading()
+  const { createAeco, updateAeco } = useWebApiAeco()
+  const { getCompanies } = useWebApiCompany()
+  const mergedValues = { ...initialValues, ...aeco }
+  const {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    setValues,
+  } = useFormWithValidation(mergedValues, { validationRules })
 
-  const { createAeco } = useWebApiAeco()
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      const response: any = await withLoading(() => getCompanies(''))
+      setCompanies(
+        response.records.map((company: any) => ({
+          value: company.id,
+          label: company.name,
+        }))
+      )
+    }
+    fetchCompanies()
+  }, [])
 
-  const handleFormSubmit = async (data: Partial<IAecoForm>) => {
+  useEffect(() => {
+    if (aeco && Object.keys(aeco).length > 0) {
+      setValues({ ...initialValues, ...aeco, companyId: aeco.company.id })
+    }
+  }, [aeco, setValues])
+
+  const handleFormSubmit = async (data: any) => {
     try {
       const { lat, lng } = markerCoordinates
 
-      const updatedData = {
+      data = {
         ...data,
         currentCoords: {
           ...(data.currentCoords || {}),
@@ -40,7 +78,13 @@ const ModalAeco = ({ onClose, title, onSaved }: Props) => {
           longitude: String(lng),
         },
       }
-      await withLoading(() => createAeco(updatedData as IAecoForm))
+      if ('companyId' in data) data.companyId = Number(data.companyId)
+
+      const cleanedData: any = cleanEmptyFields(data)
+
+      if (aeco && Object.keys(aeco).length > 0)
+        await withLoading(() => updateAeco(aeco.id, cleanedData))
+      else await withLoading(() => createAeco(cleanedData))
       onSaved()
       onClose()
     } catch (error) {
@@ -51,56 +95,56 @@ const ModalAeco = ({ onClose, title, onSaved }: Props) => {
   return (
     <Modal onClose={onClose} title={`${title} máquina`}>
       <form onSubmit={handleSubmit(handleFormSubmit)}>
-        <div className="flex flex-col gap-4 rounded-xl mt-8 p-4">
+        <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
           <div className="flex items-center justify-start gap-6">
             <span className="text-2xl">Datos de la máquina</span>
           </div>
           <div className="flex items-center justify-start gap-2">
-            <input
+            <InputField
               name="name"
-              onChange={handleChange}
-              type="text"
-              className="w-1/4 rounded-full border-2 border-gray-300 p-2"
               placeholder="Nombre"
-              required
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.name}
+              touched={touched.name}
+              value={values.name}
+              divClassName="w-1/4"
+              className="w-full rounded-full border-2 border-gray-300 p-2"
             />
-            <select
+            <InputSelect
               name="status"
               onChange={handleChange}
-              className="w-1/4 rounded-full border-2 border-gray-300 p-2"
-              required
-              defaultValue="enabled"
-            >
-              <option key={1} value="enabled">
-                Habilitado
-              </option>
-              <option key={2} value="disabled">
-                Deshabilitado
-              </option>
-              <option key={3} value="suspended">
-                Suspendido
-              </option>
-              <option key={4} value="deactivated">
-                Desactivado
-              </option>
-              <option key={5} value="maintenance">
-                Mantenimiento
-              </option>
-            </select>
-            <input
-              name="serialNumber"
-              onChange={handleChange}
-              type="text"
-              className="w-1/4 rounded-full border-2 border-gray-300 p-2"
-              placeholder="Numero de serie"
-              required
+              onBlur={handleBlur}
+              error={errors.status}
+              touched={touched.status}
+              value={values.status}
+              options={aecoStatus}
+              placeholder="Estatus"
+              divClassName="w-1/4"
+              className="w-full rounded-full border-2 border-gray-300 p-2"
             />
-            <input
-              name=""
+            <InputField
+              name="serialNumber"
+              placeholder="Numero de serie"
               onChange={handleChange}
-              type="text"
-              className="w-1/4 rounded-full border-2 border-gray-300 p-2"
+              onBlur={handleBlur}
+              error={errors.serialNumber}
+              touched={touched.serialNumber}
+              value={values.serialNumber}
+              divClassName="w-1/4"
+              className="w-full rounded-full border-2 border-gray-300 p-2"
+            />
+            <InputSelect
+              name="companyId"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.companyId}
+              touched={touched.companyId}
+              value={values.companyId}
+              options={companies}
               placeholder="Empresa"
+              divClassName="w-1/4"
+              className="w-full rounded-full border-2 border-gray-300 p-2"
             />
           </div>
         </div>
@@ -113,7 +157,7 @@ const ModalAeco = ({ onClose, title, onSaved }: Props) => {
           </div>
           <div className="flex items-center justify-start gap-4 flex-wrap">
             <div className="w-2/4">
-              <InputSelct placeholder="" key={1} name="" />
+              {/* <InputSelct placeholder="" key={1} name="" /> */}
             </div>
             <div className="w-1/4">
               <Button action={() => {}} text="Añadir" />

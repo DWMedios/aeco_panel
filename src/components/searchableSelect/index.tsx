@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import Button from '../button'
 import Table from '../table'
 
 interface Props {
@@ -73,7 +72,7 @@ const SearchableSelect = ({
             onChange={handleInputChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
-            placeholder="Buscar..."
+            placeholder="Buscar maquina..."
             className="border-2 border-gray-300 text-sm rounded-full 
         focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 
         dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
@@ -92,10 +91,6 @@ const SearchableSelect = ({
               ))}
             </ul>
           )}
-        </div>
-
-        <div className="w-1/4">
-          <Button action={() => {}} text="Añadir" />
         </div>
       </div>
       <Table

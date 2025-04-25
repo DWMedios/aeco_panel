@@ -198,27 +198,82 @@ const useFormWithValidation = <T extends Record<string, any>>(
       e.preventDefault()
       setIsSubmitting(true)
 
-      // Obtener los datos actuales del formulario
       const formElement = e.currentTarget
       const formData = new FormData(formElement)
 
-      // Convertir FormData a un objeto que siga la estructura de initialValues
       const currentFormValues = {} as T
+
       formData.forEach((value, key) => {
-        // Ignorar el campo passwordConfirmation
-        if (key !== 'passwordConfirmation') {
-          // Para manejar campos anidados (como 'user.name')
-          set(currentFormValues, key, value)
-        }
+        set(currentFormValues, key, value)
       })
+
+      const newErrors: Record<string, string> = {}
+      const newTouched: Record<string, boolean> = {}
+      let isValid = true
+
+      Object.keys(validationRules).forEach((fieldName) => {
+        const value = get(currentFormValues, fieldName)
+        const error = validateField(fieldName, value)
+
+        if (error) {
+          isValid = false
+        }
+
+        newErrors[fieldName] = error
+        newTouched[fieldName] = true
+      })
+
+      setErrors(newErrors)
+      setTouched(newTouched)
+
+      if (validateOnSubmit && !isValid) {
+        setIsSubmitting(false)
+        return
+      }
+
+      const changedValues = {} as Partial<T>
+
+      const compareAndTrackChanges = (
+        original: any,
+        current: any,
+        basePath = ''
+      ) => {
+        if (current === undefined) return
+
+        if (typeof original !== typeof current) {
+          if (basePath) set(changedValues, basePath, current)
+          return
+        }
+
+        if (
+          typeof original === 'object' &&
+          original !== null &&
+          current !== null
+        ) {
+          Object.keys(current).forEach((key) => {
+            const currentPath = basePath ? `${basePath}.${key}` : key
+            const originalValue = original[key]
+            const currentValue = current[key]
+
+            compareAndTrackChanges(originalValue, currentValue, currentPath)
+          })
+        } else if (original !== current) {
+          if (basePath) set(changedValues, basePath, current)
+        }
+      }
+
+      compareAndTrackChanges(initialValues, currentFormValues)
 
       if (validateOnSubmit && !validateForm()) {
         setIsSubmitting(false)
         return
       }
 
-      // Usar los valores actuales del formulario en lugar de los del estado
-      onSubmit(currentFormValues)
+      if ('passwordConfirmation' in changedValues) {
+        delete changedValues.passwordComparation
+      }
+
+      onSubmit(changedValues as T)
       setIsSubmitting(false)
     }
 

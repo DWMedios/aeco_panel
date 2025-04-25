@@ -1,4 +1,3 @@
-import InputSelct from '../../../components/inpuSelect'
 import Modal from '../../../components/modals/Form'
 
 interface Props {
@@ -36,9 +35,9 @@ const ModalRewards = ({ onClose, title }: Props) => {
         </div>
       </div>
       <div className="flex items-center justify-start gap-2 mt-6">
-        <InputSelct placeholder="Estatus" />
+        {/* <InputSelct placeholder="Estatus" />
         <InputSelct placeholder="Empresa" />
-        <InputSelct placeholder="Rol" />
+        <InputSelct placeholder="Rol" /> */}
       </div>
       <div>
         <div className="flex flex-col mt-6">

@@ -3,21 +3,21 @@ import React, { useState } from 'react'
 interface Props {
   name: string
   placeholder: string
-  type?: string
-  value?: string | number
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  onBlur: (e: React.FocusEvent<HTMLInputElement>) => void
+  value: string | number
+  options: Array<{ value: string | number; label: string }>
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
+  onBlur: (e: React.FocusEvent<HTMLSelectElement>) => void
   error?: string
   touched?: boolean
   className?: string
   divClassName?: string
 }
 
-const InputField = ({
+const InputSelect = ({
   name,
   placeholder,
-  type = 'text',
   value = '',
+  options,
   onChange,
   onBlur,
   error,
@@ -39,10 +39,9 @@ const InputField = ({
           {placeholder}
         </label>
       )}
-      <input
+      <select
         id={name}
         name={name}
-        type={type}
         value={value}
         onChange={onChange}
         onBlur={(e) => {
@@ -50,12 +49,20 @@ const InputField = ({
           setFocused(false)
         }}
         onFocus={() => setFocused(true)}
-        placeholder={shouldShowLabel ? '' : placeholder}
-        className={className}
-      />
+        className={`rounded-full border-2 border-gray-300 p-2 ${className}`}
+      >
+        <option value="" disabled hidden>
+          {placeholder}
+        </option>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
       {touched && error && <p className="text-red-500 text-sm mt-1">{error}</p>}
     </div>
   )
 }
 
-export default InputField
+export default InputSelect

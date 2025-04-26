@@ -11,6 +11,7 @@ interface Props {
   touched?: boolean
   className?: string
   divClassName?: string
+  defaultPlaceholder?: string
 }
 
 const InputSelect = ({
@@ -24,6 +25,7 @@ const InputSelect = ({
   touched,
   className = 'w-full',
   divClassName = '',
+  defaultPlaceholder = 'Selecciona una opcion',
 }: Props) => {
   const [focused, setFocused] = useState(false)
 
@@ -51,9 +53,7 @@ const InputSelect = ({
         onFocus={() => setFocused(true)}
         className={`rounded-full border-2 border-gray-300 p-2 ${className}`}
       >
-        <option value="" disabled hidden>
-          {placeholder}
-        </option>
+        <option value="">{defaultPlaceholder}</option>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}

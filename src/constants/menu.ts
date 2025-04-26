@@ -79,6 +79,7 @@ export const menu = [
       },
     ],
   },
+
   {
     title: 'Reportes',
     icon: '/images/users.png',

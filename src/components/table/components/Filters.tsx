@@ -2,13 +2,13 @@ import useFormWithValidation from '../../../hooks/useForm'
 import { FilterOption } from '../../../interfaces/types'
 
 interface props {
-  filters?: FilterOption[]
-  setFilters?: (filters: Record<string, any> | null) => void
+  filters: FilterOption[]
+  setFilters: (filters: Record<string, any> | null) => void
   refresh?: () => void
 }
 
 const Filters = ({ filters, setFilters, refresh }: props) => {
-  const { handleChange, handleSubmit } = useFormWithValidation<T>({})
+  const { handleChange, handleSubmit } = useFormWithValidation({})
 
   const handleFormSubmit = async (data: Record<string, any>) => {
     setFilters(data)

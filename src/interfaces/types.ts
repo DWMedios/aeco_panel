@@ -67,7 +67,7 @@ export interface AecoCoords {
   longitude: string
 }
 
-export interface Rewards {
+export interface Reward {
   id: number
   name: string
   points: number

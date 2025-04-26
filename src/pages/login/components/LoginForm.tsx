@@ -68,6 +68,7 @@ const LoginForm = () => {
           <div className="relative mt-1">
             <InputField
               name="password"
+              type="password"
               placeholder="Contraseña"
               value={values.password}
               onChange={handleChange}

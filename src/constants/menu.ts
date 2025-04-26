@@ -79,7 +79,20 @@ export const menu = [
       },
     ],
   },
-
+  {
+    title: 'Productos',
+    icon: '/images/users.png',
+    subMenu: [
+      {
+        title: 'Control',
+        route: '/products',
+      },
+      {
+        title: 'Reportes',
+        route: '#',
+      },
+    ],
+  },
   {
     title: 'Reportes',
     icon: '/images/users.png',

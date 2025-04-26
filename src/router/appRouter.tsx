@@ -8,6 +8,7 @@ import Dashboard from '../pages/dashboard'
 import PrivateRoute from './components/PrivateRoute'
 import NotFound from '../pages/notFound'
 import Aecos from '../pages/aecos'
+import Products from '../pages/products'
 
 const AppRouter = () => {
   return (
@@ -21,6 +22,7 @@ const AppRouter = () => {
           <Route path="/ads" element={<Ads />} />
           <Route path="/rewards" element={<Rewards />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/products" element={<Products />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

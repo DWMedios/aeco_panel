@@ -13,11 +13,11 @@ const Ticket = () => {
         </span>
         <img src="/images/QRcode.png" alt="" />
         <ul className="text-2xl">
-          {products?.packagings.map((p, i) => (
+          {/* {products?.packagings.map((p, i) => (
             <li key={i}>
               <span>{`${p.name} - ${p.quantity}`}</span>
             </li>
-          ))}
+          ))} */}
         </ul>
 
         <span className="p-2 w-[500px] leading-10 text-3xl tracking-wider">

@@ -48,14 +48,13 @@ const Rewards = () => {
             { label: 'Rfc', name: 'rfc' },
           ]}
           tableContent={{
-            headers: ['Folio', 'Nombre', 'Categoría', 'Empresa', 'Estatus'],
+            headers: ['Folio', 'Nombre', 'Establecimiento', 'Estatus'],
             data: rewards,
           }}
           columns={[
             'id',
             'name',
-            'category',
-            'company',
+            'establishment',
             { column: 'status', type: 'chip' },
           ]}
           openModal={() => {

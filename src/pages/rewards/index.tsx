@@ -16,6 +16,7 @@ const Rewards = () => {
   const [rewards, setRewards] = useState<any>([])
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [titleModal, setTitleModal] = useState<string>('Crear')
+  const [formData, setFormData] = useState<Reward | Record<string, any>>({})
   const { getRewards } = useWebApiReward()
   const { page, totalPages, setPage, refresh, setFilters } =
     usePagination<Reward>(getRewards, 10, setRewards)
@@ -57,12 +58,16 @@ const Rewards = () => {
             'company',
             { column: 'status', type: 'chip' },
           ]}
-          openModal={() => setIsOpen(true)}
+          openModal={() => {
+            setIsOpen(true)
+            setFormData({})
+          }}
           setTitleModal={setTitleModal}
           handleDelete={() => {}}
           pagination={{ page, totalpages: totalPages }}
           changePage={setPage}
           refresh={refresh}
+          setFormData={setFormData}
         />
       </ContentTabs>
       {isOpen &&
@@ -71,21 +76,21 @@ const Rewards = () => {
             onClose={() => setIsOpen(false)}
             title={titleModal}
             onSaved={refresh}
-            type={tab}
+            reward={formData}
           />
         ) : tab == 'services' ? (
           <ModalService
             onClose={() => setIsOpen(false)}
             title={titleModal}
             onSaved={refresh}
-            type={tab}
+            reward={formData}
           />
         ) : (
           <ModalDiscount
             onClose={() => setIsOpen(false)}
             title={titleModal}
             onSaved={refresh}
-            type={tab}
+            reward={formData}
           />
         ))}
     </MainLayout>

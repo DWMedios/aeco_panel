@@ -16,7 +16,6 @@ const LoginForm = () => {
     useFormWithValidation(mergedValues, { validationRules })
 
   const handleFormSubmit = async (data: Partial<ILoginForm>) => {
-    console.log('🚀 ~ handleFormSubmit ~ data:', data)
     try {
       const response: any = await withLoading(() =>
         loginApi(data as ILoginForm)
@@ -68,6 +67,7 @@ const LoginForm = () => {
           <div className="relative mt-1">
             <InputField
               name="password"
+              type="password"
               placeholder="Contraseña"
               value={values.password}
               onChange={handleChange}

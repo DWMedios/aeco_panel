@@ -38,13 +38,13 @@ const Companies = () => {
       <Title title="Empresas" />
       <Table
         addButton={true}
-        // filters={[
-        //   { name: 'name', label: 'Nombre' },
-        //   { name: 'rfc', label: 'RFC' },
-        //   { name: 'status', label: 'Estatus' },
-        // ]}
+        filters={[
+          { name: 'name', label: 'Nombre' },
+          { name: 'rfc', label: 'RFC' },
+          { name: 'status', label: 'Estatus' },
+        ]}
         refresh={refresh}
-        // setFilters={setFilters}
+        setFilters={setFilters}
         tableContent={{
           headers: [
             'Folio',

@@ -8,6 +8,7 @@ import Dashboard from '../pages/dashboard'
 import PrivateRoute from './components/PrivateRoute'
 import NotFound from '../pages/notFound'
 import Aecos from '../pages/aecos'
+import Ticket from '../pages/ticket'
 
 const AppRouter = () => {
   return (
@@ -22,6 +23,7 @@ const AppRouter = () => {
           <Route path="/rewards" element={<Rewards />} />
           <Route path="/users" element={<Users />} />
         </Route>
+        <Route path="/ticket" element={<Ticket />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

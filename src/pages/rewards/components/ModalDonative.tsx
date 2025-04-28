@@ -10,16 +10,17 @@ import InputField from '../../../components/inputField'
 import SearchableSelect from '../../../components/searchableSelect'
 import InputUpload from '../../../components/inputUpload'
 import InputSelect from '../../../components/inputSelect'
+import { useWebApiReward } from '../../../utils/api/webApiReward'
+import { cleanEmptyFields } from '../../../utils/cleanObject'
 
 interface Props {
   onClose: () => void
   onSaved: () => void
   title?: string
   reward?: any
-  type?: string
 }
 
-const ModalDonative = ({ onClose, onSaved, title, reward, type }: Props) => {
+const ModalDonative = ({ onClose, onSaved, title, reward }: Props) => {
   const { withLoading, loading } = useLoading()
   const { getCompanies } = useWebApiCompany()
   const [companies, setCompanies] = useState<any[]>([])
@@ -27,6 +28,8 @@ const ModalDonative = ({ onClose, onSaved, title, reward, type }: Props) => {
   const [selectedAeco, setSelectedAeco] = useState<any>([])
   const [aecoOptions, setAecoOptions] = useState<any>([])
   const [rewardData, setRewardData] = useState<any>({})
+
+  const { createReward, updateReward } = useWebApiReward()
 
   const mergedValues = { ...initialValues, ...reward }
   const {
@@ -41,7 +44,7 @@ const ModalDonative = ({ onClose, onSaved, title, reward, type }: Props) => {
 
   useEffect(() => {
     if (rewardData && Object.keys(rewardData).length > 0) {
-      setValues({ ...discountInitialValues, ...rewardData })
+      setValues({ ...initialValues, ...rewardData })
       setRewardData(rewardData)
     }
   }, [rewardData, setValues])
@@ -66,19 +69,23 @@ const ModalDonative = ({ onClose, onSaved, title, reward, type }: Props) => {
   const onFormSubmit = async (data: any) => {
     try {
       console.log('🚀 ~ onFormSubmit ~ data:', data)
-      // const cleanedData: any = cleanEmptyFields({
-      //   ...data,
-      //   aecos: selectedAeco.map((item: any) => item.value),
-      // })
+      const cleanedData: any = cleanEmptyFields({
+        ...data,
+        type: 'discount',
+        status: data.status === 'true' ? true : false,
+        companyId: Number(data.companyId),
+        order: Number(data.order),
+        aecos: selectedAeco.map((item: any) => item.value),
+      })
 
-      // if (rewardData && Object.keys(rewardData).length > 0) {
-      //   await withLoading(() => updateCompany(rewardData.id, cleanedData))
-      // } else {
-      //   await withLoading(() => createCompany(cleanedData))
-      // }
+      if (rewardData && Object.keys(rewardData).length > 0) {
+        await withLoading(() => updateReward(rewardData.id, cleanedData))
+      } else {
+        await withLoading(() => createReward(cleanedData))
+      }
 
       onSaved()
-      // onClose()
+      onClose()
     } catch (error) {
       console.log('Error en el envío del formulario:', error)
     }
@@ -99,11 +106,6 @@ const ModalDonative = ({ onClose, onSaved, title, reward, type }: Props) => {
     } catch (error) {
       console.log('Error buscando AECOs:', error)
     }
-  }
-
-  const getValue = (path: string) => {
-    const keys = path.split('.')
-    return keys.reduce((o, k) => (o || {})[k], values)
   }
 
   return (

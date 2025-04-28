@@ -4,7 +4,7 @@ import { useAuth } from '../../hooks/useAuth'
 const PrivateRoute = () => {
   const { isAuthenticated } = useAuth()
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated()) {
     return <Navigate to="/" />
   }
 

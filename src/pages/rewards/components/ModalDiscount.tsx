@@ -10,16 +10,17 @@ import InputField from '../../../components/inputField'
 import SearchableSelect from '../../../components/searchableSelect'
 import InputUpload from '../../../components/inputUpload'
 import InputSelect from '../../../components/inputSelect'
+import { cleanEmptyFields } from '../../../utils/cleanObject'
+import { useWebApiReward } from '../../../utils/api/webApiReward'
 
 interface Props {
   onClose: () => void
   onSaved: () => void
   title?: string
   reward?: any
-  type?: string
 }
 
-const ModalDiscount = ({ onClose, onSaved, title, reward, type }: Props) => {
+const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
   const { withLoading, loading } = useLoading()
   const { getCompanies } = useWebApiCompany()
   const [companies, setCompanies] = useState<any[]>([])
@@ -27,6 +28,8 @@ const ModalDiscount = ({ onClose, onSaved, title, reward, type }: Props) => {
   const [selectedAeco, setSelectedAeco] = useState<any>([])
   const [aecoOptions, setAecoOptions] = useState<any>([])
   const [rewardData, setRewardData] = useState<any>({})
+
+  const { createReward, updateReward } = useWebApiReward()
 
   const mergedValues = { ...initialValues, ...reward }
   const {
@@ -41,7 +44,7 @@ const ModalDiscount = ({ onClose, onSaved, title, reward, type }: Props) => {
 
   useEffect(() => {
     if (rewardData && Object.keys(rewardData).length > 0) {
-      setValues({ ...discountInitialValues, ...rewardData })
+      setValues({ ...initialValues, ...rewardData })
       setRewardData(rewardData)
     }
   }, [rewardData, setValues])
@@ -66,19 +69,23 @@ const ModalDiscount = ({ onClose, onSaved, title, reward, type }: Props) => {
   const onFormSubmit = async (data: any) => {
     try {
       console.log('🚀 ~ onFormSubmit ~ data:', data)
-      // const cleanedData: any = cleanEmptyFields({
-      //   ...data,
-      //   aecos: selectedAeco.map((item: any) => item.value),
-      // })
+      const cleanedData: any = cleanEmptyFields({
+        ...data,
+        type: 'discount',
+        status: data.status === 'true' ? true : false,
+        companyId: Number(data.companyId),
+        order: Number(data.order),
+        aecos: selectedAeco.map((item: any) => item.value),
+      })
 
-      // if (rewardData && Object.keys(rewardData).length > 0) {
-      //   await withLoading(() => updateCompany(rewardData.id, cleanedData))
-      // } else {
-      //   await withLoading(() => createCompany(cleanedData))
-      // }
+      if (rewardData && Object.keys(rewardData).length > 0) {
+        await withLoading(() => updateReward(rewardData.id, cleanedData))
+      } else {
+        await withLoading(() => createReward(cleanedData))
+      }
 
       onSaved()
-      // onClose()
+      onClose()
     } catch (error) {
       console.log('Error en el envío del formulario:', error)
     }
@@ -130,22 +137,22 @@ const ModalDiscount = ({ onClose, onSaved, title, reward, type }: Props) => {
               <InputField
                 name="description"
                 placeholder="Descripción"
-                value={values.rfc}
+                value={values.description}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={errors.rfc}
-                touched={touched.rfc}
+                error={errors.description}
+                touched={touched.description}
                 divClassName="w-2/6"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
               <InputField
-                name="stablishment"
+                name="establishment"
                 placeholder="Establecimiento"
-                value={values.stablishment}
+                value={values.establishment}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={errors.stablishment}
-                touched={touched.stablishment}
+                error={errors.establishment}
+                touched={touched.establishment}
                 divClassName="w-2/6"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
@@ -189,17 +196,6 @@ const ModalDiscount = ({ onClose, onSaved, title, reward, type }: Props) => {
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
               <InputField
-                name="notes"
-                placeholder="Notas adicionales"
-                value={values.notes}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.notes}
-                touched={touched.notes}
-                divClassName="w-2/5"
-                className="w-full rounded-full border-2 border-gray-300 p-2"
-              />
-              <InputField
                 name="order"
                 placeholder="Orden"
                 value={values.order}
@@ -208,6 +204,33 @@ const ModalDiscount = ({ onClose, onSaved, title, reward, type }: Props) => {
                 error={errors.order}
                 touched={touched.order}
                 divClassName="w-1/5"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
+              />
+              <InputSelect
+                name="status"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.status}
+                touched={touched.status}
+                value={values.status}
+                options={[
+                  { value: 'true', label: 'Activo' },
+                  { value: 'false', label: 'Inactivo' },
+                ]}
+                placeholder="Estatus"
+                divClassName="w-2/5"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
+                defaultPlaceholder="Selecciona un estatus"
+              />
+              <InputField
+                name="notes"
+                placeholder="Notas adicionales"
+                value={values.notes}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.notes}
+                touched={touched.notes}
+                divClassName="w-4/5"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
             </div>

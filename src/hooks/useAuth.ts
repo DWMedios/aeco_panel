@@ -16,7 +16,7 @@ export const useAuth = () => {
 
   const isAuthenticated = () => {
     const token = Cookies.get('token')
-    return !!token
+    return Boolean(token && token.trim() !== '')
   }
 
   const getToken = () => {

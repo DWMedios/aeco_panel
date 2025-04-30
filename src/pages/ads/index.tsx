@@ -1,39 +1,85 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import MainLayout from '../../components/layout'
-import ButtonAdd from '../../components/table/components/ButtonAdd'
 import Title from '../../components/title'
-import { ads } from '../../constants/dumies/ads'
-import AdsCard from './components/AdsCard'
-import { Trash } from '@phosphor-icons/react'
+import Table from '../../components/table'
+import { useWebApiCompany } from '../../utils/api/webApiCompany'
+import usePagination from '../../hooks/usePagination'
 
 const Ads = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [titleModal, setTitleModal] = useState<string>('Crear')
+  const [companies, setCompanies] = useState<Company[]>([])
+  const [formData, setFormData] = useState<Company | Record<string, any>>({})
+  const { getCompanies, deleteCompany } = useWebApiCompany()
+
+  const { page, totalPages, setPage, refresh, setFilters } =
+    usePagination<Company>(getCompanies, 10, setCompanies)
+
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteCompany(id)
+      refresh()
+      setIsOpen(false)
+    } catch (error) {
+      console.error('Error deleting user:', error)
+    }
+  }
+
+  useEffect(() => {
+    if (formData.id) {
+      setTitleModal('Editar')
+    }
+  }, [formData])
+
   return (
     <MainLayout>
       <Title title="Publicidad" />
-      <div className="flex justify-between items-center my-4 w-[90%]">
-        <div className="justify-end">
-          <div className=" w-full flex justify-between items-center p-2">
-            <div className="border-r-2 border-gray-300">
-              <span className="text-gray-400 p-2">Agregar</span>
-            </div>
-            <div className="ml-4">
-              <ButtonAdd label={false} openModal={() => setIsOpen(true)} />
-            </div>
-          </div>
-        </div>
-        <div className="justify-end">
-          <div className="flex items-center bg-red-500 rounded-full p-2">
-            <Trash size={25} color="white" weight="bold" />
-          </div>
-        </div>
-      </div>
-      <div className="grid grid-cols-7 gap-4">
-        {ads.map((ad) => (
-          <AdsCard key={ad.id} img={ad.image} name={ad.name} />
-        ))}
-      </div>
+      <Table
+        addButton={true}
+        // filters={[
+        //   { name: 'name', label: 'Nombre' },
+        //   { name: 'rfc', label: 'RFC' },
+        //   { name: 'status', label: 'Estatus' },
+        // ]}
+        refresh={refresh}
+        // setFilters={setFilters}
+        tableContent={{
+          headers: [
+            'Folio',
+            'Nombre',
+            'Maquinas',
+            'Dirección',
+            'Rfc',
+            'Estatus',
+          ],
+          data: companies,
+        }}
+        columns={[
+          'id',
+          'name',
+          'totalAecos',
+          'address',
+          'rfc',
+          { column: 'status', type: 'chip' },
+        ]}
+        openModal={() => {
+          setIsOpen(true)
+          setFormData({})
+        }}
+        setTitleModal={setTitleModal}
+        pagination={{ page, totalpages: totalPages }}
+        changePage={setPage}
+        handleDelete={handleDelete}
+        setFormData={setFormData}
+      />
+      {/* {isOpen && (
+       <ModalCompanies
+         onClose={() => setIsOpen(false)}
+         title={titleModal}
+         onSaved={refresh}
+         companyId={formData.id}
+       />
+     )} */}
     </MainLayout>
   )
 }

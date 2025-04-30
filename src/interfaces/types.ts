@@ -68,11 +68,14 @@ export interface AecoCoords {
 }
 
 export interface Reward {
-  id: number
+  id?: number
   name: string
-  points: number
-  category: string
-  company: string
-  status: boolean
+  establishment: string
   description: string
+  note: string
+  image: string
+  status: boolean
+  type: string
+  order: number
+  companyId?: number
 }

@@ -21,10 +21,6 @@ const Rewards = () => {
   const { page, totalPages, setPage, refresh, setFilters } =
     usePagination<Reward>(getRewards, 10, setRewards)
 
-  useEffect(() => {
-    console.log('🚀 ~ Rewards ~ tab:', tab)
-  }, [tab])
-
   const tabs = [
     { name: 'Todas', value: 'all' },
     { name: 'Descuentos', value: 'discount' },
@@ -48,12 +44,19 @@ const Rewards = () => {
             { label: 'Rfc', name: 'rfc' },
           ]}
           tableContent={{
-            headers: ['Folio', 'Nombre', 'Establecimiento', 'Estatus'],
+            headers: [
+              'Folio',
+              'Nombre',
+              'Categoria',
+              'Establecimiento',
+              'Estatus',
+            ],
             data: rewards,
           }}
           columns={[
             'id',
             'name',
+            'type',
             'establishment',
             { column: 'status', type: 'chip' },
           ]}

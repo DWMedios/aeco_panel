@@ -7,7 +7,7 @@ interface Props {
 
 const MenuItem = ({ menu }: Props) => {
   return (
-    <li>
+    <li className="pb-4">
       <a className="flex items-center p-2 text-gray-900 rounded-lg">
         <img src={menu.icon} alt={''} />
         <span className="ms-3 text-2xl">{menu.title}</span>

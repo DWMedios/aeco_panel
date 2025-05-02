@@ -1,10 +1,10 @@
 import { ColumnType } from '../../../../interfaces/table'
-import { Aeco, Company, Rewards, User } from '../../../../interfaces/types'
+import { Aeco, Company, Reward, User } from '../../../../interfaces/types'
 import { chipColor, chipText } from '../../../../utils/chipColor'
 import ActtionMenu from '../ActionMenu'
 
 interface Props {
-  content: (User | Company | Aeco | Rewards | Record<string, any>)[]
+  content: (User | Company | Aeco | Reward | Record<string, any>)[]
   columns: (string | ColumnType)[]
   setTitleModal?: (title: string) => void
   openModal?: () => void
@@ -27,7 +27,7 @@ const TBody = ({
       {content.map((item, index) => (
         <tr
           key={index}
-          className={`relative bg-[#F8F8F8] text-center ${
+          className={`relative bg-[#F8F8F8] text-center hover:bg-gray-300 ${
             index < content.length - 1 &&
             'border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200'
           } group`}

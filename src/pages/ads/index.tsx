@@ -4,6 +4,8 @@ import Title from '../../components/title'
 import Table from '../../components/table'
 import { useWebApiCompany } from '../../utils/api/webApiCompany'
 import usePagination from '../../hooks/usePagination'
+import Filters from '../../components/filters'
+import { Company } from '../../interfaces/types'
 
 const Ads = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -34,15 +36,17 @@ const Ads = () => {
   return (
     <MainLayout>
       <Title title="Publicidad" />
-      <Table
+      <Filters
         addButton={true}
-        // filters={[
-        //   { name: 'name', label: 'Nombre' },
-        //   { name: 'rfc', label: 'RFC' },
-        //   { name: 'status', label: 'Estatus' },
-        // ]}
+        filters={[
+          { name: 'name', label: 'Nombre' },
+          { name: 'rfc', label: 'RFC' },
+          { name: 'status', label: 'Estatus' },
+        ]}
         refresh={refresh}
-        // setFilters={setFilters}
+        setFilters={setFilters}
+      />
+      <Table
         tableContent={{
           headers: [
             'Folio',

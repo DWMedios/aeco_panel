@@ -7,6 +7,7 @@ import Table from '../../components/table'
 import usePagination from '../../hooks/usePagination'
 import { Reward } from '../../interfaces/types'
 import { useWebApiProducts } from '../../utils/api/webApiProduct'
+import Filters from '../../components/filters'
 
 const Products = () => {
   const [tab, setTab] = useState<string>('products')
@@ -29,14 +30,18 @@ const Products = () => {
         <Tabs tabs={tabs} selected={tab} action={(data) => setTab(data)} />
       </div>
       <ContentTabs>
-        <Table
+        <Filters
           addButton={true}
           filters={[
-            { label: 'Folio', name: 'folio' },
-            { label: 'Nombre', name: 'nombre' },
-            { label: 'Dirección', name: 'direccion' },
-            { label: 'Rfc', name: 'rfc' },
+            { name: 'folio', label: 'Folio' },
+            { name: 'name', label: 'Nombre' },
+            { name: 'family', label: 'Familia' },
+            { name: 'code', label: 'Codigo' },
           ]}
+          refresh={refresh}
+          setFilters={setFilters}
+        />
+        <Table
           tableContent={{
             headers: ['Folio', 'Nombre', 'Familia', 'Codigo'],
             data: products,
@@ -47,7 +52,6 @@ const Products = () => {
           handleDelete={() => {}}
           pagination={{ page, totalpages: totalPages }}
           changePage={setPage}
-          refresh={refresh}
         />
       </ContentTabs>
     </MainLayout>

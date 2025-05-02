@@ -6,6 +6,7 @@ import ModalCompanies from './components/ModalCompanies'
 import { Company } from '../../interfaces/types'
 import usePagination from '../../hooks/usePagination'
 import { useWebApiCompany } from '../../utils/api/webApiCompany'
+import Filters from '../../components/filters'
 
 const Companies = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -36,7 +37,7 @@ const Companies = () => {
   return (
     <MainLayout>
       <Title title="Empresas" />
-      <Table
+      <Filters
         addButton={true}
         filters={[
           { name: 'name', label: 'Nombre' },
@@ -45,6 +46,8 @@ const Companies = () => {
         ]}
         refresh={refresh}
         setFilters={setFilters}
+      />
+      <Table
         tableContent={{
           headers: [
             'Folio',

@@ -33,7 +33,7 @@ const Sidebar = () => {
         aria-label="Sidebar"
       >
         <div className="flex justify-center h-[97%] px-3 py-9 overflow-y-auto bg-[#EDEDED] dark:bg-gray-800 border rounded-[50px]">
-          <ul className="space-y-2 font-medium">
+          <ul className="space-y-2 font-medium pb-4">
             <li>
               <img src="/images/dw.png" alt="" />
             </li>

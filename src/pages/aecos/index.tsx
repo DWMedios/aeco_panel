@@ -6,6 +6,7 @@ import ModalMachines from './components/ModalMachines'
 import { Aeco } from '../../interfaces/types'
 import usePagination from '../../hooks/usePagination'
 import { useWebApiAeco } from '../../utils/api/webApiAeco'
+import Filters from '../../components/filters'
 
 const Aecos = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -37,13 +38,17 @@ const Aecos = () => {
   return (
     <MainLayout>
       <Title title="Maquinas" />
-      <Table
+      <Filters
         addButton={true}
         filters={[
           { name: 'folio', label: 'Folio' },
           { name: 'name', label: 'Nombre' },
           { name: 'status', label: 'Estatus' },
         ]}
+        refresh={refresh}
+        setFilters={setFilters}
+      />
+      <Table
         tableContent={{
           headers: ['Folio', 'Nombre', 'Numero de serie', 'Estatus'],
           data: aecos,
@@ -61,8 +66,6 @@ const Aecos = () => {
         setTitleModal={setTitleModal}
         pagination={{ page, totalpages: totalPages }}
         changePage={setPage}
-        refresh={refresh}
-        setFilters={setFilters}
         handleDelete={handleDelete}
         setFormData={setFormData}
       />

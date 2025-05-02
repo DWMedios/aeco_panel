@@ -6,6 +6,7 @@ import ModalUsers from './components/ModalUsers'
 import { User } from '../../interfaces/types'
 import usePagination from '../../hooks/usePagination'
 import { useWebApiUser } from '../../utils/api/webApiUser'
+import Filters from '../../components/filters'
 
 const Users = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -13,9 +14,8 @@ const Users = () => {
   const [users, setUsers] = useState<User[]>([])
   const { getUsers, deleteUser } = useWebApiUser()
 
-  const { page, totalPages, setPage, refresh, setFilters } = usePagination<
-    User[]
-  >(getUsers, 10, setUsers)
+  const { page, totalPages, setPage, refresh, setFilters } =
+    usePagination<User>(getUsers, 10, setUsers)
 
   const handleDelete = async (id: number) => {
     try {
@@ -30,8 +30,17 @@ const Users = () => {
   return (
     <MainLayout>
       <Title title="Users" />
-      <Table
+      <Filters
         addButton={true}
+        filters={[
+          { name: 'name', label: 'Nombre' },
+          { name: 'email', label: 'Correo' },
+          { name: 'status', label: 'Estatus' },
+        ]}
+        refresh={refresh}
+        setFilters={setFilters}
+      />
+      <Table
         tableContent={{
           headers: ['Folio', 'Nombre', 'Telefono', 'Correo', 'Rol', 'Puesto'],
           data: users,
@@ -41,13 +50,6 @@ const Users = () => {
         setTitleModal={setTitleModal}
         pagination={{ page, totalpages: totalPages }}
         changePage={setPage}
-        filters={[
-          { name: 'name', label: 'Nombre' },
-          { name: 'email', label: 'Correo' },
-          { name: 'status', label: 'Estatus' },
-        ]}
-        refresh={refresh}
-        setFilters={setFilters}
         handleDelete={handleDelete}
       />
       {isOpen && (

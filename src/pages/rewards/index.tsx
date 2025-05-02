@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import MainLayout from '../../components/layout'
 import Tabs from '../../components/tabs'
 import Title from '../../components/title'
@@ -10,6 +10,7 @@ import { Reward } from '../../interfaces/types'
 import ModalDiscount from './components/ModalDiscount'
 import ModalDonative from './components/ModalDonative'
 import ModalService from './components/ModalService'
+import Filters from '../../components/filters'
 
 const Rewards = () => {
   const [tab, setTab] = useState<string>('all')
@@ -35,14 +36,19 @@ const Rewards = () => {
         <Tabs tabs={tabs} selected={tab} action={(data) => setTab(data)} />
       </div>
       <ContentTabs>
-        <Table
+        <Filters
           addButton={true}
           filters={[
-            { label: 'Folio', name: 'folio' },
-            { label: 'Nombre', name: 'nombre' },
-            { label: 'Dirección', name: 'direccion' },
-            { label: 'Rfc', name: 'rfc' },
+            { name: 'folio', label: 'Folio' },
+            { name: 'name', label: 'Nombre' },
+            { name: 'type', label: 'Categoria' },
+            { name: 'establishment', label: 'Establecimiento' },
+            { name: 'status', label: 'Estatus' },
           ]}
+          refresh={refresh}
+          setFilters={setFilters}
+        />
+        <Table
           tableContent={{
             headers: [
               'Folio',
@@ -68,7 +74,6 @@ const Rewards = () => {
           handleDelete={() => {}}
           pagination={{ page, totalpages: totalPages }}
           changePage={setPage}
-          refresh={refresh}
           setFormData={setFormData}
         />
       </ContentTabs>

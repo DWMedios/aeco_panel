@@ -3,11 +3,11 @@ import { FilterOption } from '../../../interfaces/types'
 
 interface props {
   filters: FilterOption[]
-  setFilters: (filters: Record<string, any> | null) => void
-  refresh?: () => void
+  setFilters: (filters: Record<string, any>) => void
+  refresh: () => void
 }
 
-const Filters = ({ filters, setFilters, refresh }: props) => {
+const FormFilters = ({ filters, setFilters, refresh }: props) => {
   const { handleChange, handleSubmit } = useFormWithValidation({})
 
   const handleFormSubmit = async (data: Record<string, any>) => {
@@ -40,4 +40,4 @@ const Filters = ({ filters, setFilters, refresh }: props) => {
   )
 }
 
-export default Filters
+export default FormFilters

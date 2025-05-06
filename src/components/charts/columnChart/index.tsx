@@ -1,20 +1,21 @@
 import { ApexOptions } from 'apexcharts'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ReactApexChart from 'react-apexcharts'
 
-const ColumnChart = () => {
-  const [state] = useState<{
+interface Props {
+  data: any[]
+  categories: any[]
+}
+
+const ColumnChart = ({ categories, data }: Props) => {
+  const [state, setState] = useState<{
     series: { name: string; data: number[] }[]
     options: ApexOptions
   }>({
     series: [
       {
         name: 'envases',
-        data: [
-          120, 340, 98, 210, 87, 365, 190, 255, 315, 44, 380, 176, 295, 130,
-          222, 399, 89, 312, 55, 183, 200, 267, 143, 352, 174, 99, 130, 210,
-          167, 380,
-        ],
+        data: data,
       },
     ],
     options: {
@@ -36,38 +37,7 @@ const ColumnChart = () => {
       },
       xaxis: {
         tickAmount: 30,
-        categories: [
-          '1',
-          '2',
-          '3',
-          '4',
-          '5',
-          '6',
-          '7',
-          '8',
-          '9',
-          '10',
-          '11',
-          '12',
-          '13',
-          '14',
-          '15',
-          '16',
-          '17',
-          '18',
-          '19',
-          '20',
-          '21',
-          '22',
-          '23',
-          '24',
-          '25',
-          '26',
-          '27',
-          '28',
-          '29',
-          '30',
-        ],
+        categories: categories,
         labels: {
           style: {
             fontSize: '12px',
@@ -93,6 +63,25 @@ const ColumnChart = () => {
       },
     },
   })
+
+  useEffect(() => {
+    setState((prevState) => ({
+      ...prevState,
+      series: [
+        {
+          name: 'envases',
+          data: data, // Actualiza los datos del gráfico
+        },
+      ],
+      options: {
+        ...prevState.options,
+        xaxis: {
+          ...prevState.options.xaxis,
+          categories: categories, // Actualiza las categorías del gráfico
+        },
+      },
+    }))
+  }, [categories, data])
 
   return (
     <div className="p-2">

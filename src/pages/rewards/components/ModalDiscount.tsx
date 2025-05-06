@@ -4,7 +4,7 @@ import ActionsButtons from '../../../components/modals/Form/components/actionsBu
 import { useLoading } from '../../../hooks/loading'
 import useFormWithValidation from '../../../hooks/useForm'
 import { useWebApiCompany } from '../../../utils/api/webApiCompany'
-import { initialValues, validationRules } from './formValidates'
+import { initialValuesDiscount, validationRules } from './formValidates'
 import { useWebApiAeco } from '../../../utils/api/webApiAeco'
 import InputField from '../../../components/inputField'
 import SearchableSelect from '../../../components/searchableSelect'
@@ -27,13 +27,14 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
   const { getAecos } = useWebApiAeco()
   const [selectedAeco, setSelectedAeco] = useState<any>([])
   const [aecoOptions, setAecoOptions] = useState<any>([])
+  const [type, setType] = useState<string>('percentage')
 
   const { createReward, updateReward } = useWebApiReward()
 
   const mergedValues =
     reward && Object.keys(reward).length > 0
-      ? { ...initialValues, ...reward }
-      : initialValues
+      ? { ...initialValuesDiscount, ...reward }
+      : initialValuesDiscount
   const {
     values,
     errors,
@@ -47,7 +48,7 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
   useEffect(() => {
     console.log('🚀 ~ useEffect ~ rewardData:', reward)
     if (reward && Object.keys(reward).length > 0) {
-      setValues({ ...initialValues, ...reward })
+      setValues({ ...initialValuesDiscount, ...reward })
     }
   }, [reward, setValues])
 
@@ -70,6 +71,7 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
 
   const onFormSubmit = async (data: any) => {
     try {
+      console.log('🚀 ~ onFormSubmit ~ cleanedData:', data)
       const cleanedData: any = cleanEmptyFields({
         ...data,
         type: 'discount',
@@ -78,6 +80,7 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
         order: Number(data.order),
         aecos: selectedAeco.map((item: any) => item.value),
       })
+      if (cleanedData.metadata.bottle) cleanedData.metadata.value = type
 
       if (reward && Object.keys(reward).length > 0) {
         delete cleanedData.companyId
@@ -159,25 +162,37 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
                 divClassName="w-2/6"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
-              <div className="w-2/6">
+              <div className="w-30">
                 <div className="w-full">
                   <div className="flex rounded-full overflow-hidden shadow-md">
-                    <div className="w-2/4 bg-gray-500 flex items-center justify-center">
+                    <div
+                      onClick={() => setType('percentage')}
+                      className={`w-30 ${
+                        type == 'percentage' ? 'bg-gray-500' : 'bg-gray-400'
+                      } flex items-center justify-center cursor-pointer`}
+                    >
                       <span className="text-white text-xl p-2">%</span>
                     </div>
 
-                    <div className="w-2/4 rounded-e-full bg-gray-400 flex items-center justify-center">
+                    <div
+                      onClick={() => setType('value')}
+                      className={`w-30 rounded-e-full ${
+                        type == 'value' ? 'bg-gray-500' : 'bg-gray-400'
+                      } flex items-center justify-center cursor-pointer`}
+                    >
                       <span className="text-white text-xl pr-4 pl-2">$</span>
                     </div>
 
-                    <div className="flex-1 bg-white flex items-center justify-center">
-                      <input
-                        name="metadata.value"
-                        className="h-full border-none pl-4 focus:outline-none focus:ring-0"
-                        type="text"
-                        placeholder="Valor"
-                      />
-                    </div>
+                    <InputField
+                      name="metadata.value"
+                      placeholder="Valor"
+                      value={getValue('metadata.value')}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      error={errors['metadata.value']}
+                      touched={touched['metadata.value']}
+                      className=" max-w-24 rounded-full border-2 border-gray-300 p-2"
+                    />
                   </div>
                 </div>
                 {errors['metadata.value'] && (
@@ -188,13 +203,13 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
               </div>
               =
               <InputField
-                name="metadata.count"
+                name="metadata.bottles"
                 placeholder="Embases"
-                value={getValue('metadata.count')}
+                value={getValue('metadata.bottles')}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={errors.postalCode}
-                touched={touched.postalCode}
+                error={errors['metadata.bottles']}
+                touched={touched['metadata.bottles']}
                 divClassName="w-1/6"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />

@@ -1,5 +1,4 @@
 import { ApexOptions } from 'apexcharts'
-import { useState } from 'react'
 import ReactApexChart from 'react-apexcharts'
 
 interface Props {
@@ -9,54 +8,50 @@ interface Props {
 }
 
 const BarChart = ({ subTitle, title, data }: Props) => {
-  const [state] = useState<{
-    series: { name: string; data: { x: string; y: number }[] }[]
-    options: ApexOptions
-  }>({
-    series: [
-      {
-        name: 'Cantidad',
-        data: data,
-      },
-    ],
-    options: {
-      chart: {
-        type: 'bar',
-        toolbar: { show: false },
-      },
-      plotOptions: {
-        bar: {
-          barHeight: '40px',
-          horizontal: true,
-          borderRadius: 20,
-          dataLabels: {
-            position: 'bottom',
-          },
-        },
-      },
-      colors: ['#F4A8A3'],
-      dataLabels: {
-        enabled: true,
-        style: {
-          colors: ['#000'],
-          fontSize: '14px',
-        },
-        formatter: (_val, opts) => {
-          return `${opts.w.config.series[0].data[opts.dataPointIndex].x}`
-        },
-        textAnchor: 'start',
-        offsetX: 0,
-      },
-      xaxis: {
-        labels: { show: false },
-      },
-      yaxis: {
-        labels: { show: false },
-      },
-      grid: { show: false },
-      tooltip: { enabled: true },
+  const series = [
+    {
+      name: 'Cantidad',
+      data,
     },
-  })
+  ]
+
+  const options: ApexOptions = {
+    chart: {
+      type: 'bar',
+      toolbar: { show: false },
+    },
+    plotOptions: {
+      bar: {
+        barHeight: '40px',
+        horizontal: true,
+        borderRadius: 20,
+        dataLabels: {
+          position: 'bottom',
+        },
+      },
+    },
+    colors: ['#F4A8A3'],
+    dataLabels: {
+      enabled: true,
+      style: {
+        colors: ['#000'],
+        fontSize: '14px',
+      },
+      formatter: (_val, opts) => {
+        return `${opts.w.config.series[0].data[opts.dataPointIndex].x}`
+      },
+      textAnchor: 'start',
+      offsetX: 0,
+    },
+    xaxis: {
+      labels: { show: false },
+    },
+    yaxis: {
+      labels: { show: false },
+    },
+    grid: { show: false },
+    tooltip: { enabled: true },
+  }
 
   return (
     <div className="p-4 rounded-lg shadow-lg" style={{ fontWeight: 400 }}>
@@ -68,8 +63,8 @@ const BarChart = ({ subTitle, title, data }: Props) => {
       <div className="flex ">
         <div className="flex-grow">
           <ReactApexChart
-            options={state.options}
-            series={state.series}
+            options={options}
+            series={series}
             type="bar"
             height={300}
           />

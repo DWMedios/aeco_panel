@@ -18,7 +18,7 @@ const Rewards = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [titleModal, setTitleModal] = useState<string>('Crear')
   const [formData, setFormData] = useState<Reward | Record<string, any>>({})
-  const { getRewards } = useWebApiReward()
+  const { getRewards, deleteReward } = useWebApiReward()
   const { page, totalPages, setPage, refresh, setFilters, setDefaultFilters } =
     usePagination<Reward>(getRewards, 10, setRewards)
 
@@ -37,6 +37,16 @@ const Rewards = () => {
     }
   }, [tab])
 
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteReward(id)
+      refresh()
+      setIsOpen(false)
+    } catch (error) {
+      console.error('Error deleting:', error)
+    }
+  }
+
   return (
     <MainLayout>
       <Title title="Recompensas" />
@@ -49,7 +59,7 @@ const Rewards = () => {
           filters={[
             { name: 'folio', label: 'Folio' },
             { name: 'name', label: 'Nombre' },
-            { name: 'category', label: 'Categoria' },
+            { name: 'type', label: 'Categoria' },
             { name: 'establishment', label: 'Establecimiento' },
             { name: 'status', label: 'Estatus' },
           ]}
@@ -91,7 +101,7 @@ const Rewards = () => {
             setFormData({})
           }}
           setTitleModal={setTitleModal}
-          handleDelete={() => {}}
+          handleDelete={handleDelete}
           pagination={{ page, totalpages: totalPages }}
           changePage={setPage}
           setFormData={setFormData}

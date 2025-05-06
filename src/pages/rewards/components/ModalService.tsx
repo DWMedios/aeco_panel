@@ -4,7 +4,7 @@ import ActionsButtons from '../../../components/modals/Form/components/actionsBu
 import { useLoading } from '../../../hooks/loading'
 import useFormWithValidation from '../../../hooks/useForm'
 import { useWebApiCompany } from '../../../utils/api/webApiCompany'
-import { initialValues, validationRules } from './formValidates'
+import { initialValuesService, validationRules } from './formValidates'
 import { useWebApiAeco } from '../../../utils/api/webApiAeco'
 import InputField from '../../../components/inputField'
 import SearchableSelect from '../../../components/searchableSelect'
@@ -30,7 +30,7 @@ const ModalService = ({ onClose, onSaved, title, reward }: Props) => {
 
   const { createReward, updateReward } = useWebApiReward()
 
-  const mergedValues = { ...initialValues, ...reward }
+  const mergedValues = { ...initialValuesService, ...reward }
   const {
     values,
     errors,
@@ -43,7 +43,7 @@ const ModalService = ({ onClose, onSaved, title, reward }: Props) => {
 
   useEffect(() => {
     if (reward && Object.keys(reward).length > 0) {
-      setValues({ ...initialValues, ...reward })
+      setValues({ ...initialValuesService, ...reward })
     }
   }, [reward, setValues])
 
@@ -65,6 +65,7 @@ const ModalService = ({ onClose, onSaved, title, reward }: Props) => {
   }, [])
 
   const onFormSubmit = async (data: any) => {
+    console.log('🚀 ~ onFormSubmit ~ data:', data)
     try {
       const cleanedData: any = cleanEmptyFields({
         ...data,
@@ -73,14 +74,15 @@ const ModalService = ({ onClose, onSaved, title, reward }: Props) => {
         order: Number(data.order),
         aecos: selectedAeco.map((item: any) => item.value),
       })
+      console.log('🚀 ~ onFormSubmit ~ cleanedData:', cleanedData)
 
-      if (reward && Object.keys(reward).length > 0) {
-        delete cleanedData.companyId
-        await withLoading(() => updateReward(reward.id, cleanedData))
-      } else {
-        cleanedData.companyId = Number(data.companyId)
-        await withLoading(() => createReward(cleanedData))
-      }
+      // if (reward && Object.keys(reward).length > 0) {
+      //   delete cleanedData.companyId
+      //   await withLoading(() => updateReward(reward.id, cleanedData))
+      // } else {
+      //   cleanedData.companyId = Number(data.companyId)
+      //   await withLoading(() => createReward(cleanedData))
+      // }
 
       onSaved()
       onClose()

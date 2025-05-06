@@ -271,7 +271,6 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
               <InputField
                 name="legalRepresentative.email"
                 placeholder="Correo"
-                type="email"
                 value={String(getValue('legalRepresentative.email') || '')}
                 onChange={handleChange}
                 onBlur={handleBlur}

@@ -5,7 +5,6 @@ export const initialValues = {
   establishment: '',
   type: '',
   order: '',
-  metadata: {},
   companyId: '',
   status: '',
 }
@@ -35,4 +34,23 @@ export const validationRules = {
   //     required: 'El estatus es obligatorio',
   //   },
   // },
+}
+
+export const initialValuesService = {
+  ...initialValues,
+  metadata: {
+    host: '',
+    apiKey: '',
+    user: '',
+    password: '',
+  },
+}
+
+export const initialValuesDiscount = {
+  ...initialValues,
+  metadata: {
+    type: '',
+    value: '',
+    bottles: '',
+  },
 }

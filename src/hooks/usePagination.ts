@@ -12,11 +12,11 @@ const generateQueryString = (
     if (value !== undefined && value !== null) {
       params.append(
         key,
-        value.toLowerCase() == 'donativo'
-          ? 'donative'
-          : value.toLowerCase() == 'servicio'
+        value.toString().toLowerCase() == 'donativo'
+          ? 'donation'
+          : value.toString().toLowerCase() == 'servicio'
           ? 'service'
-          : value.toLowerCase() == 'descuento'
+          : value.toString().toLowerCase() == 'descuento'
           ? 'discount'
           : value.toString()
       )

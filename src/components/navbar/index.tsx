@@ -1,11 +1,9 @@
-import { Bell, Power, User } from '@phosphor-icons/react'
+import { Bell, User } from '@phosphor-icons/react'
 import { useState } from 'react'
-import { useAuth } from '../../hooks/useAuth'
+import CardProfile from '../cardProfile'
 
 const Navbar = () => {
   const [open, setOpen] = useState(false)
-
-  const { logout } = useAuth()
 
   return (
     <nav className="absolute top-0 right-0 p-10">
@@ -20,14 +18,8 @@ const Navbar = () => {
           <User size={25} weight="fill" />
         </div>
         {open && (
-          <div className="absolute right-0 mt-14 w-44 bg-gray-200 rounded-lg shadow-lg z-10 mr-4">
-            <button
-              onClick={logout}
-              className="flex justify-between w-full px-4 py-2 font-extrabold text-left text-lg text-red-600 hover:bg-red-50"
-            >
-              <Power size={25} weight="fill" />
-              Cerrar sesión
-            </button>
+          <div className="absolute right-0 mt-14 w-64 bg-gray-200 rounded-lg shadow-lg z-40 mr-4">
+            <CardProfile />
           </div>
         )}
       </div>

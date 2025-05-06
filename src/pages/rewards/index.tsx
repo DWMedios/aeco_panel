@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import MainLayout from '../../components/layout'
 import Tabs from '../../components/tabs'
 import Title from '../../components/title'
@@ -19,15 +19,23 @@ const Rewards = () => {
   const [titleModal, setTitleModal] = useState<string>('Crear')
   const [formData, setFormData] = useState<Reward | Record<string, any>>({})
   const { getRewards } = useWebApiReward()
-  const { page, totalPages, setPage, refresh, setFilters } =
+  const { page, totalPages, setPage, refresh, setFilters, setDefaultFilters } =
     usePagination<Reward>(getRewards, 10, setRewards)
 
   const tabs = [
     { name: 'Todas', value: 'all' },
     { name: 'Descuentos', value: 'discount' },
     { name: 'Donativos', value: 'donation' },
-    { name: 'Servicios', value: 'services' },
+    { name: 'Servicios', value: 'service' },
   ]
+  useEffect(() => {
+    if (tab == 'all') {
+      setFilters({})
+      setDefaultFilters({})
+    } else {
+      setFilters({ type: tab })
+    }
+  }, [tab])
 
   return (
     <MainLayout>
@@ -41,12 +49,16 @@ const Rewards = () => {
           filters={[
             { name: 'folio', label: 'Folio' },
             { name: 'name', label: 'Nombre' },
-            { name: 'type', label: 'Categoria' },
+            { name: 'category', label: 'Categoria' },
             { name: 'establishment', label: 'Establecimiento' },
             { name: 'status', label: 'Estatus' },
           ]}
-          refresh={refresh}
           setFilters={setFilters}
+          openModal={() => {
+            setTitleModal('Crear')
+            setIsOpen(true)
+            setFormData({})
+          }}
         />
         <Table
           tableContent={{
@@ -57,12 +69,20 @@ const Rewards = () => {
               'Establecimiento',
               'Estatus',
             ],
-            data: rewards,
+            data: rewards.map((item: any) => ({
+              ...item,
+              category:
+                item.type === 'donation'
+                  ? 'Donativo'
+                  : item.type === 'service'
+                  ? 'Servicio'
+                  : 'Descuento',
+            })),
           }}
           columns={[
             'id',
             'name',
-            'type',
+            'category',
             'establishment',
             { column: 'status', type: 'chip' },
           ]}
@@ -85,7 +105,7 @@ const Rewards = () => {
             onSaved={refresh}
             reward={formData}
           />
-        ) : tab == 'services' ? (
+        ) : tab == 'service' ? (
           <ModalService
             onClose={() => setIsOpen(false)}
             title={titleModal}

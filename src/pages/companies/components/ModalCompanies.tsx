@@ -26,7 +26,10 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
   const [aecoOptions, setAecoOptions] = useState<any>([])
   const [companyData, setCompanyData] = useState<any>({})
 
-  const mergedValues = { ...initialValues, ...companyData }
+  const mergedValues =
+    companyData && Object.keys(companyData).length > 0
+      ? { ...initialValues, ...companyData }
+      : initialValues
   const validationRules = validationRulesCompany(companyData)
   const {
     values,
@@ -36,6 +39,7 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
     handleBlur,
     handleSubmit,
     setValues,
+    resetForm,
   } = useFormWithValidation(mergedValues, { validationRules })
 
   useEffect(() => {
@@ -43,9 +47,9 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
   }, [companyId])
 
   useEffect(() => {
-    if (companyData && Object.keys(companyData).length > 0) {
+    if (companyData && Object.keys(companyData).length > 0)
       setValues({ ...initialValues, ...companyData })
-    }
+    else resetForm()
   }, [companyData, setValues])
 
   const handleImageUpload = (file: File) => {
@@ -70,7 +74,7 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
     }
   }
 
-  const onFormSubmit = async (data: any) => {
+  const handleFormSubmit = async (data: any) => {
     try {
       const cleanedData: any = cleanEmptyFields({
         ...data,
@@ -84,6 +88,7 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
       }
 
       onSaved()
+      resetForm()
       onClose()
     } catch (error) {
       console.log('Error en el envío del formulario:', error)
@@ -113,8 +118,14 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
   }
 
   return (
-    <Modal onClose={onClose} title={`${title} empresa`}>
-      <form onSubmit={handleSubmit(onFormSubmit)}>
+    <Modal
+      onClose={() => {
+        onClose()
+        resetForm()
+      }}
+      title={`${title} empresa`}
+    >
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
         <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
           <div className="mt-8">
             <InputUpload
@@ -344,7 +355,13 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
             />
           </div>
         </div>
-        <ActionsButtons loading={loading} onClose={onClose} />
+        <ActionsButtons
+          loading={loading}
+          onClose={() => {
+            onClose()
+            resetForm()
+          }}
+        />
       </form>
     </Modal>
   )

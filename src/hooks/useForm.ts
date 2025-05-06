@@ -270,15 +270,32 @@ const useFormWithValidation = <T extends Record<string, any>>(
       }
 
       if ('passwordConfirmation' in changedValues) {
-        delete changedValues.passwordComparation
+        delete changedValues.passwordConfirmation
       }
 
       onSubmit(changedValues as T)
       setIsSubmitting(false)
     }
 
+  const emptyValues = (obj: any): any => {
+    if (Array.isArray(obj)) {
+      return obj.map(() => '') // convierte todos los elementos en ""
+    } else if (typeof obj === 'object' && obj !== null) {
+      const result: any = {}
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          result[key] = emptyValues(obj[key])
+        }
+      }
+      return result
+    } else {
+      return '' // cualquier otro tipo de valor se convierte en cadena vacía
+    }
+  }
+
   const resetForm = () => {
-    setValues(initialValues)
+    const clearedValues = emptyValues(initialValues)
+    setValues(clearedValues)
     setErrors({})
     setTouched({})
   }

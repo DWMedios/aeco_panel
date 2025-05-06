@@ -22,6 +22,7 @@ export const useWebApiReward = () => {
   }
 
   const updateReward = async (id: number, aeco: any): Promise<Reward> => {
+    console.log('🚀 ~ updateReward ~ id:', id)
     return fetchRequest<Reward>({
       url: `/rewards/${id}`,
       method: 'PUT',

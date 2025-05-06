@@ -29,10 +29,6 @@ const SearchableSelect = ({
     }
   }, [options, inputValue])
 
-  useEffect(() => {
-    console.log('🚀 ~ selected:', selected)
-  }, [selected])
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setInputValue(value)

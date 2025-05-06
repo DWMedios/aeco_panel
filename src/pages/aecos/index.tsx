@@ -45,8 +45,12 @@ const Aecos = () => {
           { name: 'name', label: 'Nombre' },
           { name: 'status', label: 'Estatus' },
         ]}
-        refresh={refresh}
         setFilters={setFilters}
+        openModal={() => {
+          setTitleModal('Crear')
+          setIsOpen(true)
+          setFormData({})
+        }}
       />
       <Table
         tableContent={{

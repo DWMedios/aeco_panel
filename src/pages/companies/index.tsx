@@ -24,7 +24,7 @@ const Companies = () => {
       refresh()
       setIsOpen(false)
     } catch (error) {
-      console.error('Error deleting user:', error)
+      console.error('Error deleting:', error)
     }
   }
 
@@ -44,8 +44,12 @@ const Companies = () => {
           { name: 'rfc', label: 'RFC' },
           { name: 'status', label: 'Estatus' },
         ]}
-        refresh={refresh}
         setFilters={setFilters}
+        openModal={() => {
+          setTitleModal('Crear')
+          setIsOpen(true)
+          setFormData({})
+        }}
       />
       <Table
         tableContent={{

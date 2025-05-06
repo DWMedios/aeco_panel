@@ -5,7 +5,7 @@ export interface IUserForm {
   email: string
   phone: string
   position: string
-  isActive: boolean
+  isActive: string
   role: UserRoleEnum
   password: string
   companyId: number

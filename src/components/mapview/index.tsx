@@ -118,7 +118,7 @@ const MapView = ({ large = 90, onCoordinatesChange }: Props) => {
     >
       {coordinates && (
         <div>
-          Coordenadas: Lat: {coordinates.lat.toFixed(6)}, Lng:{' '}
+          Coordenadas: Lat: {coordinates.lat.toFixed(6)}, Lng:
           {coordinates.lng.toFixed(6)}
         </div>
       )}

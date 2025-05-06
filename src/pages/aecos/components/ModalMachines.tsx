@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react'
-import Button from '../../../components/button'
 import MapView from '../../../components/mapview'
 import Modal from '../../../components/modals/Form'
 import ActionsButtons from '../../../components/modals/Form/components/actionsButtons'
-import Table from '../../../components/table'
 import { useLoading } from '../../../hooks/loading'
 import useFormWithValidation from '../../../hooks/useForm'
 import { useWebApiAeco } from '../../../utils/api/webApiAeco'
@@ -36,7 +34,11 @@ const ModalAeco = ({ onClose, title, onSaved, aeco }: Props) => {
   const { withLoading, loading } = useLoading()
   const { createAeco, updateAeco } = useWebApiAeco()
   const { getCompanies } = useWebApiCompany()
-  const mergedValues = { ...initialValues, ...aeco }
+
+  const mergedValues =
+    aeco && Object.keys(aeco).length > 0
+      ? { ...initialValues, ...aeco }
+      : initialValues
   const {
     values,
     errors,
@@ -151,13 +153,13 @@ const ModalAeco = ({ onClose, title, onSaved, aeco }: Props) => {
         <div className="flex items-center justify-start gap-2 mt-6">
           <MapView large={30} onCoordinatesChange={setMarkerCoordinates} />
         </div>
-        <div>
+        {/* <div>
           <div className="flex flex-col mt-6">
             <span className="text-2xl">Asignar publicidad</span>
           </div>
           <div className="flex items-center justify-start gap-4 flex-wrap">
             <div className="w-2/4">
-              {/* <InputSelct placeholder="" key={1} name="" /> */}
+              <InputSelct placeholder="" key={1} name="" />
             </div>
             <div className="w-1/4">
               <Button action={() => {}} text="Añadir" />
@@ -169,9 +171,8 @@ const ModalAeco = ({ onClose, title, onSaved, aeco }: Props) => {
               headers: ['Folio', 'Nombre de p.', 'Repeticiones', 'Estatus'],
               data: [],
             }}
-            filters={null}
           />
-        </div>
+        </div> */}
         <ActionsButtons loading={loading} onClose={onClose} />
       </form>
     </Modal>

@@ -27,11 +27,13 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
   const { getAecos } = useWebApiAeco()
   const [selectedAeco, setSelectedAeco] = useState<any>([])
   const [aecoOptions, setAecoOptions] = useState<any>([])
-  const [rewardData, setRewardData] = useState<any>({})
 
   const { createReward, updateReward } = useWebApiReward()
 
-  const mergedValues = { ...initialValues, ...reward }
+  const mergedValues =
+    reward && Object.keys(reward).length > 0
+      ? { ...initialValues, ...reward }
+      : initialValues
   const {
     values,
     errors,
@@ -43,11 +45,11 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
   } = useFormWithValidation(mergedValues, { validationRules })
 
   useEffect(() => {
-    if (rewardData && Object.keys(rewardData).length > 0) {
-      setValues({ ...initialValues, ...rewardData })
-      setRewardData(rewardData)
+    console.log('🚀 ~ useEffect ~ rewardData:', reward)
+    if (reward && Object.keys(reward).length > 0) {
+      setValues({ ...initialValues, ...reward })
     }
-  }, [rewardData, setValues])
+  }, [reward, setValues])
 
   const handleImageUpload = (file: File) => {
     console.log('Imagen subida:', file)
@@ -68,7 +70,6 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
 
   const onFormSubmit = async (data: any) => {
     try {
-      console.log('🚀 ~ onFormSubmit ~ data:', data)
       const cleanedData: any = cleanEmptyFields({
         ...data,
         type: 'discount',
@@ -78,9 +79,11 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
         aecos: selectedAeco.map((item: any) => item.value),
       })
 
-      if (rewardData && Object.keys(rewardData).length > 0) {
-        await withLoading(() => updateReward(rewardData.id, cleanedData))
+      if (reward && Object.keys(reward).length > 0) {
+        delete cleanedData.companyId
+        await withLoading(() => updateReward(reward.id, cleanedData))
       } else {
+        cleanedData.companyId = Number(data.companyId)
         await withLoading(() => createReward(cleanedData))
       }
 
@@ -223,13 +226,13 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
                 defaultPlaceholder="Selecciona un estatus"
               />
               <InputField
-                name="notes"
+                name="note"
                 placeholder="Notas adicionales"
-                value={values.notes}
+                value={values.note}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={errors.notes}
-                touched={touched.notes}
+                error={errors.note}
+                touched={touched.note}
                 divClassName="w-4/5"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />

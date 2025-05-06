@@ -43,7 +43,6 @@ const Ads = () => {
           { name: 'rfc', label: 'RFC' },
           { name: 'status', label: 'Estatus' },
         ]}
-        refresh={refresh}
         setFilters={setFilters}
       />
       <Table

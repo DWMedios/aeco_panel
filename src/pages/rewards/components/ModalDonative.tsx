@@ -27,7 +27,6 @@ const ModalDonative = ({ onClose, onSaved, title, reward }: Props) => {
   const { getAecos } = useWebApiAeco()
   const [selectedAeco, setSelectedAeco] = useState<any>([])
   const [aecoOptions, setAecoOptions] = useState<any>([])
-  const [rewardData, setRewardData] = useState<any>({})
 
   const { createReward, updateReward } = useWebApiReward()
 
@@ -43,11 +42,10 @@ const ModalDonative = ({ onClose, onSaved, title, reward }: Props) => {
   } = useFormWithValidation(mergedValues, { validationRules })
 
   useEffect(() => {
-    if (rewardData && Object.keys(rewardData).length > 0) {
-      setValues({ ...initialValues, ...rewardData })
-      setRewardData(rewardData)
+    if (reward && Object.keys(reward).length > 0) {
+      setValues({ ...initialValues, ...reward })
     }
-  }, [rewardData, setValues])
+  }, [reward, setValues])
 
   const handleImageUpload = (file: File) => {
     console.log('Imagen subida:', file)
@@ -68,19 +66,20 @@ const ModalDonative = ({ onClose, onSaved, title, reward }: Props) => {
 
   const onFormSubmit = async (data: any) => {
     try {
-      console.log('🚀 ~ onFormSubmit ~ data:', data)
       const cleanedData: any = cleanEmptyFields({
         ...data,
-        type: 'discount',
+        type: 'donation',
         status: data.status === 'true' ? true : false,
         companyId: Number(data.companyId),
         order: Number(data.order),
         aecos: selectedAeco.map((item: any) => item.value),
       })
 
-      if (rewardData && Object.keys(rewardData).length > 0) {
-        await withLoading(() => updateReward(rewardData.id, cleanedData))
+      if (reward && Object.keys(reward).length > 0) {
+        delete cleanedData.companyId
+        await withLoading(() => updateReward(reward.id, cleanedData))
       } else {
+        cleanedData.companyId = Number(data.companyId)
         await withLoading(() => createReward(cleanedData))
       }
 
@@ -128,37 +127,37 @@ const ModalDonative = ({ onClose, onSaved, title, reward }: Props) => {
                 touched={touched.name}
                 divClassName="w-3/6"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
-              />{' '}
+              />
               <InputField
-                name="stablishment"
+                name="establishment"
                 placeholder="Establecimiento"
-                value={values.stablishment}
+                value={values.establishment}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={errors.stablishment}
-                touched={touched.stablishment}
+                error={errors.establishment}
+                touched={touched.establishment}
                 divClassName="w-2/6"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
               <InputField
                 name="description"
                 placeholder="Descripción"
-                value={values.rfc}
+                value={values.description}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={errors.rfc}
-                touched={touched.rfc}
+                error={errors.description}
+                touched={touched.description}
                 divClassName="w-5/6"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
               <InputField
-                name="notes"
+                name="note"
                 placeholder="Notas adicionales"
-                value={values.notes}
+                value={values.note}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={errors.notes}
-                touched={touched.notes}
+                error={errors.note}
+                touched={touched.note}
                 divClassName="w-5/6"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />

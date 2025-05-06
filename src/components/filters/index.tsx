@@ -7,25 +7,16 @@ interface Props {
   openModal?: () => void
   filters: FilterOption[]
   setFilters: (filters: Record<string, any>) => void
-  refresh: () => void
 }
 
-const Filters = ({
-  openModal,
-  addButton,
-  filters,
-  setFilters,
-  refresh,
-}: Props) => {
+const Filters = ({ openModal, filters, setFilters }: Props) => {
   return (
     <div className="flex justify-between items-center my-4 w-[90%]">
-      <div>{addButton && <ButtonAdd openModal={openModal} />}</div>
+      <div>
+        <ButtonAdd openModal={openModal} />
+      </div>
       <div className="justify-end">
-        <FormFilters
-          filters={filters}
-          setFilters={setFilters}
-          refresh={refresh}
-        />
+        <FormFilters filters={filters} setFilters={setFilters} />
       </div>
     </div>
   )

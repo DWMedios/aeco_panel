@@ -1,17 +1,29 @@
 import { useState, useEffect } from 'react'
 import { ApiResponseList } from '../interfaces/types'
 
-const generateQueryString = (filters: Record<string, any>): string => {
+const generateQueryString = (
+  filters: Record<string, any>,
+  signo: boolean = true
+): string => {
   const params = new URLSearchParams()
 
   Object.keys(filters).forEach((key) => {
     const value = filters[key]
     if (value !== undefined && value !== null) {
-      params.append(key, value.toString())
+      params.append(
+        key,
+        value.toLowerCase() == 'donativo'
+          ? 'donative'
+          : value.toLowerCase() == 'servicio'
+          ? 'service'
+          : value.toLowerCase() == 'descuento'
+          ? 'discount'
+          : value.toString()
+      )
     }
   })
 
-  return params.toString() ? `?${params.toString()}` : ''
+  return params.toString() ? `${signo ? '?' : ''}${params.toString()}` : ''
 }
 
 // Definimos el hook para manejar la paginación
@@ -21,6 +33,10 @@ const usePagination = <T>(
   setData: React.Dispatch<React.SetStateAction<T[]>>
 ) => {
   const [filters, setFilters] = useState<Record<string, any> | null>({})
+  const [defaultFilter, setDefaultFilters] = useState<Record<
+    string,
+    any
+  > | null>(null)
   const [page, setPage] = useState<number>(1)
   const [totalPages, setTotalPages] = useState<number>(1)
   const [loading, setLoading] = useState<boolean>(false)
@@ -30,11 +46,15 @@ const usePagination = <T>(
     setLoading(true)
     setError(null)
 
-    const queryString = generateQueryString({
+    let queryString = generateQueryString({
       ...filters,
       page,
       perpage: perPage,
     })
+    if (defaultFilter) {
+      const newFilter = generateQueryString(defaultFilter, false)
+      if (!queryString.includes(newFilter)) queryString += `&${newFilter}`
+    }
 
     try {
       const response = await fetchDataFunction(queryString)
@@ -53,6 +73,12 @@ const usePagination = <T>(
     fetchData(page)
   }, [page])
 
+  useEffect(() => {
+    if (filters) {
+      fetchData(1) // Reset to page 1 when filters change
+    }
+  }, [filters])
+
   return {
     page,
     totalPages,
@@ -61,6 +87,7 @@ const usePagination = <T>(
     error,
     setFilters,
     refresh: () => fetchData(page),
+    setDefaultFilters,
   }
 }
 

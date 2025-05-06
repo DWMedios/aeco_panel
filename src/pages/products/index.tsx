@@ -38,7 +38,6 @@ const Products = () => {
             { name: 'family', label: 'Familia' },
             { name: 'code', label: 'Codigo' },
           ]}
-          refresh={refresh}
           setFilters={setFilters}
         />
         <Table

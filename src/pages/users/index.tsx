@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import MainLayout from '../../components/layout'
 import Table from '../../components/table'
 import Title from '../../components/title'
@@ -12,6 +12,8 @@ const Users = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [titleModal, setTitleModal] = useState<string>('Crear')
   const [users, setUsers] = useState<User[]>([])
+  const [formData, setFormData] = useState<User | Record<string, any>>({})
+
   const { getUsers, deleteUser } = useWebApiUser()
 
   const { page, totalPages, setPage, refresh, setFilters } =
@@ -27,6 +29,12 @@ const Users = () => {
     }
   }
 
+  useEffect(() => {
+    if (formData.id) {
+      setTitleModal('Editar')
+    }
+  }, [formData])
+
   return (
     <MainLayout>
       <Title title="Users" />
@@ -35,28 +43,52 @@ const Users = () => {
         filters={[
           { name: 'name', label: 'Nombre' },
           { name: 'email', label: 'Correo' },
-          { name: 'status', label: 'Estatus' },
+          { name: 'position', label: 'Puesto' },
+          { name: 'role', label: 'Rol' },
         ]}
-        refresh={refresh}
         setFilters={setFilters}
+        openModal={() => {
+          setTitleModal('Crear')
+          setIsOpen(true)
+          setFormData({})
+        }}
       />
       <Table
         tableContent={{
-          headers: ['Folio', 'Nombre', 'Telefono', 'Correo', 'Rol', 'Puesto'],
+          headers: [
+            'Folio',
+            'Nombre',
+            'Telefono',
+            'Correo',
+            'Puesto',
+            'Estatus',
+          ],
           data: users,
         }}
-        columns={['id', 'name', 'phone', 'email', 'role.name', 'position']}
-        openModal={() => setIsOpen(true)}
+        columns={[
+          'id',
+          'name',
+          'phone',
+          'email',
+          'position',
+          { column: 'isActive', type: 'chip' },
+        ]}
+        openModal={() => {
+          setIsOpen(true)
+          setFormData({})
+        }}
         setTitleModal={setTitleModal}
         pagination={{ page, totalpages: totalPages }}
         changePage={setPage}
         handleDelete={handleDelete}
+        setFormData={setFormData}
       />
       {isOpen && (
         <ModalUsers
           onClose={() => setIsOpen(false)}
           title={titleModal}
           onSaved={refresh}
+          user={formData}
         />
       )}
     </MainLayout>

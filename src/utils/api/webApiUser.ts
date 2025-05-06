@@ -13,6 +13,10 @@ export const useWebApiUser = () => {
     return fetchRequest({ url: '/users', method: 'POST', body: user })
   }
 
+  const updateUser = async (id: number, user: IUserForm): Promise<User> => {
+    return fetchRequest({ url: `/users/${id}`, method: 'PUT', body: user })
+  }
+
   const deleteUser = async (id: number): Promise<any> => {
     return fetchRequest({ url: `/users/${id}`, method: 'DELETE' })
   }
@@ -20,6 +24,7 @@ export const useWebApiUser = () => {
   return {
     getUsers,
     createUser,
+    updateUser,
     deleteUser,
   }
 }

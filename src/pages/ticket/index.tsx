@@ -26,7 +26,7 @@ const Ticket = () => {
           999 888 7777.
         </span>
         <span className="text-[#F10404] text-3xl font-bold">
-          Fecha: 10 / Septiembre / 2024{' '}
+          Fecha: 10 / Septiembre / 2024
         </span>
       </div>
       <button>

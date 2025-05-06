@@ -27,7 +27,6 @@ const ModalService = ({ onClose, onSaved, title, reward }: Props) => {
   const { getAecos } = useWebApiAeco()
   const [selectedAeco, setSelectedAeco] = useState<any>([])
   const [aecoOptions, setAecoOptions] = useState<any>([])
-  const [rewardData, setRewardData] = useState<any>({})
 
   const { createReward, updateReward } = useWebApiReward()
 
@@ -43,11 +42,10 @@ const ModalService = ({ onClose, onSaved, title, reward }: Props) => {
   } = useFormWithValidation(mergedValues, { validationRules })
 
   useEffect(() => {
-    if (rewardData && Object.keys(rewardData).length > 0) {
-      setValues({ ...initialValues, ...rewardData })
-      setRewardData(rewardData)
+    if (reward && Object.keys(reward).length > 0) {
+      setValues({ ...initialValues, ...reward })
     }
-  }, [rewardData, setValues])
+  }, [reward, setValues])
 
   const handleImageUpload = (file: File) => {
     console.log('Imagen subida:', file)
@@ -68,19 +66,19 @@ const ModalService = ({ onClose, onSaved, title, reward }: Props) => {
 
   const onFormSubmit = async (data: any) => {
     try {
-      console.log('🚀 ~ onFormSubmit ~ data:', data)
       const cleanedData: any = cleanEmptyFields({
         ...data,
-        type: 'discount',
+        type: 'service',
         status: data.status === 'true' ? true : false,
-        companyId: Number(data.companyId),
         order: Number(data.order),
         aecos: selectedAeco.map((item: any) => item.value),
       })
 
-      if (rewardData && Object.keys(rewardData).length > 0) {
-        await withLoading(() => updateReward(rewardData.id, cleanedData))
+      if (reward && Object.keys(reward).length > 0) {
+        delete cleanedData.companyId
+        await withLoading(() => updateReward(reward.id, cleanedData))
       } else {
+        cleanedData.companyId = Number(data.companyId)
         await withLoading(() => createReward(cleanedData))
       }
 
@@ -138,6 +136,85 @@ const ModalService = ({ onClose, onSaved, title, reward }: Props) => {
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
               <InputField
+                name="establishment"
+                placeholder="Establecimiento"
+                value={values.establishment}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.establishment}
+                touched={touched.establishment}
+                divClassName="w-2/6"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
+              />
+              <InputField
+                name="description"
+                placeholder="Descripción"
+                value={values.description}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.description}
+                touched={touched.description}
+                divClassName="w-5/6"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
+              />
+              <InputField
+                name="note"
+                placeholder="Notas adicionales"
+                value={values.note}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.note}
+                touched={touched.note}
+                divClassName="w-5/6"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
+              />
+              <InputField
+                name="metadata.host"
+                placeholder="Host"
+                value={getValue('metadata.host')}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors['metadata.host']}
+                touched={touched['metadata.host']}
+                divClassName="w-2/5"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
+              />
+              <InputField
+                name="metadata.api"
+                placeholder="API Key"
+                value={getValue('metadata.api')}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors['metadata.api']}
+                touched={touched['metadata.api']}
+                divClassName="w-2/5"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
+              />
+              <div className="w-2/6 border border-black ml-8"></div> o
+              <div className="w-2/6 border border-black"></div>
+              <InputField
+                name="metadata.user"
+                placeholder="Usuario"
+                value={getValue('metadata.user')}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors['metadata.user']}
+                touched={touched['metadata.user']}
+                divClassName="w-2/5"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
+              />
+              <InputField
+                name="metadata.password"
+                placeholder="Contraseña"
+                value={getValue('metadata.password')}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors['metadata.password']}
+                touched={touched['metadata.password']}
+                divClassName="w-2/5"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
+              />
+              <InputField
                 name="order"
                 placeholder="Orden"
                 value={values.order}
@@ -146,74 +223,6 @@ const ModalService = ({ onClose, onSaved, title, reward }: Props) => {
                 error={errors.order}
                 touched={touched.order}
                 divClassName="w-2/6"
-                className="w-full rounded-full border-2 border-gray-300 p-2"
-              />
-              <InputField
-                name="description"
-                placeholder="Descripción"
-                value={values.rfc}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.rfc}
-                touched={touched.rfc}
-                divClassName="w-5/6"
-                className="w-full rounded-full border-2 border-gray-300 p-2"
-              />
-              <InputField
-                name="notes"
-                placeholder="Notas adicionales"
-                value={values.notes}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.notes}
-                touched={touched.notes}
-                divClassName="w-5/6"
-                className="w-full rounded-full border-2 border-gray-300 p-2"
-              />
-              <InputField
-                name="meta.host"
-                placeholder="Host"
-                value={getValue('meta.host')}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors['meta.host']}
-                touched={touched['meta.host']}
-                divClassName="w-2/5"
-                className="w-full rounded-full border-2 border-gray-300 p-2"
-              />
-              <InputField
-                name="meta.api"
-                placeholder="API Key"
-                value={getValue('meta.api')}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors['meta.api']}
-                touched={touched['meta.api']}
-                divClassName="w-2/5"
-                className="w-full rounded-full border-2 border-gray-300 p-2"
-              />
-              <div className="w-2/6 border border-black ml-8"></div> o
-              <div className="w-2/6 border border-black"></div>
-              <InputField
-                name="meta.user"
-                placeholder="Usuario"
-                value={getValue('meta.user')}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors['meta.user']}
-                touched={touched['meta.user']}
-                divClassName="w-2/5"
-                className="w-full rounded-full border-2 border-gray-300 p-2"
-              />
-              <InputField
-                name="meta.password"
-                placeholder="Contraseña"
-                value={getValue('meta.password')}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors['meta.password']}
-                touched={touched['meta.password']}
-                divClassName="w-2/5"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
             </div>

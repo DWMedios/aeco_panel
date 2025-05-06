@@ -7,7 +7,10 @@ export const cleanEmptyFields = <T extends Cleanable>(obj: T): Partial<T> => {
     return obj
       .map((item) => cleanEmptyFields(item))
       .filter(
-        (item) => item !== '' && item !== null && item !== undefined
+        (item) =>
+          item !== null &&
+          item !== undefined &&
+          (typeof item !== 'string' || item !== '')
       ) as any
   }
 

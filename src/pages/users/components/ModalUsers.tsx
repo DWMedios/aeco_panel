@@ -1,31 +1,86 @@
-import InputSelct from '../../../components/inpuSelect'
+import { useEffect, useState } from 'react'
+import InputField from '../../../components/inputField'
 import Modal from '../../../components/modals/Form'
 import ActionsButtons from '../../../components/modals/Form/components/actionsButtons'
 import { useLoading } from '../../../hooks/loading'
 import useFormWithValidation from '../../../hooks/useForm'
 import { useWebApiUser } from '../../../utils/api/webApiUser'
 import { IUserForm } from '../interface'
+import { initialValues, validationRulesUser } from './formValidations'
+import InputSelect from '../../../components/inputSelect'
+import { useWebApiCompany } from '../../../utils/api/webApiCompany'
+import { cleanEmptyFields } from '../../../utils/cleanObject'
 
 interface Props {
   onClose: () => void
   title?: string
   onSaved: () => void
+  user?: any
 }
 
-const ModalUsers = ({ onClose, title, onSaved }: Props) => {
+const ModalUsers = ({ onClose, title, onSaved, user }: Props) => {
+  const [companies, setCompanies] = useState<any[]>([])
+
   const { withLoading, loading } = useLoading()
-  const { handleChange, handleSubmit } = useFormWithValidation<
-    Partial<IUserForm>
-  >({})
-  const { createUser } = useWebApiUser()
+  const { createUser, updateUser } = useWebApiUser()
+  const { getCompanies } = useWebApiCompany()
+
+  const mergedValues =
+    user && Object.keys(user).length > 0
+      ? { ...initialValues, ...user }
+      : initialValues
+  const validationRules = validationRulesUser()
+  const {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    setValues,
+    resetForm,
+  } = useFormWithValidation(mergedValues, { validationRules })
+
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      const response: any = await withLoading(() => getCompanies(''))
+      setCompanies(
+        response.records.map((company: any) => ({
+          value: company.id,
+          label: company.name,
+        }))
+      )
+    }
+    fetchCompanies()
+  }, [])
+
+  useEffect(() => {
+    if (user && Object.keys(user).length > 0)
+      setValues({ ...initialValues, ...user })
+    else resetForm()
+  }, [user, setValues])
 
   const handleFormSubmit = async (data: Partial<IUserForm>) => {
     try {
-      await withLoading(() => createUser(data as IUserForm))
+      const cleanedData: any = cleanEmptyFields({
+        ...data,
+        isActive: data.isActive === 'true' ? true : false,
+      })
+      if (Number(cleanedData.companyId) !== user.companyId) {
+        cleanedData.companyId = Number(cleanedData.companyId)
+      } else delete cleanedData.companyId
+
+      if (user && Object.keys(user).length > 0) {
+        await withLoading(() => updateUser(user.id, cleanedData))
+      } else {
+        await withLoading(() => createUser(cleanedData))
+      }
+
       onSaved()
+      resetForm()
       onClose()
     } catch (error) {
-      console.log('~ handleFormSubmit ~ error:', error)
+      console.log('Error en el envío del formulario:', error)
     }
   }
 
@@ -38,80 +93,90 @@ const ModalUsers = ({ onClose, title, onSaved }: Props) => {
           </div>
           <span>Los siguientes campos conformarán el perfil del usuario</span>
           <div className="flex items-center justify-start gap-2">
-            <input
+            <InputField
               name="name"
-              onChange={handleChange}
-              type="text"
-              className="w-2/4 rounded-full border-2 border-gray-300 p-2"
               placeholder="Nombre"
-              required
+              value={values.name}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.name}
+              touched={touched.name}
+              divClassName="w-2/4"
+              className="w-full rounded-full border-2 border-gray-300 p-2"
             />
-            <input
+            <InputField
               name="position"
-              onChange={handleChange}
-              type="text"
-              className="w-1/4 rounded-full border-2 border-gray-300 p-2"
               placeholder="Puesto"
-              required
-            />
-            <input
-              name="phone"
+              value={values.position}
               onChange={handleChange}
-              type="text"
-              className="w-1/4 rounded-full border-2 border-gray-300 p-2"
+              onBlur={handleBlur}
+              error={errors.position}
+              touched={touched.position}
+              divClassName="w-1/4"
+              className="w-full rounded-full border-2 border-gray-300 p-2"
+            />
+            <InputField
+              name="phone"
               placeholder="Teléfono"
+              value={values.phone}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.phone}
+              touched={touched.phone}
+              divClassName="w-1/4"
+              className="w-full rounded-full border-2 border-gray-300 p-2"
+            />
+          </div>
+          <div className="flex items-center justify-start gap-8 mt-6">
+            <InputSelect
+              name="isActive"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.isActive}
+              touched={touched.isActive}
+              value={String(values.isActive)}
+              options={[
+                { value: 'true', label: 'Activo' },
+                { value: 'false', label: 'Inactivo' },
+              ]}
+              placeholder="Estatus"
+              divClassName="w-2/5"
+              className="w-full rounded-full border-2 border-gray-300 p-2"
+            />
+
+            <InputSelect
+              name="companyId"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.companyId}
+              touched={touched.companyId}
+              value={values.companyId}
+              options={companies}
+              placeholder="Empresa"
+              divClassName="w-2/5"
+              className="w-full rounded-full border-2 border-gray-300 p-2"
+            />
+
+            <InputSelect
+              name="role"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.role}
+              touched={touched.role}
+              value={values.role}
+              options={[
+                { value: 'admin', label: 'Administrador' },
+                { value: 'operator', label: 'Operador' },
+                { value: 'maintenance', label: 'Mantenimiento' },
+                { value: 'recolector', label: 'Recolector' },
+              ]}
+              placeholder="Rol"
+              divClassName="w-2/5"
+              className="w-full rounded-full border-2 border-gray-300 p-2"
             />
           </div>
         </div>
-        <div className="flex items-center justify-start gap-8 mt-6">
-          <select
-            name="isActive"
-            onChange={handleChange}
-            className="w-1/4 rounded-full border-2 border-gray-300 p-2"
-            required
-          >
-            <option key={1} value="true">
-              Activo
-            </option>
-            <option key={2} value="false">
-              Inactivo
-            </option>
-          </select>
-          <select
-            name="companyId"
-            onChange={handleChange}
-            className="w-1/4 rounded-full border-2 border-gray-300 p-2"
-            required
-            defaultValue={1}
-          >
-            <option key={1} value={1}>
-              DW
-            </option>
-            <option key={2} value={2}>
-              Demo
-            </option>
-          </select>
-          <select
-            name="role"
-            onChange={handleChange}
-            className="w-1/4 rounded-full border-2 border-gray-300 p-2"
-            required
-            defaultValue="admin"
-          >
-            <option key={1} value="admin">
-              Administrador
-            </option>
-            <option key={2} value="operator">
-              Operador
-            </option>
-            <option key={3} value="maintenance">
-              Mantenimiento
-            </option>
-            <option key={4} value="recolector">
-              Recolector
-            </option>
-          </select>
-        </div>
+
         <div>
           <div className="flex flex-col mt-6">
             <span className="text-2xl">Credenciales de acceso</span>
@@ -122,39 +187,40 @@ const ModalUsers = ({ onClose, title, onSaved }: Props) => {
             </span>
           </div>
           <div className="flex items-center justify-start gap-2 mt-6">
-            <input
+            <InputField
               name="email"
-              onChange={handleChange}
-              type="text"
-              className="w-1/3 rounded-full border-2 border-gray-300 p-2"
               placeholder="Correo"
-              required
-            />
-            <input
-              name="password"
+              value={values.email}
               onChange={handleChange}
-              type="text"
-              className="w-1/3 rounded-full border-2 border-gray-300 p-2"
-              placeholder="Contraseña"
-              required
+              onBlur={handleBlur}
+              error={errors.email}
+              touched={touched.email}
+              divClassName="w-2/5"
+              className="w-full rounded-full border-2 border-gray-300 p-2"
             />
-            <div className="w-2/5">
-              <input
-                name="passwordConfirmation"
-                onChange={handleChange}
-                type="password"
-                // className={`w-full rounded-full border-2 ${
-                //   passwordsMatch ? 'border-gray-300' : 'border-red-500'
-                // } p-2`}
-                placeholder="Confirmación de contraseña"
-                required
-              />
-              {/* {!passwordsMatch && (
-                <p className="text-red-500 text-sm">
-                  Las contraseñas no coinciden
-                </p>
-              )} */}
-            </div>
+            <InputField
+              name="password"
+              placeholder="Contraseña"
+              value={values.password}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.password}
+              touched={touched.password}
+              divClassName="w-2/5"
+              className="w-full rounded-full border-2 border-gray-300 p-2"
+            />
+            <InputField
+              name="passwordConfirmation"
+              placeholder="Confirmación de contraseña"
+              value={values.passwordConfirmation}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.passwordConfirmation}
+              touched={touched.passwordConfirmation}
+              divClassName="w-2/5"
+              className="w-full rounded-full border-2 border-gray-300 p-2"
+              type="password"
+            />
           </div>
         </div>
         <ActionsButtons loading={loading} onClose={onClose} />

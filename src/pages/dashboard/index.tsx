@@ -47,13 +47,13 @@ const Dashboard = () => {
         />
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <div className="p-8 bg-gray-200 mt-8 rounded-3xl">
+        {/* <div className="p-8 bg-gray-200 mt-8 rounded-3xl">
           <BarChart
             title="Top Recompensas"
             subTitle="Recompensas Emitidas"
             data={[]}
           />
-        </div>
+        </div> */}
         <div className="p-8 bg-gray-200 mt-8 rounded-3xl">
           <BarChart
             title="Top Refresco"

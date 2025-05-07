@@ -1,0 +1,19 @@
+services:
+  app:
+    container_name: aeco_front
+    build: .
+    ports:
+      - '5173:5173'
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - HOST=0.0.0.0
+    env_file:
+      - .env
+    networks:
+      - aeco-network
+
+networks:
+  aeco-network:
+    external: true

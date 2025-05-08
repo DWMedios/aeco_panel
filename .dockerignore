@@ -1,0 +1,66 @@
+# Dependencias y archivos de gestión de paquetes
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+.pnpm-debug.log
+package-lock.json
+yarn.lock
+
+# Archivos de entorno y configuración local
+.env
+.env.*
+*.local
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Directorios de compilación y caché
+/dist/
+/build/
+/.vite/
+/.cache/
+coverage/
+
+# Git
+.git/
+.gitignore
+.github/
+
+# Archivos de IDE y editor
+.idea/
+.vscode/
+*.sublime-*
+*.swp
+*.swo
+*~
+
+# Archivos de documentación y configuración
+README.md
+CHANGELOG.md
+LICENSE
+*.md
+
+# Archivos de Docker (evita recursión)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Archivos de testing
+/test/
+/tests/
+/coverage/
+.nyc_output/
+
+# Otros archivos de configuración
+.eslintrc*
+.prettierrc*
+.editorconfig
+tsconfig*.json
+postcss.config.js
+tailwind.config.js
+
+# Logs
+logs/
+*.log

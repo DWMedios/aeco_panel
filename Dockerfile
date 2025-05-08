@@ -1,19 +1,15 @@
-FROM node:20-alpine
+FROM node:23.11.0-slim AS builder
 
-# Establece el directorio de trabajo
 WORKDIR /app
-
-# Copia los archivos de dependencias
-COPY package.json package-lock.json ./
-
-# Instala las dependencias
-RUN npm install
-
-# Copia el resto de los archivos
 COPY . .
+ARG VITE_API_BASE_URL
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+RUN npm install
+RUN npm run build
 
-# Expone el puerto usado por Vite
+FROM nginx:1.25.4-alpine-slim
+
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf  /etc/nginx/conf.d
 EXPOSE 5173
-
-# Comando por defecto
-CMD ["npm", "run", "dev"]
+CMD ["nginx", "-g", "daemon off;"]

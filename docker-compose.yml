@@ -1,4 +1,72 @@
 services:
+  api:
+    image: campos1587/aeco-backend:dev-v1
+    container_name: aeco-api
+    restart: always
+    ports:
+      - "${PORT}:${PORT}"
+    env_file:
+      - .env
+    environment:
+      # Variables generales
+      - NODE_ENV=${NODE_ENV}
+      - PORT=${PORT}
+      
+      # Base de datos
+      - DB_HOST=postgres
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_NAME=${DB_NAME}
+      - DB_URL=postgresql://${DB_USER}:${DB_PASS}@postgres:${DB_PORT}/${DB_NAME}
+      
+      # AWS S3
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
+      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
+      - S3_REGION=${S3_REGION}
+      - S3_BUCKET_NAME=${S3_BUCKET_NAME}
+      - MAX_FILE_SIZE=${MAX_FILE_SIZE}
+      - EXPIRATION=${EXPIRATION}
+      
+      # Autenticación
+      - AUTH_EXPINT=${AUTH_EXPINT}
+      - AUTH_TIME_STR=${AUTH_TIME_STR}
+      - AUTH_SECRET=${AUTH_SECRET}
+      - AUTH_SECRET_FORGOT_PASSWORD=${AUTH_SECRET_FORGOT_PASSWORD}
+      - AUTH_SECRET_INVITE=${AUTH_SECRET_INVITE}
+      
+      # Crypto
+      - CRYPTO_KEY=${CRYPTO_KEY}
+    volumes:
+      - ./logs:/usr/src/app/logs
+      - ./.env:/usr/src/app/.env
+    networks:
+      - aeco-network
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: aeco-postgres
+    restart: always
+    ports:
+      - "${DB_PORT}:5432"
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - aeco-network
+    command: postgres -c listen_addresses='*'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   app:
     container_name: aeco_front
     build: .
@@ -17,3 +85,6 @@ services:
 networks:
   aeco-network:
     external: true
+
+volumes:
+  postgres_data:

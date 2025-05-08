@@ -1,10 +1,10 @@
-FROM node:20-alpine
+FROM node:23.11.0-slim
 
 # Establece el directorio de trabajo
 WORKDIR /app
 
 # Copia los archivos de dependencias
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json* ./
 
 # Instala las dependencias
 RUN npm install

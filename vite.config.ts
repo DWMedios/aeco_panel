@@ -7,8 +7,9 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     server: {
-      port: 5173,
+      port: 80,
       host: true,
+      strictPort: true,
       watch: {
        usePolling: true,
       },
@@ -23,5 +24,10 @@ export default defineConfig(({ mode }) => {
    define: {
     VITE_API_BASE_URL: JSON.stringify(env.VITE_API_BASE_URL),
    },
+   preview: {
+    port: 80,
+    host: true,
+    strictPort: true,
+   }
   };
  });

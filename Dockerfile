@@ -1,19 +1,15 @@
-FROM node:23.11.0-slim
+FROM node:21.7.3-slim AS build-stage
 
-# Establece el directorio de trabajo
 WORKDIR /app
 
-# Copia los archivos de dependencias
 COPY package.json package-lock.json* ./
 
-# Instala las dependencias
-RUN npm install
+RUN npm install --force esbuild@0.25.4 && \
+    npm install
 
-# Copia el resto de los archivos
 COPY . .
 
-# Expone el puerto usado por Vite
-EXPOSE 5173
+RUN npm run build
 
-# Comando por defecto
-CMD ["npm", "run", "dev"]
+FROM nginx:alpine
+COPY --from=build-stage /app/dist/ /usr/share/nginx/html

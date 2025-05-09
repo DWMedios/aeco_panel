@@ -7,15 +7,26 @@ import tseslint from 'typescript-eslint'
 export default tseslint.config(
   { ignores: ['dist'] },
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    extends: [
+      js.configs.recommended,
+      ...tseslint.configs.recommendedTypeChecked, // Cambiado a recommendedTypeChecked
+      ...tseslint.configs.stylisticTypeChecked,  // Opcional: añade reglas de estilo
+    ],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
+      ecmaVersion: 'latest', // Actualizado a 'latest'
+      globals: {
+        ...globals.browser,
+      },
+      parserOptions: {
+        project: ['./tsconfig.json', './tsconfig.node.json'],
+        tsconfigRootDir: import.meta.dirname, // Alternativa moderna a __dirname
+      },
     },
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      'react': reactPlugin, // Añadido el plugin de React
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -24,6 +35,20 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
       '@typescript-eslint/no-explicit-any': 'off',
+      'react/jsx-uses-react': 'error',
+      'react/jsx-uses-vars': 'error',
     },
+    settings: {
+      react: {
+        version: 'detect', // Detecta automáticamente la versión de React
+      },
+    },
+  },
+  {
+    files: ['**/*.{jsx,tsx}'],
+    extends: [
+      'plugin:react/recommended',
+      'plugin:react/jsx-runtime',
+    ],
   }
 )

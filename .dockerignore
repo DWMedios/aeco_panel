@@ -1,0 +1,41 @@
+# Dependencias
+node_modules
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Directorios de entorno y configuración
+.env
+.env.*
+.git
+.gitignore
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
+
+# Archivos de pruebas y cobertura
+coverage
+.nyc_output
+
+# Archivos de documentación
+README.md
+CHANGELOG.md
+docs
+
+# Logs
+logs
+*.log
+
+# Build y distribución
+dist
+build
+
+# Otros
+.github
+docker-compose*.yml
+node_modules/

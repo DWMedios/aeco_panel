@@ -13,7 +13,7 @@ export function useInputUpload({ title, type }: Props) {
   const [preview, setPreview] = useState<string | null>(null)
   const [mediaUpload, setMediaUpload] = useState<MediaAsset | null>(null)
   const [assetKey, setAssetKey] = useState<string>('')
-  const { upload } = useWebMediaAsset()
+  const { uploadAsset } = useWebMediaAsset()
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -34,10 +34,10 @@ export function useInputUpload({ title, type }: Props) {
   const uploadMediaAsset = async () => {
     try {
       if (mediaUpload) {
-        const response: any = await upload(mediaUpload)
+        const response: any = await uploadAsset(mediaUpload)
         console.log('🚀 ~ uploadMediaAsset ~ response:', response)
         setAssetKey(response.key)
-        const uploadAsset: any = await fetch(response.url, {
+        const uploadAssets: any = await fetch(response.url, {
           headers: {
             'Content-Type': mediaUpload.mimeType,
           },
@@ -47,7 +47,7 @@ export function useInputUpload({ title, type }: Props) {
         if (!response.ok) {
           throw new Error(`Error ${response.status}: ${response.statusText}`)
         }
-        console.log('🚀 ~ uploadMediaAsset ~ uploadAsset:', uploadAsset)
+        console.log('🚀 ~ uploadMediaAsset ~ uploadAsset:', uploadAssets)
       }
     } catch (error) {
       console.error('uploadMediaAsset error:', error)

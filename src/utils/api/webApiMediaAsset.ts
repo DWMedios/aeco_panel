@@ -4,15 +4,22 @@ import { useFetchWithAuth } from './fetch'
 export const useWebMediaAsset = () => {
   const { fetchRequest } = useFetchWithAuth()
 
-  const upload = async (data: MediaAsset) => {
+  const uploadAsset = async (data: MediaAsset) => {
     return fetchRequest({
       url: '/media-assets/upload-url',
       method: 'POST',
       body: data,
     })
   }
+  const deleteAsset = async (key: string) => {
+    return fetchRequest({
+      url: `/media-assets/${key}`,
+      method: 'DELETE',
+    })
+  }
 
   return {
-    upload,
+    uploadAsset,
+    deleteAsset,
   }
 }

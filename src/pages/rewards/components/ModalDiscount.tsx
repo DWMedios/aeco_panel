@@ -8,7 +8,7 @@ import { initialValuesDiscount, validationRules } from './formValidates'
 import { useWebApiAeco } from '../../../utils/api/webApiAeco'
 import InputField from '../../../components/inputField'
 import SearchableSelect from '../../../components/searchableSelect'
-import InputUpload from '../../../components/inputUpload'
+import { useInputUpload } from '../../../components/inputUpload'
 import InputSelect from '../../../components/inputSelect'
 import { cleanEmptyFields } from '../../../utils/cleanObject'
 import { useWebApiReward } from '../../../utils/api/webApiReward'
@@ -30,6 +30,10 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
   const [type, setType] = useState<string>('percentage')
 
   const { createReward, updateReward } = useWebApiReward()
+  const { component: InputUpload } = useInputUpload({
+    title: 'Recompensa',
+    type: 'image',
+  })
 
   const mergedValues =
     reward && Object.keys(reward).length > 0
@@ -51,10 +55,6 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
       setValues({ ...initialValuesDiscount, ...reward })
     }
   }, [reward, setValues])
-
-  const handleImageUpload = (file: File) => {
-    console.log('Imagen subida:', file)
-  }
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -123,9 +123,7 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
     <Modal onClose={onClose} title={`${title} descuento`}>
       <form onSubmit={handleSubmit(onFormSubmit)}>
         <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
-          <div className="mt-8">
-            <InputUpload title="Recompensa" onImageUpload={handleImageUpload} />
-          </div>
+          <div className="mt-8">{InputUpload}</div>
 
           <div className="flex flex-col gap-4 rounded-xl mt-8 p-4 flex-wrap">
             <div className="flex items-center justify-start gap-4 flex-wrap">

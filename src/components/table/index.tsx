@@ -45,15 +45,17 @@ const Table = ({
           />
         </table>
       </div>
-      <div className="w-[90%] m-6 flex justify-center content-center">
-        {pagination && (
-          <Pagination
-            page={pagination.page}
-            changePage={() => changePage}
-            totalPage={pagination.totalpages}
-          />
-        )}
-      </div>
+      {tableContent.data.length > 9 && (
+        <div className="w-[90%] m-6 flex justify-center content-center">
+          {pagination && (
+            <Pagination
+              page={pagination.page}
+              changePage={() => changePage}
+              totalPage={pagination.totalpages}
+            />
+          )}
+        </div>
+      )}
       {isOpenDelete && (
         <ModalDelete
           onClose={() => setIsOpenDelete(false)}

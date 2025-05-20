@@ -1,88 +1,34 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import MainLayout from '../../components/layout'
 import Title from '../../components/title'
-import Table from '../../components/table'
-import { useWebApiCompany } from '../../utils/api/webApiCompany'
-import usePagination from '../../hooks/usePagination'
-import Filters from '../../components/filters'
-import { Company } from '../../interfaces/types'
+import Tabs from '../../components/tabs'
+import TableAds from './components/TableAds'
+import TableContractors from './components/TableContractor'
+import TableCampaings from './components/TableCampaings'
 
 const Ads = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [titleModal, setTitleModal] = useState<string>('Crear')
-  const [companies, setCompanies] = useState<Company[]>([])
-  const [formData, setFormData] = useState<Company | Record<string, any>>({})
-  const { getCompanies, deleteCompany } = useWebApiCompany()
+  const [tab, setTab] = useState<string>('ads')
 
-  const { page, totalPages, setPage, refresh, setFilters } =
-    usePagination<Company>(getCompanies, 10, setCompanies)
-
-  const handleDelete = async (id: number) => {
-    try {
-      await deleteCompany(id)
-      refresh()
-      setIsOpen(false)
-    } catch (error) {
-      console.error('Error deleting user:', error)
-    }
-  }
-
-  useEffect(() => {
-    if (formData.id) {
-      setTitleModal('Editar')
-    }
-  }, [formData])
+  const tabs = [
+    { name: 'Publicidad', value: 'ads' },
+    { name: 'Contratistas', value: 'contractors' },
+    { name: 'Campañas', value: 'campaings' },
+  ]
 
   return (
     <MainLayout>
       <Title title="Publicidad" />
-      <Filters
-        addButton={true}
-        filters={[
-          { name: 'name', label: 'Nombre' },
-          { name: 'rfc', label: 'RFC' },
-          { name: 'status', label: 'Estatus' },
-        ]}
-        setFilters={setFilters}
-      />
-      <Table
-        tableContent={{
-          headers: [
-            'Folio',
-            'Nombre',
-            'Maquinas',
-            'Dirección',
-            'Rfc',
-            'Estatus',
-          ],
-          data: companies,
-        }}
-        columns={[
-          'id',
-          'name',
-          'totalAecos',
-          'address',
-          'rfc',
-          { column: 'status', type: 'chip' },
-        ]}
-        openModal={() => {
-          setIsOpen(true)
-          setFormData({})
-        }}
-        setTitleModal={setTitleModal}
-        pagination={{ page, totalpages: totalPages }}
-        changePage={setPage}
-        handleDelete={handleDelete}
-        setFormData={setFormData}
-      />
-      {/* {isOpen && (
-       <ModalCompanies
-         onClose={() => setIsOpen(false)}
-         title={titleModal}
-         onSaved={refresh}
-         companyId={formData.id}
-       />
-     )} */}
+      <div className="flex justify-between items-center mt-10 w-full">
+        <Tabs tabs={tabs} selected={tab} action={(data) => setTab(data)} />
+      </div>
+
+      {tab == 'ads' ? (
+        <TableAds />
+      ) : tab == 'contractors' ? (
+        <TableContractors />
+      ) : (
+        <TableCampaings />
+      )}
     </MainLayout>
   )
 }

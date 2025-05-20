@@ -37,20 +37,20 @@ export const menu = [
       },
     ],
   },
-  // {
-  //   title: 'Publicidad',
-  //   icon: '/images/publicity.png',
-  //   subMenu: [
-  //     {
-  //       title: 'Control',
-  //       route: '/ads',
-  //     },
-  //     {
-  //       title: 'Reportes',
-  //       route: '#',
-  //     },
-  //   ],
-  // },
+  {
+    title: 'Publicidad',
+    icon: '/images/publicity.png',
+    subMenu: [
+      {
+        title: 'Control',
+        route: '/ads',
+      },
+      {
+        title: 'Reportes',
+        route: '#',
+      },
+    ],
+  },
   {
     title: 'Recompensas',
     icon: '/images/star.png',
@@ -79,20 +79,20 @@ export const menu = [
       },
     ],
   },
-  // {
-  //   title: 'Productos',
-  //   icon: '/images/users.png',
-  //   subMenu: [
-  //     {
-  //       title: 'Control',
-  //       route: '/products',
-  //     },
-  //     {
-  //       title: 'Reportes',
-  //       route: '#',
-  //     },
-  //   ],
-  // },
+  {
+    title: 'Productos',
+    icon: '/images/users.png',
+    subMenu: [
+      {
+        title: 'Control',
+        route: '/products',
+      },
+      {
+        title: 'Reportes',
+        route: '#',
+      },
+    ],
+  },
   {
     title: 'Reportes',
     icon: '/images/users.png',

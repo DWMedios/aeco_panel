@@ -1,14 +1,21 @@
-import InputSelct from '../../../components/inpuSelect'
 import Modal from '../../../components/modals/Form'
 
 interface Props {
   onClose: () => void
+  onSaved: () => void
   title?: string
+  campaingId?: number | null
 }
 
-const ModalCompanies = ({ onClose, title }: Props) => {
+const ModalCampaings = ({ onClose, title, onSaved, companyId }: Props) => {
   return (
-    <Modal onClose={onClose} title={`${title} empresa`}>
+    <Modal
+      onClose={() => {
+        onClose()
+        // resetForm()
+      }}
+      title={`${title} empresa`}
+    >
       <div className="flex justify-center bg-gray-300 p-3 rounded-full w-36">
         Folio: 1234567
       </div>
@@ -35,11 +42,7 @@ const ModalCompanies = ({ onClose, title }: Props) => {
           />
         </div>
       </div>
-      <div className="flex items-center justify-start gap-2 mt-6">
-        <InputSelct placeholder="Estatus" />
-        <InputSelct placeholder="Empresa" />
-        <InputSelct placeholder="Rol" />
-      </div>
+      <div className="flex items-center justify-start gap-2 mt-6"></div>
       <div>
         <div className="flex flex-col mt-6">
           <span className="text-2xl">Credenciales de acceso</span>
@@ -71,4 +74,4 @@ const ModalCompanies = ({ onClose, title }: Props) => {
   )
 }
 
-export default ModalCompanies
+export default ModalCampaings

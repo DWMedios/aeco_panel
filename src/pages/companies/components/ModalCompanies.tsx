@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Modal from '../../../components/modals/Form'
-import InputUpload from '../../../components/inputUpload'
+import { useInputUpload } from '../../../components/inputUpload'
 import ActionsButtons from '../../../components/modals/Form/components/actionsButtons'
 import SearchableSelect from '../../../components/searchableSelect'
 import { useLoading } from '../../../hooks/loading'
@@ -22,6 +22,10 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
   const { withLoading, loading } = useLoading()
   const { createCompany, updateCompany, getCompany } = useWebApiCompany()
   const { getAecos } = useWebApiAeco()
+  const { component: InputUpload, uploadMediaAsset } = useInputUpload({
+    title: 'Personalizacion',
+    type: 'image',
+  })
   const [selectedAeco, setSelectedAeco] = useState<any>([])
   const [aecoOptions, setAecoOptions] = useState<any>([])
   const [companyData, setCompanyData] = useState<any>({})
@@ -51,10 +55,6 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
       setValues({ ...initialValues, ...companyData })
     else resetForm()
   }, [companyData, setValues])
-
-  const handleImageUpload = (file: File) => {
-    console.log('Imagen subida:', file)
-  }
 
   const getCompanyData = async (id: number) => {
     try {
@@ -125,14 +125,9 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
       }}
       title={`${title} empresa`}
     >
-      <form onSubmit={handleSubmit(handleFormSubmit)}>
+      <form onSubmit={handleSubmit(uploadMediaAsset)}>
         <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
-          <div className="mt-8">
-            <InputUpload
-              title="Personalización"
-              onImageUpload={handleImageUpload}
-            />
-          </div>
+          <div className="mt-8">{InputUpload}</div>
 
           <div className="flex flex-col gap-4 rounded-xl mt-8 p-4 flex-wrap">
             <div className="flex items-center justify-start gap-6">

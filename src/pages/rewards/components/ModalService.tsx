@@ -8,7 +8,7 @@ import { initialValuesService, validationRules } from './formValidates'
 import { useWebApiAeco } from '../../../utils/api/webApiAeco'
 import InputField from '../../../components/inputField'
 import SearchableSelect from '../../../components/searchableSelect'
-import InputUpload from '../../../components/inputUpload'
+import { useInputUpload } from '../../../components/inputUpload'
 import InputSelect from '../../../components/inputSelect'
 import { useWebApiReward } from '../../../utils/api/webApiReward'
 import { cleanEmptyFields } from '../../../utils/cleanObject'
@@ -29,6 +29,10 @@ const ModalService = ({ onClose, onSaved, title, reward }: Props) => {
   const [aecoOptions, setAecoOptions] = useState<any>([])
 
   const { createReward, updateReward } = useWebApiReward()
+  const { component: InputUpload } = useInputUpload({
+    title: 'Conexión con servicio',
+    type: 'image',
+  })
 
   const mergedValues = { ...initialValuesService, ...reward }
   const {
@@ -117,12 +121,7 @@ const ModalService = ({ onClose, onSaved, title, reward }: Props) => {
     <Modal onClose={onClose} title={`${title} servicio`}>
       <form onSubmit={handleSubmit(onFormSubmit)}>
         <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
-          <div className="mt-8">
-            <InputUpload
-              title="Conexión con servicio"
-              onImageUpload={handleImageUpload}
-            />
-          </div>
+          <div className="mt-8">{InputUpload}</div>
 
           <div className="flex flex-col gap-4 rounded-xl mt-8 p-4 flex-wrap">
             <div className="flex items-center justify-start gap-4 flex-wrap">

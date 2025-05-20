@@ -1,62 +1,112 @@
-import { Camera } from '@phosphor-icons/react'
 import { useState } from 'react'
+import { MediaAsset } from '../../interfaces/mediaAsset'
+import { useWebMediaAsset } from '../../utils/api/webApiMediaAsset'
+import { Camera, VideoCamera } from '@phosphor-icons/react'
 
 interface Props {
   title: string
-  onImageUpload: (file: File) => void
+  type: 'image' | 'video'
 }
-const InputUpload = ({ title, onImageUpload }: Props) => {
+
+export function useInputUpload({ title, type }: Props) {
+  const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
+  const [mediaUpload, setMediaUpload] = useState<MediaAsset | null>(null)
+  const [assetKey, setAssetKey] = useState<string>('')
+  const { upload } = useWebMediaAsset()
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
+      console.log('🚀 ~ handleImageChange ~ type:', type)
+      console.log('🚀 ~ handleImageChange ~ file:', file)
+      setFile(file)
       setPreview(URL.createObjectURL(file))
-      onImageUpload(file)
+      setMediaUpload({
+        fileName: file.name,
+        mimeType: file.type,
+        assetType: type,
+        fileExtension: file.name.split('.').pop() || '',
+      })
     }
   }
 
-  return (
+  const uploadMediaAsset = async () => {
+    try {
+      if (mediaUpload) {
+        const response: any = await upload(mediaUpload)
+        console.log('🚀 ~ uploadMediaAsset ~ response:', response)
+        setAssetKey(response.key)
+        const uploadAsset: any = await fetch(response.url, {
+          headers: {
+            'Content-Type': mediaUpload.mimeType,
+          },
+          method: 'PUT',
+          body: file,
+        })
+        if (!response.ok) {
+          throw new Error(`Error ${response.status}: ${response.statusText}`)
+        }
+        console.log('🚀 ~ uploadMediaAsset ~ uploadAsset:', uploadAsset)
+      }
+    } catch (error) {
+      console.error('uploadMediaAsset error:', error)
+    }
+  }
+
+  const renderPreview = () => {
+    if (!preview || !mediaUpload) return null
+
+    const commonClasses =
+      'absolute inset-0 w-full h-full object-contain rounded-full'
+
+    return type === 'video' ? (
+      <video src={preview} className={commonClasses} controls />
+    ) : (
+      <img src={preview} alt="Preview" className={commonClasses} />
+    )
+  }
+
+  const component = (
     <>
       <span className="text-2xl">{title}</span>
       <div className="flex gap-4 rounded-xl mt-2 p-2 flex-wrap">
-        <label className="relative flex items-center justify-center w-24 h-24 rounded-full border-2 border-dashed border-gray-400 cursor-pointer bg-gray-100 dark:bg-gray-700 hover:border-gray-600">
+        <label className="relative flex items-center justify-center w-24 h-24 rounded-full border-2 border-dashed border-gray-400 cursor-pointer bg-gray-100 dark:bg-gray-700 hover:border-gray-600 overflow-hidden">
           {preview ? (
-            <img
-              src={preview}
-              alt="Preview"
-              className="w-full h-full object-cover rounded-full"
-            />
+            renderPreview()
           ) : (
-            <>
-              <span className="text-gray-500 dark:text-gray-300 text-sm text-center">
-                Logo
-              </span>
-            </>
+            <span className="text-gray-500 dark:text-gray-300 text-sm text-center">
+              Logo
+            </span>
           )}
-          <Camera size={40} className="absolute mt-20 ml-14" />
 
           <input
             type="file"
-            accept="image/*"
+            accept="image/*,video/*"
             className="absolute inset-0 opacity-0 cursor-pointer"
             onChange={handleImageChange}
           />
         </label>
+        {type === 'video' ? (
+          <VideoCamera size={40} className="absolute mt-16 ml-14 z-50" />
+        ) : (
+          <Camera size={40} className="absolute mt-16 ml-14 z-50" />
+        )}
         <div className="rounded-lg p-4 bg-gray-100 w-fit text-gray-700">
           <p className="font-semibold">
-            <span className="font-normal">Formato</span> JPG
+            <span className="font-normal">Formatos</span> JPG, PNG, MP4, WEBM
           </p>
           <p className="font-semibold">
-            <span className="font-normal">Dimensiones</span> 250 x 250px
+            <span className="font-normal">Dimensiones sugeridas</span> 250 x
+            250px
           </p>
           <p className="font-semibold">
-            <span className="font-normal">Peso máximo</span> 2mb
+            <span className="font-normal">Peso máximo</span> 20MB
           </p>
         </div>
       </div>
     </>
   )
-}
 
-export default InputUpload
+  return { component, uploadMediaAsset, mediaUpload, assetKey }
+}

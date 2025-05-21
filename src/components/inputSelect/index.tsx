@@ -31,7 +31,7 @@ const InputSelect = ({
     <div className={`relative ${divClassName}`}>
       <label
         htmlFor={name}
-        className="absolute -top-2 left-2 text-xs bg-white px-1 text-sm text-gray-600 z-10"
+        className="absolute -top-2 left-2 text-xs bg-white px-1 text-gray-600 z-10"
       >
         {placeholder}
       </label>

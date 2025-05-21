@@ -10,7 +10,7 @@ interface props {
 
 const FormFilters = ({ filters, setFilters }: props) => {
   const { handleChange, handleSubmit, resetForm, values } =
-    useFormWithValidation({}, {})
+    useFormWithValidation<Record<string, any>>({}, {})
 
   const handleFormSubmit = async (data: Record<string, any>) => {
     setFilters(cleanEmptyFields(data))
@@ -30,7 +30,7 @@ const FormFilters = ({ filters, setFilters }: props) => {
               onChange={handleChange}
               name={filter.name}
               value={values[filter.name] || ''}
-              className="text-sm border-2 border-dark-gray rounded-full px-2 py-1 m-1 text-xs"
+              className="border-2 border-dark-gray rounded-full px-2 py-1 m-1 text-xs"
             />
           ))}
           <button type="submit" className="h-4 w-4">

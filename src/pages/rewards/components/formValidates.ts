@@ -28,12 +28,6 @@ export const validationRules = {
       required: 'La empresa es obligatoria',
     },
   },
-  // status: {
-  //   required: true,
-  //   errorMessages: {
-  //     required: 'El estatus es obligatorio',
-  //   },
-  // },
 }
 
 export const initialValuesService = {
@@ -51,6 +45,6 @@ export const initialValuesDiscount = {
   metadata: {
     type: '',
     value: '',
-    bottles: '',
+    packagings: '',
   },
 }

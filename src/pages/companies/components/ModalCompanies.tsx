@@ -32,8 +32,8 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
 
   const mergedValues =
     companyData && Object.keys(companyData).length > 0
-      ? { ...initialValues, ...companyData }
-      : initialValues
+      ? { ...structuredClone(initialValues), ...structuredClone(companyData) }
+      : structuredClone(initialValues)
   const validationRules = validationRulesCompany(companyData)
   const {
     values,
@@ -52,7 +52,10 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
 
   useEffect(() => {
     if (companyData && Object.keys(companyData).length > 0)
-      setValues({ ...initialValues, ...companyData })
+      setValues({
+        ...structuredClone(initialValues),
+        ...structuredClone(companyData),
+      })
     else resetForm()
   }, [companyData, setValues])
 
@@ -125,15 +128,15 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
       }}
       title={`${title} empresa`}
     >
-      <form onSubmit={handleSubmit(uploadMediaAsset)}>
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
         <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
-          <div className="mt-8">{InputUpload}</div>
+          <div className="mt-2">{InputUpload}</div>
 
           <div className="flex flex-col gap-4 rounded-xl mt-8 p-4 flex-wrap">
             <div className="flex items-center justify-start gap-6">
-              <span className="text-2xl">Datos de la empresa</span>
+              <span className="text-lg">Datos de la empresa</span>
             </div>
-            <span>
+            <span className="text-sm">
               Los siguientes campos corresponden a la información básica
               necesaria de la empresa a ingresar
             </span>
@@ -219,13 +222,11 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
           </div>
 
           <div className="flex flex-col gap-4 rounded-xl bg-[#F8F8F8] mt-8 p-4">
-            <div className="flex items-center justify-start gap-6">
-              <img src="/images/user.png" alt="" />
-              <span className="text-2xl">
-                Datos del representante principal
-              </span>
+            <div className="flex items-center justify-start gap-2">
+              <img src="/images/user.png" alt="" className="w-6 h-6" />
+              <span className="text-lg">Datos del representante principal</span>
             </div>
-            <span>
+            <span className="text-sm">
               Los siguientes datos conformarán el perfil del administrativo
               principal
             </span>
@@ -280,8 +281,8 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
           {!companyId && (
             <div>
               <div className="flex flex-col mt-6">
-                <span className="text-2xl">Credenciales de acceso</span>
-                <span>
+                <span className="text-lg">Credenciales de acceso</span>
+                <span className="text-sm">
                   Los siguientes datos serán para el ingreso al panel
                   administrativo de la empresa en cuestión.
                 </span>

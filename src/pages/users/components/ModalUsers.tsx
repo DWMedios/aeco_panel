@@ -87,11 +87,14 @@ const ModalUsers = ({ onClose, title, onSaved, user }: Props) => {
   return (
     <Modal onClose={onClose} title={`${title} usuario`}>
       <form onSubmit={handleSubmit(handleFormSubmit)}>
-        <div className="flex flex-col gap-4 rounded-xl bg-[#F8F8F8] mt-8 p-4">
+        <div className="flex flex-col gap-4 rounded-xl bg-[#F8F8F8] mt-2 p-4">
           <div className="flex items-center justify-start gap-6">
-            <img src="/images/user.png" alt="" /> <span>Datos del usuario</span>
+            <img src="/images/user.png" alt="" className="h-4 w-4" />{' '}
+            <span className="text-lg">Datos del usuario</span>
           </div>
-          <span>Los siguientes campos conformarán el perfil del usuario</span>
+          <span className="text-sm">
+            Los siguientes campos conformarán el perfil del usuario
+          </span>
           <div className="flex items-center justify-start gap-2">
             <InputField
               name="name"
@@ -179,9 +182,9 @@ const ModalUsers = ({ onClose, title, onSaved, user }: Props) => {
 
         <div>
           <div className="flex flex-col mt-6">
-            <span className="text-2xl">Credenciales de acceso</span>
+            <span className="text-lg">Credenciales de acceso</span>
 
-            <span>
+            <span className="text-sm">
               Los siguientes datos serán para el ingreso al panel administrativo
               de la empresa en cuestión.
             </span>

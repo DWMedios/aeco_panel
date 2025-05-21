@@ -9,13 +9,13 @@ const ActionsButtons = ({ loading, onClose }: Props) => {
     <div className="flex justify-end gap-8 mx-8 mt-4">
       <button
         onClick={onClose}
-        className="rounded-full bg-red-500 p-2 w-48 text-white dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
+        className="rounded-full text-sm bg-red-500 p-2 w-28 text-white dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
       >
         Cancelar
       </button>
       <button
         type="submit"
-        className="rounded-full bg-green-600 p-2 w-48 text-white dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
+        className="rounded-full text-sm bg-green-600 p-2 w-28 text-white dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
         disabled={loading}
       >
         {loading && (

@@ -29,17 +29,19 @@ const Sidebar = () => {
 
       <aside
         id="default-sidebar"
-        className="fixed top-0 left-0 z-40 w-72 h-screen transition-transform -translate-x-full sm:translate-x-0 mx-4 my-4"
+        className="fixed top-0 left-0 z-40 w-56 h-screen transition-transform -translate-x-full sm:translate-x-0 mx-2 my-4"
         aria-label="Sidebar"
       >
-        <div className="flex justify-center h-[97%] px-3 py-9 overflow-y-auto bg-[#EDEDED] dark:bg-gray-800 border rounded-[50px]">
-          <ul className="space-y-2 font-medium pb-4">
-            <li>
+        <div className="flex justify-center h-[97%] w-full py-9 bg-[#EDEDED] dark:bg-gray-800 border rounded-[50px]">
+          <ul className="flex flex-col items-center space-y-2 font-medium pb-4 w-full">
+            <div>
               <img src="/images/dw.png" alt="" />
-            </li>
-            {menu.map((item, index) => (
-              <MenuItem key={index} menu={item} />
-            ))}
+            </div>
+            <div className="overflow-y-auto h-full w-full">
+              {menu.map((item, index) => (
+                <MenuItem key={index} menu={item} />
+              ))}
+            </div>
           </ul>
         </div>
       </aside>

@@ -40,7 +40,7 @@ const TBody = ({
             return (
               <td
                 key={colIndex}
-                className={`px-6 py-4 text-gray-900 dark:text-white 
+                className={`px-6 py-2 text-gray-900 dark:text-white 
         ${
           index === content.length - 1 &&
           (colIndex === 0
@@ -58,7 +58,7 @@ const TBody = ({
                 {columnType === 'chip' ? (
                   <span
                     id="badge-dismiss-green"
-                    className={`inline-flex justify-center items-center px-2 py-1 me-2 text-sm font-medium text-white ${chipColor(
+                    className={`inline-flex justify-center items-center px-2 py-1 me-2 text-xs font-medium text-white ${chipColor(
                       item[columnName as keyof typeof item] as string
                     )} rounded-full min-w-[70px]`}
                   >

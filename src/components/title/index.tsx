@@ -3,7 +3,7 @@ interface Props {
 }
 
 const Title = ({ title }: Props) => {
-  return <span className="text-3xl">{title}</span>
+  return <span className="text-2xl">{title}</span>
 }
 
 export default Title

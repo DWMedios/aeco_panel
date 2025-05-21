@@ -51,7 +51,7 @@ const InputField = ({
         }}
         onFocus={() => setFocused(true)}
         placeholder={shouldShowLabel ? '' : placeholder}
-        className={className}
+        className={`${className} text-xs`}
       />
       {touched && error && <p className="text-red-500 text-sm mt-1">{error}</p>}
     </div>

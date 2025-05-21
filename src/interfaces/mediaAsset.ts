@@ -4,3 +4,9 @@ export interface MediaAsset {
   assetType: string
   fileExtension: string
 }
+
+export interface MediaAssetResponse {
+  url: string
+  headers: Record<string, string>
+  key: string
+}

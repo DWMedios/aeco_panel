@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MediaAsset } from '../../interfaces/mediaAsset'
+import { MediaAsset, MediaAssetResponse } from '../../interfaces/mediaAsset'
 import { useWebMediaAsset } from '../../utils/api/webApiMediaAsset'
 import { Camera, VideoCamera } from '@phosphor-icons/react'
 
@@ -34,20 +34,22 @@ export function useInputUpload({ title, type }: Props) {
   const uploadMediaAsset = async () => {
     try {
       if (mediaUpload) {
-        const response: any = await uploadAsset(mediaUpload)
+        const response = (await uploadAsset(mediaUpload)) as MediaAssetResponse
         console.log('🚀 ~ uploadMediaAsset ~ response:', response)
-        setAssetKey(response.key)
-        const uploadAssets: any = await fetch(response.url, {
+        const { url, headers, key } = response
+        setAssetKey(key)
+        const uploadAssets: any = await fetch(url, {
           headers: {
-            'Content-Type': mediaUpload.mimeType,
+            ...headers,
           },
           method: 'PUT',
           body: file,
         })
-        if (!response.ok) {
-          throw new Error(`Error ${response.status}: ${response.statusText}`)
+        if (!uploadAssets.ok) {
+          throw new Error(
+            `Error ${uploadAssets.status}: ${uploadAssets.statusText}`
+          )
         }
-        console.log('🚀 ~ uploadMediaAsset ~ uploadAsset:', uploadAssets)
       }
     } catch (error) {
       console.error('uploadMediaAsset error:', error)
@@ -69,14 +71,15 @@ export function useInputUpload({ title, type }: Props) {
 
   const component = (
     <>
-      <span className="text-2xl">{title}</span>
+      <span className="text-lg">{title}</span>
       <div className="flex gap-4 rounded-xl mt-2 p-2 flex-wrap">
-        <label className="relative flex items-center justify-center w-24 h-24 rounded-full border-2 border-dashed border-gray-400 cursor-pointer bg-gray-100 dark:bg-gray-700 hover:border-gray-600 overflow-hidden">
+        <label className="relative flex items-center justify-center w-20 h-20 rounded-full border-2 border-dashed border-gray-400 cursor-pointer bg-gray-100 dark:bg-gray-700 hover:border-gray-600 overflow-hidden">
           {preview ? (
             renderPreview()
           ) : (
             <span className="text-gray-500 dark:text-gray-300 text-sm text-center">
               Logo
+              {/* <Upload size={25} className="absolute" /> */}
             </span>
           )}
 
@@ -88,11 +91,11 @@ export function useInputUpload({ title, type }: Props) {
           />
         </label>
         {type === 'video' ? (
-          <VideoCamera size={40} className="absolute mt-16 ml-14 z-50" />
+          <VideoCamera size={25} className="mt-16 -ml-12 z-50" />
         ) : (
-          <Camera size={40} className="absolute mt-16 ml-14 z-50" />
+          <Camera size={25} className="mt-16 -ml-12 z-50" />
         )}
-        <div className="rounded-lg p-4 bg-gray-100 w-fit text-gray-700">
+        <div className="rounded-lg p-2 h-[80%] mt-2 text-xs bg-gray-100 w-fit text-gray-700">
           <p className="font-semibold">
             <span className="font-normal">Formatos</span> JPG, PNG, MP4, WEBM
           </p>

@@ -15,6 +15,7 @@ interface Props {
   changePage?: (page: number) => void
   handleDelete?: (id: number) => void
   setFormData?: (data: any) => void
+  page?: number
 }
 const Table = ({
   tableContent,
@@ -22,9 +23,10 @@ const Table = ({
   openModal,
   setTitleModal,
   pagination = null,
-  changePage,
+  changePage = () => {},
   handleDelete,
   setFormData,
+  page = 1,
 }: Props) => {
   const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false)
   const [deleteId, setDeleteId] = useState<number>(0)
@@ -49,8 +51,8 @@ const Table = ({
         <div className="w-[90%] m-6 flex justify-center content-center">
           {pagination && (
             <Pagination
-              page={pagination.page}
-              changePage={() => changePage}
+              page={page}
+              changePage={changePage}
               totalPage={pagination.totalpages}
             />
           )}

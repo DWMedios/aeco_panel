@@ -10,7 +10,7 @@ const MainLayout = ({ children }: Props) => {
     <>
       <Navbar />
       <SideBar />
-      <div className="p-4 sm:ml-[305px]">
+      <div className="p-4 sm:ml-[225px]">
         <div className="p-4">{children}</div>
       </div>
     </>

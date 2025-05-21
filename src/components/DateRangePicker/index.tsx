@@ -45,7 +45,7 @@ const InputDateRangePicker = ({ setDates }: Props) => {
     <div className="relative">
       <input
         type="text"
-        className="w-full p-3 border border-gray-300 rounded-md focus:outline-none"
+        className="w-full p-3 border border-gray-300 rounded-md focus:outline-none text-xs handPointer"
         value={`${selectionRange.startDate.toLocaleDateString(
           'es-ES'
         )} - ${selectionRange.endDate.toLocaleDateString('es-ES')}`}
@@ -53,7 +53,7 @@ const InputDateRangePicker = ({ setDates }: Props) => {
         readOnly
       />
       {open && (
-        <div className="absolute z-10 mt-2 -ml-40 bg-white shadow-lg rounded-md p-4">
+        <div className="absolute z-10 mt-2 -ml-40 bg-white shadow-lg rounded-md p-2">
           <DateRange
             ranges={[selectionRange]}
             onChange={handleSelect}

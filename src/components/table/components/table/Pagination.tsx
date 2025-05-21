@@ -20,9 +20,9 @@ const Pagination = ({ page, changePage, totalPage }: Props) => {
   }
 
   return (
-    <div className="flex justify-between items-center bg-[#F8F8F8] w-56 rounded-full px-4 text-gray-500">
+    <div className="flex justify-between items-center bg-[#F8F8F8] w-56 rounded-full px-2 text-gray-500">
       <CaretLeft
-        size={25}
+        size={20}
         weight="bold"
         onClick={goToPreviousPage}
         className={
@@ -31,7 +31,7 @@ const Pagination = ({ page, changePage, totalPage }: Props) => {
       />
       {page} de {totalPage}
       <CaretRight
-        size={25}
+        size={20}
         weight="bold"
         onClick={goToNextPage}
         className={

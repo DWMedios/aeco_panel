@@ -59,7 +59,7 @@ const SearchableSelect = ({
   return (
     <div className="flex flex-col gap-4 rounded-xlmt-8 p-4">
       <div className="flex items-center justify-start gap-6">
-        <span className="text-2xl">Listado de {title}</span>
+        <span className="text-lg">Listado de {title}</span>
       </div>
       <div className="flex items-center justify-start gap-4 flex-wrap">
         <div className={`relative ${className}`}>
@@ -69,7 +69,7 @@ const SearchableSelect = ({
             onFocus={handleFocus}
             onBlur={handleBlur}
             placeholder="Buscar maquina..."
-            className="border-2 border-gray-300 text-sm rounded-full 
+            className=" text-xs border-2 border-gray-300 rounded-full 
         focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 
         dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
         dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"

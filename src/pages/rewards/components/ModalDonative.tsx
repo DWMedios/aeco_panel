@@ -113,7 +113,7 @@ const ModalDonative = ({ onClose, onSaved, title, reward }: Props) => {
         <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
           <div className="mt-8">{InputUpload}</div>
 
-          <div className="flex flex-col gap-4 rounded-xl mt-8 p-4 flex-wrap">
+          <div className="flex flex-col gap-4 rounded-xl mt-4 p-4 flex-wrap">
             <div className="flex items-center justify-start gap-4 flex-wrap">
               <InputField
                 name="name"
@@ -173,9 +173,9 @@ const ModalDonative = ({ onClose, onSaved, title, reward }: Props) => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 rounded-xl bg-[#F8F8F8] mt-8 p-4">
+          <div className="flex flex-col gap-4 rounded-xl bg-[#F8F8F8] mt-4 p-4">
             <div className="flex items-center justify-start gap-6">
-              <span className="text-2xl">Asignacion de maquinas</span>
+              <span className="text-lg">Asignacion de maquinas</span>
             </div>
             <InputSelect
               name="companyId"

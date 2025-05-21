@@ -89,7 +89,7 @@ const ColumnChart = ({ categories, data }: Props) => {
         options={state.options}
         series={state.series}
         type="bar"
-        height={380}
+        height={300}
       />
     </div>
   )

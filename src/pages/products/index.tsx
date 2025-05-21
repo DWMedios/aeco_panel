@@ -38,6 +38,7 @@ const Products = () => {
     } else {
       paginationCapacities.refresh()
     }
+    setPage(1)
   }, [tab])
 
   return (
@@ -83,6 +84,7 @@ const Products = () => {
             columns={['id', 'name', 'family', 'code']}
             pagination={{ page, totalpages: totalPages }}
             changePage={setPage}
+            page={page}
             openModal={() => {
               setIsOpen(true)
               setFormData({})
@@ -103,6 +105,7 @@ const Products = () => {
                 totalpages: paginationCapacities.totalPages,
               }}
               changePage={paginationCapacities.setPage}
+              page={paginationCapacities.page}
               openModal={() => {
                 setIsOpen(true)
                 setFormData({})

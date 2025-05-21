@@ -31,7 +31,7 @@ const InputSelect = ({
     <div className={`relative ${divClassName}`}>
       <label
         htmlFor={name}
-        className="absolute -top-2 left-2 bg-white px-1 text-sm text-gray-600 z-10"
+        className="absolute -top-2 left-2 text-xs bg-white px-1 text-gray-600 z-10"
       >
         {placeholder}
       </label>
@@ -43,7 +43,7 @@ const InputSelect = ({
         onBlur={(e) => {
           onBlur(e)
         }}
-        className={`rounded-full border-2 border-gray-300 p-2 ${className}`}
+        className={`rounded-full border-2 border-gray-300 p-2 text-xs ${className}`}
       >
         <option value="">{defaultPlaceholder}</option>
         {options.map((option) => (

@@ -37,8 +37,11 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
 
   const mergedValues =
     reward && Object.keys(reward).length > 0
-      ? { ...initialValuesDiscount, ...reward }
-      : initialValuesDiscount
+      ? {
+          ...structuredClone(initialValuesDiscount),
+          ...structuredClone(reward),
+        }
+      : structuredClone(initialValuesDiscount)
   const {
     values,
     errors,
@@ -50,9 +53,12 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
   } = useFormWithValidation(mergedValues, { validationRules })
 
   useEffect(() => {
-    console.log('🚀 ~ useEffect ~ rewardData:', reward)
     if (reward && Object.keys(reward).length > 0) {
-      setValues({ ...initialValuesDiscount, ...reward })
+      setValues({
+        ...structuredClone(initialValuesDiscount),
+        ...structuredClone(reward),
+      })
+      setType(reward.metadata.type)
     }
   }, [reward, setValues])
 
@@ -71,7 +77,6 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
 
   const onFormSubmit = async (data: any) => {
     try {
-      console.log('🚀 ~ onFormSubmit ~ cleanedData:', data)
       const cleanedData: any = cleanEmptyFields({
         ...data,
         type: 'discount',
@@ -79,8 +84,12 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
         companyId: Number(data.companyId),
         order: Number(data.order),
         aecos: selectedAeco.map((item: any) => item.value),
+        metadata: {
+          ...data.metadata,
+          type: type,
+        },
       })
-      if (cleanedData.metadata.bottle) cleanedData.metadata.value = type
+      console.log('🚀 ~ onFormSubmit ~ cleanedData:', cleanedData)
 
       if (reward && Object.keys(reward).length > 0) {
         delete cleanedData.companyId
@@ -123,9 +132,9 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
     <Modal onClose={onClose} title={`${title} descuento`}>
       <form onSubmit={handleSubmit(onFormSubmit)}>
         <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
-          <div className="mt-8">{InputUpload}</div>
+          <div className="mt-2">{InputUpload}</div>
 
-          <div className="flex flex-col gap-4 rounded-xl mt-8 p-4 flex-wrap">
+          <div className="flex flex-col gap-4 rounded-xl mt-4 p-4 flex-wrap">
             <div className="flex items-center justify-start gap-4 flex-wrap">
               <InputField
                 name="name"
@@ -162,23 +171,23 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
               />
               <div className="w-30">
                 <div className="w-full">
-                  <div className="flex rounded-full overflow-hidden shadow-md">
+                  <div className="flex rounded-full ">
                     <div
                       onClick={() => setType('percentage')}
-                      className={`w-30 ${
+                      className={`w-30  rounded-s-full ${
                         type == 'percentage' ? 'bg-gray-500' : 'bg-gray-400'
                       } flex items-center justify-center cursor-pointer`}
                     >
-                      <span className="text-white text-xl p-2">%</span>
+                      <span className="text-white text-xs p-2">%</span>
                     </div>
 
                     <div
-                      onClick={() => setType('value')}
+                      onClick={() => setType('money')}
                       className={`w-30 rounded-e-full ${
-                        type == 'value' ? 'bg-gray-500' : 'bg-gray-400'
+                        type == 'money' ? 'bg-gray-500' : 'bg-gray-400'
                       } flex items-center justify-center cursor-pointer`}
                     >
-                      <span className="text-white text-xl pr-4 pl-2">$</span>
+                      <span className="text-white text-xs pr-4 pl-2">$</span>
                     </div>
 
                     <InputField
@@ -201,13 +210,13 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
               </div>
               =
               <InputField
-                name="metadata.bottles"
+                name="metadata.packagings"
                 placeholder="Embases"
-                value={getValue('metadata.bottles')}
+                value={getValue('metadata.packagings')}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={errors['metadata.bottles']}
-                touched={touched['metadata.bottles']}
+                error={errors['metadata.packagings']}
+                touched={touched['metadata.packagings']}
                 divClassName="w-1/6"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
@@ -252,9 +261,9 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 rounded-xl bg-[#F8F8F8] mt-8 p-4">
+          <div className="flex flex-col gap-4 rounded-xl bg-[#F8F8F8] mt-4 p-4">
             <div className="flex items-center justify-start gap-6">
-              <span className="text-2xl">Asignacion de maquinas</span>
+              <span className="text-lg">Asignacion de maquinas</span>
             </div>
             <InputSelect
               name="companyId"

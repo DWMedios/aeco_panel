@@ -9,13 +9,13 @@ const Navbar = () => {
     <nav className="absolute top-0 right-0 p-10">
       <div className="flex gap-4">
         <div className="flex items-center justify-end bg-slate-200 p-2 rounded-full">
-          <Bell size={25} weight="fill" />
+          <Bell size={20} weight="fill" />
         </div>
         <div
           className="flex items-center justify-end bg-orange-200 p-2 rounded-full"
           onClick={() => setOpen(!open)}
         >
-          <User size={25} weight="fill" />
+          <User size={20} weight="fill" />
         </div>
         {open && (
           <div className="absolute right-0 mt-14 w-64 bg-gray-200 rounded-lg shadow-lg z-40 mr-4">

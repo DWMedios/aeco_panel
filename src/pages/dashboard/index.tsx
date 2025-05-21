@@ -28,16 +28,16 @@ const Dashboard = () => {
       <div className="flex justify-end mt-8 ">
         <InputDateRangePicker setDates={setDates} />
       </div>
-      <div className="flex justify-center items-center bg-gray-200 mt-8 rounded-full py-4">
+      <div className="flex justify-center items-center bg-gray-200 mt-8 rounded-full py-1">
         <div className="border-x-2 border-gray-300 px-4">
-          <div className="flex justify-center items-center text-3xl  p-6">
+          <div className="flex justify-center items-center text-xl">
             {dailyStats
               ? dailyStats.totalTickets >= 1000
                 ? `${(dailyStats.totalTickets / 1000).toFixed(1)}K`
                 : dailyStats.totalTickets
               : 0}
           </div>
-          <span>Total de tickets emitidos</span>
+          <span className="text-xs">Total de tickets emitidos</span>
         </div>
       </div>
       <div className=" bg-gray-200 mt-8 rounded-3xl">

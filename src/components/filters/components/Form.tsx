@@ -10,7 +10,7 @@ interface props {
 
 const FormFilters = ({ filters, setFilters }: props) => {
   const { handleChange, handleSubmit, resetForm, values } =
-    useFormWithValidation({}, {})
+    useFormWithValidation<Record<string, any>>({}, {})
 
   const handleFormSubmit = async (data: Record<string, any>) => {
     setFilters(cleanEmptyFields(data))
@@ -19,7 +19,7 @@ const FormFilters = ({ filters, setFilters }: props) => {
   return (
     <>
       <form onSubmit={handleSubmit(handleFormSubmit)}>
-        <div className=" w-full flex justify-between items-center p-2">
+        <div className=" w-full flex justify-between items-center p-2 text-sm">
           <div className="border-r-2 border-gray-300">
             <span className="text-gray-400 p-2">Filtros</span>
           </div>
@@ -30,10 +30,10 @@ const FormFilters = ({ filters, setFilters }: props) => {
               onChange={handleChange}
               name={filter.name}
               value={values[filter.name] || ''}
-              className="text-sm border-2 border-dark-gray rounded-full px-2 py-1 m-1"
+              className="border-2 border-dark-gray rounded-full px-2 py-1 m-1 text-xs"
             />
           ))}
-          <button type="submit" className="p-4">
+          <button type="submit" className="h-4 w-4">
             <img src="/images/search.png" alt="" />
           </button>
           <button
@@ -41,9 +41,9 @@ const FormFilters = ({ filters, setFilters }: props) => {
               resetForm()
               setFilters({})
             }}
-            className="p-4"
+            className="p-2"
           >
-            <Broom size={28} color="blue" weight="fill" />
+            <Broom size={20} color="blue" weight="fill" />
           </button>
         </div>
       </form>

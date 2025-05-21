@@ -22,9 +22,9 @@ const BarChart = ({ subTitle, title, data }: Props) => {
     },
     plotOptions: {
       bar: {
-        barHeight: '40px',
+        barHeight: '20px',
         horizontal: true,
-        borderRadius: 20,
+        borderRadius: 10,
         dataLabels: {
           position: 'bottom',
         },
@@ -35,7 +35,7 @@ const BarChart = ({ subTitle, title, data }: Props) => {
       enabled: true,
       style: {
         colors: ['#000'],
-        fontSize: '14px',
+        fontSize: '10px',
       },
       formatter: (_val, opts) => {
         return `${opts.w.config.series[0].data[opts.dataPointIndex].x}`
@@ -54,7 +54,7 @@ const BarChart = ({ subTitle, title, data }: Props) => {
   }
 
   return (
-    <div className="p-4 rounded-lg shadow-lg" style={{ fontWeight: 400 }}>
+    <div className="p-2 rounded-lg shadow-lg" style={{ fontWeight: 400 }}>
       <h2 className="text-xl font-semibold mb-2">{title}</h2>
       <div className="flex justify-between text-sm font-semibold mb-2">
         <span>{subTitle}</span>
@@ -66,11 +66,11 @@ const BarChart = ({ subTitle, title, data }: Props) => {
             options={options}
             series={series}
             type="bar"
-            height={300}
+            height={250}
           />
         </div>
-        <div className="flex flex-col h-[100%vh] py-8">
-          <div className={`grid grid-rows-${data.length} h-full`}>
+        <div className="flex flex-col h-[100%vh] p-8">
+          <div className={`grid grid-rows-${data.length} h-full text-sm`}>
             {data.map(({ y }, index) => (
               <div
                 key={index}

@@ -7,13 +7,13 @@ interface Props {
 
 const ButtonAdd = ({ openModal, label = true }: Props) => {
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center text-sm">
       {label ? <span>Agregar</span> : ''}
       <button
         onClick={openModal}
-        className="flex justify-center btn btn-primary rounded-full bg-[#0D6EFD] w-24 p-2"
+        className="flex justify-center btn btn-primary rounded-full bg-[#0D6EFD] w-16 p-1"
       >
-        <Plus size={20} color="white" weight="bold" />
+        <Plus size={15} color="white" weight="bold" />
       </button>
     </div>
   )

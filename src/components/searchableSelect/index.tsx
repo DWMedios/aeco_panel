@@ -69,7 +69,7 @@ const SearchableSelect = ({
             onFocus={handleFocus}
             onBlur={handleBlur}
             placeholder="Buscar maquina..."
-            className=" text-xs border-2 border-gray-300 text-sm rounded-full 
+            className=" text-xs border-2 border-gray-300 rounded-full 
         focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 
         dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
         dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"

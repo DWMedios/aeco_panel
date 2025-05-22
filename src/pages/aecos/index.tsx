@@ -3,12 +3,13 @@ import MainLayout from '../../components/layout'
 import Table from '../../components/table'
 import Title from '../../components/title'
 import ModalMachines from './components/ModalMachines'
-import { Aeco } from '../../interfaces/types'
+import { Aeco, Alert } from '../../interfaces/types'
 import usePagination from '../../hooks/usePagination'
 import { useWebApiAeco } from '../../utils/api/webApiAeco'
 import Filters from '../../components/filters'
 
 const Aecos = () => {
+  const [showAlert, setShowAlert] = useState<Alert | null>(null)
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [titleModal, setTitleModal] = useState<string>('Crear')
   const [aecos, setAecos] = useState<Aeco[]>([])
@@ -24,7 +25,15 @@ const Aecos = () => {
       await deleteAeco(id)
       refresh()
       setIsOpen(false)
+      setShowAlert({
+        message: 'La máquina ha sido eliminada correctamente',
+        type: 'success',
+      })
     } catch (error) {
+      setShowAlert({
+        message: 'Error al eliminar la máquina',
+        type: 'error',
+      })
       console.error('Error deleting user:', error)
     }
   }
@@ -36,7 +45,7 @@ const Aecos = () => {
   }, [formData])
 
   return (
-    <MainLayout>
+    <MainLayout alertProps={showAlert}>
       <Title title="Maquinas" />
       <Filters
         addButton={true}
@@ -79,6 +88,7 @@ const Aecos = () => {
           title={titleModal}
           onSaved={refresh}
           aeco={formData}
+          setShowAlert={setShowAlert}
         />
       )}
     </MainLayout>

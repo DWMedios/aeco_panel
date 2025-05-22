@@ -18,10 +18,6 @@ const Dashboard = () => {
     error,
   } = useDashboardStats({ companyId: 1 })
 
-  useEffect(() => {
-    console.log('🚀 ~ Dashboard ~ packagingsPerDay:', packagingsPerDay)
-  }, [packagingsPerDay])
-
   return (
     <MainLayout>
       <Title title="Inicio" />

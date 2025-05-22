@@ -6,7 +6,7 @@ import ContentTabs from '../../components/tabs/components/contentTabs'
 import Table from '../../components/table'
 import { useWebApiReward } from '../../utils/api/webApiReward'
 import usePagination from '../../hooks/usePagination'
-import { Reward } from '../../interfaces/types'
+import { Alert, Reward } from '../../interfaces/types'
 import ModalDiscount from './components/ModalDiscount'
 import ModalDonative from './components/ModalDonative'
 import ModalService from './components/ModalService'
@@ -14,6 +14,7 @@ import Filters from '../../components/filters'
 import { useInputUpload } from '../../components/inputUpload'
 
 const Rewards = () => {
+  const [showAlert, setShowAlert] = useState<Alert | null>(null)
   const [tab, setTab] = useState<string>('all')
   const [rewards, setRewards] = useState<any>([])
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -50,7 +51,15 @@ const Rewards = () => {
       setMediaKey(null)
       refresh()
       setIsOpen(false)
+      setShowAlert({
+        message: 'La recompensa ha sido eliminada correctamente',
+        type: 'success',
+      })
     } catch (error) {
+      setShowAlert({
+        message: 'Error al eliminar la recompensa',
+        type: 'error',
+      })
       console.error('Error deleting:', error)
     }
   }
@@ -70,7 +79,7 @@ const Rewards = () => {
   }
 
   return (
-    <MainLayout>
+    <MainLayout alertProps={showAlert}>
       <Title title="Recompensas" />
       <div className="flex justify-between items-center mt-10 w-full">
         <Tabs tabs={tabs} selected={tab} action={(data) => setTab(data)} />
@@ -138,6 +147,7 @@ const Rewards = () => {
             reward={formData}
             mediaKey={mediaKey}
             setMediaKey={setMediaKey}
+            setShowAlert={setShowAlert}
           />
         ) : tab == 'service' ? (
           <ModalService
@@ -147,6 +157,7 @@ const Rewards = () => {
             reward={formData}
             mediaKey={mediaKey}
             setMediaKey={setMediaKey}
+            setShowAlert={setShowAlert}
           />
         ) : (
           <ModalDiscount
@@ -156,6 +167,7 @@ const Rewards = () => {
             reward={formData}
             mediaKey={mediaKey}
             setMediaKey={setMediaKey}
+            setShowAlert={setShowAlert}
           />
         ))}
     </MainLayout>

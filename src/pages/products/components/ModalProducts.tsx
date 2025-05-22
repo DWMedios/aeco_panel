@@ -7,15 +7,23 @@ import { initialValuesProduct, validationRulesProduct } from './formValidates'
 import InputField from '../../../components/inputField'
 import InputSelect from '../../../components/inputSelect'
 import { useWebApiCapacities } from '../../../utils/api/webApiCapacity'
+import { Alert } from '../../../interfaces/types'
 
 interface Props {
   onClose: () => void
   onSaved: () => void
   title?: string
   reward?: any
+  setShowAlert: (alert: Alert) => void
 }
 
-const ModalProducts = ({ onClose, onSaved, title, reward }: Props) => {
+const ModalProducts = ({
+  onClose,
+  onSaved,
+  title,
+  reward,
+  setShowAlert,
+}: Props) => {
   const [capacities, setCapacities] = useState<any[]>([])
   const { withLoading, loading } = useLoading()
   const { getCapacities } = useWebApiCapacities()
@@ -36,7 +44,6 @@ const ModalProducts = ({ onClose, onSaved, title, reward }: Props) => {
   } = useFormWithValidation(mergedValues, { validationRules })
 
   useEffect(() => {
-    console.log('🚀 ~ useEffect ~ rewardData:', reward)
     if (reward && Object.keys(reward).length > 0) {
       setValues({ ...initialValuesProduct, ...reward })
     }
@@ -57,10 +64,17 @@ const ModalProducts = ({ onClose, onSaved, title, reward }: Props) => {
 
   const onFormSubmit = async (data: any) => {
     try {
-      console.log('🚀 ~ onFormSubmit ~ cleanedData:', data)
       onSaved()
       onClose()
-    } catch (error) {
+      setShowAlert({
+        message: 'El producto ha sido guardado correctamente',
+        type: 'success',
+      })
+    } catch (error: any) {
+      setShowAlert({
+        message: error.message,
+        type: 'error',
+      })
       console.log('Error en el envío del formulario:', error)
     }
   }

@@ -10,15 +10,17 @@ import { initialValues, validationRules } from './formValidations'
 import { cleanEmptyFields } from '../../../utils/cleanObject'
 import { useWebApiCompany } from '../../../utils/api/webApiCompany'
 import InputSelect from '../../../components/inputSelect'
+import { Alert } from '../../../interfaces/types'
 
 interface Props {
   onClose: () => void
   title?: string
   onSaved: () => void
   aeco: any
+  setShowAlert: (alert: Alert) => void
 }
 
-const ModalAeco = ({ onClose, title, onSaved, aeco }: Props) => {
+const ModalAeco = ({ onClose, title, onSaved, aeco, setShowAlert }: Props) => {
   const aecoStatus = [
     { value: 'enabled', label: 'Activo' },
     { value: 'disabled', label: 'Inactivo' },
@@ -89,8 +91,15 @@ const ModalAeco = ({ onClose, title, onSaved, aeco }: Props) => {
       else await withLoading(() => createAeco(cleanedData))
       onSaved()
       onClose()
-    } catch (error) {
-      console.log('~ handleFormSubmit ~ error:', error)
+      setShowAlert({
+        message: `Máquina guardada correctamente`,
+        type: 'success',
+      })
+    } catch (error: any) {
+      setShowAlert({
+        message: error.message,
+        type: 'error',
+      })
     }
   }
 

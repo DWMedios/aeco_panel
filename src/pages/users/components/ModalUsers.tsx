@@ -10,15 +10,17 @@ import { initialValues, validationRulesUser } from './formValidations'
 import InputSelect from '../../../components/inputSelect'
 import { useWebApiCompany } from '../../../utils/api/webApiCompany'
 import { cleanEmptyFields } from '../../../utils/cleanObject'
+import { Alert } from '../../../interfaces/types'
 
 interface Props {
   onClose: () => void
   title?: string
   onSaved: () => void
   user?: any
+  setShowAlert: (alert: Alert) => void
 }
 
-const ModalUsers = ({ onClose, title, onSaved, user }: Props) => {
+const ModalUsers = ({ onClose, title, onSaved, user, setShowAlert }: Props) => {
   const [companies, setCompanies] = useState<any[]>([])
 
   const { withLoading, loading } = useLoading()
@@ -79,7 +81,15 @@ const ModalUsers = ({ onClose, title, onSaved, user }: Props) => {
       onSaved()
       resetForm()
       onClose()
-    } catch (error) {
+      setShowAlert({
+        message: 'Usuario guardado correctamente',
+        type: 'success',
+      })
+    } catch (error: any) {
+      setShowAlert({
+        message: error.message,
+        type: 'error',
+      })
       console.log('Error en el envío del formulario:', error)
     }
   }

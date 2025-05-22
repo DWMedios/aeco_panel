@@ -27,7 +27,6 @@ export function useInputUpload({ title, type, previewUrl }: Props) {
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
-      console.log('🚀 ~ handleImageChange ~ file:', file)
       setFile(file)
       setPreview(URL.createObjectURL(file))
       setMediaUpload({
@@ -82,7 +81,6 @@ export function useInputUpload({ title, type, previewUrl }: Props) {
   const renderPreview = () => {
     if (!preview || !preview) return null
 
-    console.log('🚀 ~ renderPreview ~ preview:', preview)
     const commonClasses =
       'absolute inset-0 w-full h-full object-contain rounded-full'
 

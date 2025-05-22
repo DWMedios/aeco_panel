@@ -18,9 +18,18 @@ interface Props {
   onSaved: () => void
   title?: string
   companyId?: number | null
+  mediaKey: string | null
+  setMediaKey: (key: string | null) => void
 }
 
-const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
+const ModalCompanies = ({
+  onClose,
+  title,
+  onSaved,
+  companyId,
+  mediaKey,
+  setMediaKey,
+}: Props) => {
   const { withLoading, loading } = useLoading()
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const { createCompany, updateCompany, getCompany } = useWebApiCompany()
@@ -38,7 +47,6 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
   const [selectedAeco, setSelectedAeco] = useState<any>([])
   const [aecoOptions, setAecoOptions] = useState<any>([])
   const [companyData, setCompanyData] = useState<any>({})
-  const [mediaKey, setMediaKey] = useState<string | null>(null)
 
   const mergedValues =
     companyData && Object.keys(companyData).length > 0

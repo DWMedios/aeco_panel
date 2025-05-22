@@ -7,13 +7,20 @@ import { Company } from '../../interfaces/types'
 import usePagination from '../../hooks/usePagination'
 import { useWebApiCompany } from '../../utils/api/webApiCompany'
 import Filters from '../../components/filters'
+import { useInputUpload } from '../../components/inputUpload'
 
 const Companies = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [titleModal, setTitleModal] = useState<string>('Crear')
   const [companies, setCompanies] = useState<Company[]>([])
   const [formData, setFormData] = useState<Company | Record<string, any>>({})
+  const [mediaKey, setMediaKey] = useState<string | null>(null)
+
   const { getCompanies, deleteCompany } = useWebApiCompany()
+  const { deleteMediaAsset } = useInputUpload({
+    title: '',
+    type: 'image',
+  })
 
   const { page, totalPages, setPage, refresh, setFilters } =
     usePagination<Company>(getCompanies, 10, setCompanies)
@@ -21,6 +28,8 @@ const Companies = () => {
   const handleDelete = async (id: number) => {
     try {
       await deleteCompany(id)
+      if (mediaKey) deleteMediaAsset(mediaKey)
+      setMediaKey(null)
       refresh()
       setIsOpen(false)
     } catch (error) {
@@ -87,6 +96,8 @@ const Companies = () => {
           title={titleModal}
           onSaved={refresh}
           companyId={formData.id}
+          mediaKey={mediaKey}
+          setMediaKey={setMediaKey}
         />
       )}
     </MainLayout>

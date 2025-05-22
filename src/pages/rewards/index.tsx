@@ -11,6 +11,7 @@ import ModalDiscount from './components/ModalDiscount'
 import ModalDonative from './components/ModalDonative'
 import ModalService from './components/ModalService'
 import Filters from '../../components/filters'
+import { useInputUpload } from '../../components/inputUpload'
 
 const Rewards = () => {
   const [tab, setTab] = useState<string>('all')
@@ -22,6 +23,10 @@ const Rewards = () => {
   const { getRewards, deleteReward, getReward } = useWebApiReward()
   const { page, totalPages, setPage, refresh, setFilters, setDefaultFilters } =
     usePagination<Reward>(getRewards, 10, setRewards)
+  const { deleteMediaAsset } = useInputUpload({
+    title: '',
+    type: 'image',
+  })
 
   const tabs = [
     { name: 'Todas', value: 'all' },
@@ -41,6 +46,8 @@ const Rewards = () => {
   const handleDelete = async (id: number) => {
     try {
       await deleteReward(id)
+      if (mediaKey) deleteMediaAsset(mediaKey)
+      setMediaKey(null)
       refresh()
       setIsOpen(false)
     } catch (error) {

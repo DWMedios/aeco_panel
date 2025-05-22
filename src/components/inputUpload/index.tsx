@@ -1,24 +1,32 @@
-import { useState } from 'react'
-import { MediaAsset, MediaAssetResponse } from '../../interfaces/mediaAsset'
+import { useEffect, useState } from 'react'
+import {
+  MediaAsset,
+  MediaAssetResponse,
+  MediaAssetUpload,
+} from '../../interfaces/mediaAsset'
 import { useWebMediaAsset } from '../../utils/api/webApiMediaAsset'
 import { Camera, VideoCamera } from '@phosphor-icons/react'
 
 interface Props {
   title: string
   type: 'image' | 'video'
+  previewUrl?: string | null
 }
 
-export function useInputUpload({ title, type }: Props) {
+export function useInputUpload({ title, type, previewUrl }: Props) {
   const [file, setFile] = useState<File | null>(null)
-  const [preview, setPreview] = useState<string | null>(null)
-  const [mediaUpload, setMediaUpload] = useState<MediaAsset | null>(null)
-  const [assetKey, setAssetKey] = useState<string>('')
-  const { uploadAsset } = useWebMediaAsset()
+  const [key, setKey] = useState<string | null>(null)
+  const [preview, setPreview] = useState<string | null>(previewUrl ?? null)
+  const [mediaUpload, setMediaUpload] = useState<MediaAssetUpload | null>(null)
+  const { uploadAsset, deleteAsset } = useWebMediaAsset()
+
+  useEffect(() => {
+    setPreview(previewUrl ?? null)
+  }, [previewUrl])
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
-      console.log('🚀 ~ handleImageChange ~ type:', type)
       console.log('🚀 ~ handleImageChange ~ file:', file)
       setFile(file)
       setPreview(URL.createObjectURL(file))
@@ -33,11 +41,10 @@ export function useInputUpload({ title, type }: Props) {
 
   const uploadMediaAsset = async () => {
     try {
-      if (mediaUpload) {
+      if (mediaUpload && file) {
         const response = (await uploadAsset(mediaUpload)) as MediaAssetResponse
-        console.log('🚀 ~ uploadMediaAsset ~ response:', response)
         const { url, headers, key } = response
-        setAssetKey(key)
+        setKey(key)
         const uploadAssets: any = await fetch(url, {
           headers: {
             ...headers,
@@ -50,15 +57,32 @@ export function useInputUpload({ title, type }: Props) {
             `Error ${uploadAssets.status}: ${uploadAssets.statusText}`
           )
         }
+        return {
+          fileKey: key,
+          originalName: mediaUpload.fileName,
+          mimeType: mediaUpload.mimeType,
+          fileSize: file.size,
+          assetType: mediaUpload.assetType,
+        } as MediaAsset
       }
+      return false
     } catch (error) {
       console.error('uploadMediaAsset error:', error)
     }
   }
 
-  const renderPreview = () => {
-    if (!preview || !mediaUpload) return null
+  const deleteMediaAsset = async (key: string) => {
+    try {
+      await deleteAsset(key)
+    } catch (error) {
+      console.error('deleteMediaAsset error:', error)
+    }
+  }
 
+  const renderPreview = () => {
+    if (!preview || !preview) return null
+
+    console.log('🚀 ~ renderPreview ~ preview:', preview)
     const commonClasses =
       'absolute inset-0 w-full h-full object-contain rounded-full'
 
@@ -111,5 +135,5 @@ export function useInputUpload({ title, type }: Props) {
     </>
   )
 
-  return { component, uploadMediaAsset, mediaUpload, assetKey }
+  return { component, uploadMediaAsset, deleteMediaAsset, key }
 }

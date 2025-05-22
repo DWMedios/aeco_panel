@@ -12,15 +12,26 @@ import { useInputUpload } from '../../../components/inputUpload'
 import InputSelect from '../../../components/inputSelect'
 import { cleanEmptyFields } from '../../../utils/cleanObject'
 import { useWebApiReward } from '../../../utils/api/webApiReward'
+import { MediaAsset } from '../../../interfaces/mediaAsset'
+import { Reward } from '../../../interfaces/types'
 
 interface Props {
   onClose: () => void
   onSaved: () => void
   title?: string
-  reward?: any
+  reward?: Reward | Record<string, any>
+  mediaKey: string | null
+  setMediaKey: (key: string | null) => void
 }
 
-const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
+const ModalDiscount = ({
+  onClose,
+  onSaved,
+  title,
+  reward,
+  mediaKey,
+  setMediaKey,
+}: Props) => {
   const { withLoading, loading } = useLoading()
   const { getCompanies } = useWebApiCompany()
   const [companies, setCompanies] = useState<any[]>([])
@@ -28,11 +39,18 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
   const [selectedAeco, setSelectedAeco] = useState<any>([])
   const [aecoOptions, setAecoOptions] = useState<any>([])
   const [type, setType] = useState<string>('percentage')
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
   const { createReward, updateReward } = useWebApiReward()
-  const { component: InputUpload } = useInputUpload({
+  const {
+    component: InputUpload,
+    uploadMediaAsset,
+    deleteMediaAsset,
+    key,
+  } = useInputUpload({
     title: 'Recompensa',
     type: 'image',
+    previewUrl,
   })
 
   const mergedValues =
@@ -54,11 +72,12 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
 
   useEffect(() => {
     if (reward && Object.keys(reward).length > 0) {
+      setPreviewUrl(reward.imageUrl ?? null)
       setValues({
         ...structuredClone(initialValuesDiscount),
         ...structuredClone(reward),
       })
-      setType(reward.metadata.type)
+      setType(reward?.metadata?.type ?? 'percentage')
     }
   }, [reward, setValues])
 
@@ -89,19 +108,25 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
           type: type,
         },
       })
-      console.log('🚀 ~ onFormSubmit ~ cleanedData:', cleanedData)
+
+      const mediaAsset = (await uploadMediaAsset()) as MediaAsset | boolean
+      if (mediaAsset) cleanedData.mediaAsset = mediaAsset
 
       if (reward && Object.keys(reward).length > 0) {
         delete cleanedData.companyId
-        await withLoading(() => updateReward(reward.id, cleanedData))
+        await withLoading(() => updateReward(reward.id ?? 0, cleanedData))
       } else {
         cleanedData.companyId = Number(data.companyId)
         await withLoading(() => createReward(cleanedData))
       }
-
+      if (mediaKey && mediaAsset) {
+        deleteMediaAsset(mediaKey)
+        setMediaKey(null)
+      }
       onSaved()
       onClose()
     } catch (error) {
+      if (key) deleteMediaAsset(key)
       console.log('Error en el envío del formulario:', error)
     }
   }
@@ -125,7 +150,7 @@ const ModalDiscount = ({ onClose, onSaved, title, reward }: Props) => {
 
   const getValue = (path: string) => {
     const keys = path.split('.')
-    return keys.reduce((o, k) => (o || {})[k], values)
+    return keys.reduce((o, k) => ((o as Record<string, any>) || {})[k], values)
   }
 
   return (

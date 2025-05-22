@@ -10,6 +10,8 @@ import { cleanEmptyFields } from '../../../utils/cleanObject'
 import useFormWithValidation from '../../../hooks/useForm'
 import InputField from '../../../components/inputField'
 import { initialValues, validationRulesCompany } from './formValidations'
+import { MediaAsset } from '../../../interfaces/mediaAsset'
+import { Company } from '../../../interfaces/types'
 
 interface Props {
   onClose: () => void
@@ -20,15 +22,23 @@ interface Props {
 
 const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
   const { withLoading, loading } = useLoading()
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const { createCompany, updateCompany, getCompany } = useWebApiCompany()
   const { getAecos } = useWebApiAeco()
-  const { component: InputUpload, uploadMediaAsset } = useInputUpload({
+  const {
+    component: InputUpload,
+    uploadMediaAsset,
+    deleteMediaAsset,
+    key,
+  } = useInputUpload({
     title: 'Personalizacion',
     type: 'image',
+    previewUrl,
   })
   const [selectedAeco, setSelectedAeco] = useState<any>([])
   const [aecoOptions, setAecoOptions] = useState<any>([])
   const [companyData, setCompanyData] = useState<any>({})
+  const [mediaKey, setMediaKey] = useState<string | null>(null)
 
   const mergedValues =
     companyData && Object.keys(companyData).length > 0
@@ -61,8 +71,10 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
 
   const getCompanyData = async (id: number) => {
     try {
-      const response = await getCompany(id)
+      const response = (await getCompany(id)) as Company
       setCompanyData(response)
+      setMediaKey(response?.mediaAsset?.fileKey ?? null)
+      setPreviewUrl(response?.logoUrl || null)
       if (response.aecos) {
         setSelectedAeco(
           response.aecos.map((item: any) => ({
@@ -84,16 +96,23 @@ const ModalCompanies = ({ onClose, title, onSaved, companyId }: Props) => {
         aecos: selectedAeco.map((item: any) => item.value),
       })
 
+      const mediaAsset = (await uploadMediaAsset()) as MediaAsset | boolean
+      if (mediaAsset) cleanedData.mediaAsset = mediaAsset
+
       if (companyData && Object.keys(companyData).length > 0) {
         await withLoading(() => updateCompany(companyData.id, cleanedData))
       } else {
         await withLoading(() => createCompany(cleanedData))
       }
-
+      if (mediaKey && mediaAsset) {
+        deleteMediaAsset(mediaKey)
+        setMediaKey(null)
+      }
       onSaved()
       resetForm()
       onClose()
     } catch (error) {
+      if (key) deleteMediaAsset(key)
       console.log('Error en el envío del formulario:', error)
     }
   }

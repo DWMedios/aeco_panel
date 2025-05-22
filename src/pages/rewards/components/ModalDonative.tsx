@@ -12,26 +12,44 @@ import { useInputUpload } from '../../../components/inputUpload'
 import InputSelect from '../../../components/inputSelect'
 import { useWebApiReward } from '../../../utils/api/webApiReward'
 import { cleanEmptyFields } from '../../../utils/cleanObject'
+import { Reward } from '../../../interfaces/types'
+import { MediaAsset } from '../../../interfaces/mediaAsset'
 
 interface Props {
   onClose: () => void
   onSaved: () => void
   title?: string
-  reward?: any
+  reward?: Reward | Record<string, any>
+  mediaKey: string | null
+  setMediaKey: (key: string | null) => void
 }
 
-const ModalDonative = ({ onClose, onSaved, title, reward }: Props) => {
+const ModalDonative = ({
+  onClose,
+  onSaved,
+  title,
+  reward,
+  mediaKey,
+  setMediaKey,
+}: Props) => {
   const { withLoading, loading } = useLoading()
   const { getCompanies } = useWebApiCompany()
   const [companies, setCompanies] = useState<any[]>([])
   const { getAecos } = useWebApiAeco()
   const [selectedAeco, setSelectedAeco] = useState<any>([])
   const [aecoOptions, setAecoOptions] = useState<any>([])
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
   const { createReward, updateReward } = useWebApiReward()
-  const { component: InputUpload } = useInputUpload({
+  const {
+    component: InputUpload,
+    uploadMediaAsset,
+    deleteMediaAsset,
+    key,
+  } = useInputUpload({
     title: 'Recompensa',
     type: 'image',
+    previewUrl,
   })
 
   const mergedValues = { ...initialValues, ...reward }
@@ -47,6 +65,7 @@ const ModalDonative = ({ onClose, onSaved, title, reward }: Props) => {
 
   useEffect(() => {
     if (reward && Object.keys(reward).length > 0) {
+      setPreviewUrl(reward.imageUrl ?? null)
       setValues({ ...initialValues, ...reward })
     }
   }, [reward, setValues])
@@ -74,6 +93,8 @@ const ModalDonative = ({ onClose, onSaved, title, reward }: Props) => {
         order: Number(data.order),
         aecos: selectedAeco.map((item: any) => item.value),
       })
+      const mediaAsset = (await uploadMediaAsset()) as MediaAsset | boolean
+      if (mediaAsset) cleanedData.mediaAsset = mediaAsset
 
       if (reward && Object.keys(reward).length > 0) {
         delete cleanedData.companyId
@@ -82,10 +103,15 @@ const ModalDonative = ({ onClose, onSaved, title, reward }: Props) => {
         cleanedData.companyId = Number(data.companyId)
         await withLoading(() => createReward(cleanedData))
       }
-
+      if (mediaKey && mediaAsset) {
+        deleteMediaAsset(mediaKey)
+        setMediaKey(null)
+      }
       onSaved()
       onClose()
     } catch (error) {
+      if (key) deleteMediaAsset(key)
+
       console.log('Error en el envío del formulario:', error)
     }
   }

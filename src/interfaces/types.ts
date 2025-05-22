@@ -1,4 +1,5 @@
 import { AecoStatusEnum } from '../enums/aecoEnums'
+import { MediaAsset } from './mediaAsset'
 
 export interface ApiResponseBase {
   page: number
@@ -46,6 +47,8 @@ export interface Company {
   rfc: string
   folio: string
   aecos: any[]
+  logoUrl?: string
+  mediaAsset?: MediaAsset
 }
 
 export interface Aeco {
@@ -78,4 +81,7 @@ export interface Reward {
   type: string
   order: number
   companyId?: number
+  imageUrl?: string
+  mediaAsset?: MediaAsset
+  metadata: Record<string, any>
 }

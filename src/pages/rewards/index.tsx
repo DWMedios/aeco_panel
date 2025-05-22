@@ -18,7 +18,8 @@ const Rewards = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [titleModal, setTitleModal] = useState<string>('Crear')
   const [formData, setFormData] = useState<Reward | Record<string, any>>({})
-  const { getRewards, deleteReward } = useWebApiReward()
+  const [mediaKey, setMediaKey] = useState<string | null>(null)
+  const { getRewards, deleteReward, getReward } = useWebApiReward()
   const { page, totalPages, setPage, refresh, setFilters, setDefaultFilters } =
     usePagination<Reward>(getRewards, 10, setRewards)
 
@@ -44,6 +45,20 @@ const Rewards = () => {
       setIsOpen(false)
     } catch (error) {
       console.error('Error deleting:', error)
+    }
+  }
+
+  const getRewardsData = async ({ id }: Reward) => {
+    try {
+      if (id) {
+        const response = (await getReward(id)) as Reward
+        setMediaKey(response?.mediaAsset?.fileKey ?? null)
+        if (response) {
+          setFormData(response)
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching rewards:', error)
     }
   }
 
@@ -104,7 +119,7 @@ const Rewards = () => {
           handleDelete={handleDelete}
           pagination={{ page, totalpages: totalPages }}
           changePage={setPage}
-          setFormData={setFormData}
+          setFormData={getRewardsData}
         />
       </ContentTabs>
       {isOpen &&
@@ -114,6 +129,8 @@ const Rewards = () => {
             title={titleModal}
             onSaved={refresh}
             reward={formData}
+            mediaKey={mediaKey}
+            setMediaKey={setMediaKey}
           />
         ) : tab == 'service' ? (
           <ModalService
@@ -121,6 +138,8 @@ const Rewards = () => {
             title={titleModal}
             onSaved={refresh}
             reward={formData}
+            mediaKey={mediaKey}
+            setMediaKey={setMediaKey}
           />
         ) : (
           <ModalDiscount
@@ -128,6 +147,8 @@ const Rewards = () => {
             title={titleModal}
             onSaved={refresh}
             reward={formData}
+            mediaKey={mediaKey}
+            setMediaKey={setMediaKey}
           />
         ))}
     </MainLayout>

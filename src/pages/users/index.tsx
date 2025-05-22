@@ -3,12 +3,13 @@ import MainLayout from '../../components/layout'
 import Table from '../../components/table'
 import Title from '../../components/title'
 import ModalUsers from './components/ModalUsers'
-import { User } from '../../interfaces/types'
+import { Alert, User } from '../../interfaces/types'
 import usePagination from '../../hooks/usePagination'
 import { useWebApiUser } from '../../utils/api/webApiUser'
 import Filters from '../../components/filters'
 
 const Users = () => {
+  const [showAlert, setShowAlert] = useState<Alert | null>(null)
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [titleModal, setTitleModal] = useState<string>('Crear')
   const [users, setUsers] = useState<User[]>([])
@@ -24,7 +25,15 @@ const Users = () => {
       await deleteUser(id)
       refresh()
       setIsOpen(false)
-    } catch (error) {
+      setShowAlert({
+        message: 'El usuario ha sido eliminado correctamente',
+        type: 'success',
+      })
+    } catch (error: any) {
+      setShowAlert({
+        message: error.message,
+        type: 'error',
+      })
       console.error('Error deleting user:', error)
     }
   }
@@ -36,7 +45,7 @@ const Users = () => {
   }, [formData])
 
   return (
-    <MainLayout>
+    <MainLayout alertProps={showAlert}>
       <Title title="Users" />
       <Filters
         addButton={true}
@@ -89,6 +98,7 @@ const Users = () => {
           title={titleModal}
           onSaved={refresh}
           user={formData}
+          setShowAlert={setShowAlert}
         />
       )}
     </MainLayout>

@@ -12,7 +12,7 @@ import { useInputUpload } from '../../../components/inputUpload'
 import InputSelect from '../../../components/inputSelect'
 import { useWebApiReward } from '../../../utils/api/webApiReward'
 import { cleanEmptyFields } from '../../../utils/cleanObject'
-import { Reward } from '../../../interfaces/types'
+import { Alert, Reward } from '../../../interfaces/types'
 import { MediaAsset } from '../../../interfaces/mediaAsset'
 
 interface Props {
@@ -22,6 +22,7 @@ interface Props {
   reward?: Reward | Record<string, any>
   mediaKey: string | null
   setMediaKey: (key: string | null) => void
+  setShowAlert: (alert: Alert) => void
 }
 
 const ModalDonative = ({
@@ -31,6 +32,7 @@ const ModalDonative = ({
   reward,
   mediaKey,
   setMediaKey,
+  setShowAlert,
 }: Props) => {
   const { withLoading, loading } = useLoading()
   const { getCompanies } = useWebApiCompany()
@@ -109,9 +111,16 @@ const ModalDonative = ({
       }
       onSaved()
       onClose()
-    } catch (error) {
+      setShowAlert({
+        message: 'Recompensa guardada correctamente',
+        type: 'success',
+      })
+    } catch (error: any) {
       if (key) deleteMediaAsset(key)
-
+      setShowAlert({
+        message: error.message,
+        type: 'error',
+      })
       console.log('Error en el envío del formulario:', error)
     }
   }
@@ -195,6 +204,22 @@ const ModalDonative = ({
                 touched={touched.order}
                 divClassName="w-1/5"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
+              />
+              <InputSelect
+                name="status"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.status}
+                touched={touched.status}
+                value={values.status}
+                options={[
+                  { value: 'true', label: 'Activo' },
+                  { value: 'false', label: 'Inactivo' },
+                ]}
+                placeholder="Estatus"
+                divClassName="w-2/5"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
+                defaultPlaceholder="Selecciona un estatus"
               />
             </div>
           </div>

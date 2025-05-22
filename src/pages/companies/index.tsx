@@ -3,13 +3,14 @@ import MainLayout from '../../components/layout'
 import Table from '../../components/table'
 import Title from '../../components/title'
 import ModalCompanies from './components/ModalCompanies'
-import { Company } from '../../interfaces/types'
+import { Alert, Company } from '../../interfaces/types'
 import usePagination from '../../hooks/usePagination'
 import { useWebApiCompany } from '../../utils/api/webApiCompany'
 import Filters from '../../components/filters'
 import { useInputUpload } from '../../components/inputUpload'
 
 const Companies = () => {
+  const [showAlert, setShowAlert] = useState<Alert | null>(null)
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [titleModal, setTitleModal] = useState<string>('Crear')
   const [companies, setCompanies] = useState<Company[]>([])
@@ -32,8 +33,16 @@ const Companies = () => {
       setMediaKey(null)
       refresh()
       setIsOpen(false)
-    } catch (error) {
-      console.error('Error deleting:', error)
+      setShowAlert({
+        message: 'La empresa ha sido eliminada correctamente',
+        type: 'success',
+      })
+    } catch (error: any) {
+      setShowAlert({
+        message: error.message,
+        type: 'error',
+      })
+      console.error('Error deleting:', JSON.stringify(error))
     }
   }
 
@@ -44,7 +53,7 @@ const Companies = () => {
   }, [formData])
 
   return (
-    <MainLayout>
+    <MainLayout alertProps={showAlert}>
       <Title title="Empresas" />
       <Filters
         addButton={true}
@@ -98,6 +107,7 @@ const Companies = () => {
           companyId={formData.id}
           mediaKey={mediaKey}
           setMediaKey={setMediaKey}
+          setShowAlert={setShowAlert}
         />
       )}
     </MainLayout>

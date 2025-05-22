@@ -27,16 +27,18 @@ export const useFetchWithAuth = () => {
 
         const response = await fetch(`${api}${url}`, options)
 
-        if (response.status === 403) {
-          logout()
-          throw new Error('No autorizado, redirigiendo a login')
-        }
+        const data = await response.json()
 
         if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`)
+          throw response.status === 500
+            ? {
+                message: 'Error interno estamos trabajando para mejorar.!',
+                type: 'error',
+              }
+            : data
         }
 
-        return await response.json()
+        return data
       } catch (error) {
         console.error('Error en la solicitud:', error)
         throw error

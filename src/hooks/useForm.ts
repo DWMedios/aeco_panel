@@ -261,8 +261,6 @@ const useFormWithValidation = <T extends Record<string, any>>(
           if (basePath) set(changedValues, basePath, current)
         }
       }
-      console.log('🚀 ~ currentFormValues:', currentFormValues)
-      console.log('🚀 ~ initialValues:', initialValues)
 
       compareAndTrackChanges(initialValues, currentFormValues)
 
@@ -275,7 +273,6 @@ const useFormWithValidation = <T extends Record<string, any>>(
         delete changedValues.passwordConfirmation
       }
 
-      console.log('🚀 ~ changedValues:', changedValues)
       onSubmit(changedValues as T)
       setIsSubmitting(false)
     }

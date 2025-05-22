@@ -13,7 +13,7 @@ import InputSelect from '../../../components/inputSelect'
 import { cleanEmptyFields } from '../../../utils/cleanObject'
 import { useWebApiReward } from '../../../utils/api/webApiReward'
 import { MediaAsset } from '../../../interfaces/mediaAsset'
-import { Reward } from '../../../interfaces/types'
+import { Alert, Reward } from '../../../interfaces/types'
 
 interface Props {
   onClose: () => void
@@ -22,6 +22,7 @@ interface Props {
   reward?: Reward | Record<string, any>
   mediaKey: string | null
   setMediaKey: (key: string | null) => void
+  setShowAlert: (alert: Alert) => void
 }
 
 const ModalDiscount = ({
@@ -31,6 +32,7 @@ const ModalDiscount = ({
   reward,
   mediaKey,
   setMediaKey,
+  setShowAlert,
 }: Props) => {
   const { withLoading, loading } = useLoading()
   const { getCompanies } = useWebApiCompany()
@@ -125,8 +127,16 @@ const ModalDiscount = ({
       }
       onSaved()
       onClose()
-    } catch (error) {
+      setShowAlert({
+        message: 'Recompensa guardada correctamente',
+        type: 'success',
+      })
+    } catch (error: any) {
       if (key) deleteMediaAsset(key)
+      setShowAlert({
+        message: error.message,
+        type: 'error',
+      })
       console.log('Error en el envío del formulario:', error)
     }
   }

@@ -85,3 +85,15 @@ export interface Reward {
   mediaAsset?: MediaAsset
   metadata: Record<string, any>
 }
+
+export interface Alert {
+  message: string
+  type: 'error' | 'success'
+  duration?: number
+}
+
+export interface ApiResponse {
+  statusCode: number
+  message: string
+  error: string
+}

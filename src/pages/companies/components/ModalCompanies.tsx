@@ -11,7 +11,8 @@ import useFormWithValidation from '../../../hooks/useForm'
 import InputField from '../../../components/inputField'
 import { initialValues, validationRulesCompany } from './formValidations'
 import { MediaAsset } from '../../../interfaces/mediaAsset'
-import { Company } from '../../../interfaces/types'
+import { Alert, Company } from '../../../interfaces/types'
+import InputSelect from '../../../components/inputSelect'
 
 interface Props {
   onClose: () => void
@@ -20,6 +21,7 @@ interface Props {
   companyId?: number | null
   mediaKey: string | null
   setMediaKey: (key: string | null) => void
+  setShowAlert: (alert: Alert) => void
 }
 
 const ModalCompanies = ({
@@ -29,6 +31,7 @@ const ModalCompanies = ({
   companyId,
   mediaKey,
   setMediaKey,
+  setShowAlert,
 }: Props) => {
   const { withLoading, loading } = useLoading()
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
@@ -101,6 +104,7 @@ const ModalCompanies = ({
     try {
       const cleanedData: any = cleanEmptyFields({
         ...data,
+        status: data.status === 'true' ? true : false,
         aecos: selectedAeco.map((item: any) => item.value),
       })
 
@@ -119,8 +123,16 @@ const ModalCompanies = ({
       onSaved()
       resetForm()
       onClose()
-    } catch (error) {
+      setShowAlert({
+        message: `Empresa guardada correctamente`,
+        type: 'success',
+      })
+    } catch (error: any) {
       if (key) deleteMediaAsset(key)
+      setShowAlert({
+        message: error.message,
+        type: 'error',
+      })
       console.log('Error en el envío del formulario:', error)
     }
   }
@@ -159,7 +171,7 @@ const ModalCompanies = ({
         <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
           <div className="mt-2">{InputUpload}</div>
 
-          <div className="flex flex-col gap-4 rounded-xl mt-8 p-4 flex-wrap">
+          <div className="flex flex-col gap-4 rounded-xl mt-2 p-4 flex-wrap">
             <div className="flex items-center justify-start gap-6">
               <span className="text-lg">Datos de la empresa</span>
             </div>
@@ -244,6 +256,22 @@ const ModalCompanies = ({
                 touched={touched.phone}
                 divClassName="w-1/4"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
+              />
+              <InputSelect
+                name="status"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.status}
+                touched={touched.status}
+                value={values.status}
+                options={[
+                  { value: 'true', label: 'Activo' },
+                  { value: 'false', label: 'Inactivo' },
+                ]}
+                placeholder="Estatus"
+                divClassName="w-2/5"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
+                defaultPlaceholder="Selecciona un estatus"
               />
             </div>
           </div>

@@ -9,15 +9,23 @@ import {
 import InputField from '../../../components/inputField'
 import InputSelect from '../../../components/inputSelect'
 import { useLoading } from '../../../hooks/loading'
+import { Alert } from '../../../interfaces/types'
 
 interface Props {
   onClose: () => void
   onSaved: () => void
   title?: string
   reward?: any
+  setShowAlert: (alert: Alert) => void
 }
 
-const ModalCapacities = ({ onClose, onSaved, title, reward }: Props) => {
+const ModalCapacities = ({
+  onClose,
+  onSaved,
+  title,
+  reward,
+  setShowAlert,
+}: Props) => {
   const { loading } = useLoading()
 
   const mergedValues = { ...initialValuesCapacities, ...reward }
@@ -40,10 +48,17 @@ const ModalCapacities = ({ onClose, onSaved, title, reward }: Props) => {
 
   const onFormSubmit = async (data: any) => {
     try {
-      console.log('🚀 ~ onFormSubmit ~ data:', data)
       onSaved()
       onClose()
-    } catch (error) {
+      setShowAlert({
+        message: 'La capacidad ha sido guardada correctamente',
+        type: 'success',
+      })
+    } catch (error: any) {
+      setShowAlert({
+        message: error.message,
+        type: 'error',
+      })
       console.log('Error en el envío del formulario:', error)
     }
   }

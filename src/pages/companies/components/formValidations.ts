@@ -18,6 +18,7 @@ export const initialValues = {
     password: '',
   },
   passwordConfirmation: '',
+  status: '',
 }
 
 export const validationRulesCompany = (companyData: any) => {

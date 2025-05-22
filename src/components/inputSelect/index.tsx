@@ -3,7 +3,7 @@ import React from 'react'
 interface Props {
   name: string
   placeholder: string
-  value: string | number
+  value: string | number | boolean | any
   options: Array<{ value: string | number; label: string }>
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
   onBlur: (e: React.FocusEvent<HTMLSelectElement>) => void

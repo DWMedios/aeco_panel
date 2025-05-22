@@ -4,7 +4,7 @@ interface Props {
   name: string
   placeholder: string
   type?: string
-  value?: string | number
+  value?: string | number | undefined | any
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   onBlur: (e: React.FocusEvent<HTMLInputElement>) => void
   error?: string

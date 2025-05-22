@@ -12,26 +12,44 @@ import { useInputUpload } from '../../../components/inputUpload'
 import InputSelect from '../../../components/inputSelect'
 import { useWebApiReward } from '../../../utils/api/webApiReward'
 import { cleanEmptyFields } from '../../../utils/cleanObject'
+import { Reward } from '../../../interfaces/types'
+import { MediaAsset } from '../../../interfaces/mediaAsset'
 
 interface Props {
   onClose: () => void
   onSaved: () => void
   title?: string
-  reward?: any
+  reward?: Reward | Record<string, any>
+  mediaKey: string | null
+  setMediaKey: (key: string | null) => void
 }
 
-const ModalService = ({ onClose, onSaved, title, reward }: Props) => {
+const ModalService = ({
+  onClose,
+  onSaved,
+  title,
+  reward,
+  mediaKey,
+  setMediaKey,
+}: Props) => {
   const { withLoading, loading } = useLoading()
   const { getCompanies } = useWebApiCompany()
   const [companies, setCompanies] = useState<any[]>([])
   const { getAecos } = useWebApiAeco()
   const [selectedAeco, setSelectedAeco] = useState<any>([])
   const [aecoOptions, setAecoOptions] = useState<any>([])
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
   const { createReward, updateReward } = useWebApiReward()
-  const { component: InputUpload } = useInputUpload({
+  const {
+    component: InputUpload,
+    uploadMediaAsset,
+    deleteMediaAsset,
+    key,
+  } = useInputUpload({
     title: 'Conexión con servicio',
     type: 'image',
+    previewUrl,
   })
 
   const mergedValues =
@@ -53,16 +71,13 @@ const ModalService = ({ onClose, onSaved, title, reward }: Props) => {
 
   useEffect(() => {
     if (reward && Object.keys(reward).length > 0) {
+      setPreviewUrl(reward.imageUrl ?? null)
       setValues({
         ...structuredClone(initialValuesService),
         ...structuredClone(reward),
       })
     }
   }, [reward, setValues])
-
-  const handleImageUpload = (file: File) => {
-    console.log('Imagen subida:', file)
-  }
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -78,7 +93,6 @@ const ModalService = ({ onClose, onSaved, title, reward }: Props) => {
   }, [])
 
   const onFormSubmit = async (data: any) => {
-    console.log('🚀 ~ onFormSubmit ~ data:', data)
     try {
       const cleanedData: any = cleanEmptyFields({
         ...data,
@@ -87,7 +101,8 @@ const ModalService = ({ onClose, onSaved, title, reward }: Props) => {
         order: Number(data.order),
         aecos: selectedAeco.map((item: any) => item.value),
       })
-      console.log('🚀 ~ onFormSubmit ~ cleanedData:', cleanedData)
+      const mediaAsset = (await uploadMediaAsset()) as MediaAsset | boolean
+      if (mediaAsset) cleanedData.mediaAsset = mediaAsset
 
       if (reward && Object.keys(reward).length > 0) {
         delete cleanedData.companyId
@@ -96,10 +111,16 @@ const ModalService = ({ onClose, onSaved, title, reward }: Props) => {
         cleanedData.companyId = Number(data.companyId)
         await withLoading(() => createReward(cleanedData))
       }
+      if (mediaKey && mediaAsset) {
+        deleteMediaAsset(mediaKey)
+        setMediaKey(null)
+      }
 
       onSaved()
       onClose()
     } catch (error) {
+      if (key) deleteMediaAsset(key)
+
       console.log('Error en el envío del formulario:', error)
     }
   }
@@ -123,7 +144,7 @@ const ModalService = ({ onClose, onSaved, title, reward }: Props) => {
 
   const getValue = (path: string) => {
     const keys = path.split('.')
-    return keys.reduce((o, k) => (o || {})[k], values)
+    return keys.reduce((o, k) => ((o as Record<string, any>) || {})[k], values)
   }
 
   return (

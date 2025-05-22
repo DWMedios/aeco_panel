@@ -1,10 +1,10 @@
-import { MediaAsset } from '../../interfaces/mediaAsset'
+import { MediaAssetUpload } from '../../interfaces/mediaAsset'
 import { useFetchWithAuth } from './fetch'
 
 export const useWebMediaAsset = () => {
   const { fetchRequest } = useFetchWithAuth()
 
-  const uploadAsset = async (data: MediaAsset) => {
+  const uploadAsset = async (data: MediaAssetUpload) => {
     return fetchRequest({
       url: '/media-assets/upload-url',
       method: 'POST',

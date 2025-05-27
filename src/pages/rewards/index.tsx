@@ -135,6 +135,7 @@ const Rewards = () => {
           handleDelete={handleDelete}
           pagination={{ page, totalpages: totalPages }}
           changePage={setPage}
+          page={page}
           setFormData={getRewardsData}
         />
       </ContentTabs>

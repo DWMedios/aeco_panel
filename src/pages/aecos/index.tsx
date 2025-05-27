@@ -76,10 +76,11 @@ const Aecos = () => {
           setIsOpen(true)
           setFormData({})
         }}
+        handleDelete={handleDelete}
         setTitleModal={setTitleModal}
         pagination={{ page, totalpages: totalPages }}
+        page={page}
         changePage={setPage}
-        handleDelete={handleDelete}
         setFormData={setFormData}
       />
       {isOpen && (

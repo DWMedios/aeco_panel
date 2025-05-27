@@ -5,7 +5,7 @@ import Title from '../../components/title'
 import ModalMachines from './components/ModalMachines'
 import { Aeco, Alert } from '../../interfaces/types'
 import usePagination from '../../hooks/usePagination'
-import { useWebApiAeco } from '../../utils/api/webApiAeco'
+import { useWebApiAeco } from '../../api/webApiAeco'
 import Filters from '../../components/filters'
 
 const Aecos = () => {

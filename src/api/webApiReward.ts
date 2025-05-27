@@ -1,4 +1,4 @@
-import { ApiResponseList, Reward } from '../../interfaces/types'
+import { ApiResponseList, Reward } from '../interfaces/types'
 import { useFetchWithAuth } from './fetch'
 
 export const useWebApiReward = () => {

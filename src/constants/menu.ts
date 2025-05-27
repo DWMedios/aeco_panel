@@ -43,7 +43,7 @@ export const menu = [
     subMenu: [
       {
         title: 'Control',
-        route: '/ads',
+        route: '/advertisings',
       },
       {
         title: 'Reportes',

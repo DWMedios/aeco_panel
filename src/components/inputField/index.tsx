@@ -34,7 +34,7 @@ const InputField = ({
       {shouldShowLabel && (
         <label
           htmlFor={name}
-          className="absolute -top-2 left-2 bg-white px-1 text-sm text-gray-600 z-10"
+          className="absolute -top-2 left-2 bg-white px-1 text-sm text-gray-600 z-10 "
         >
           {placeholder}
         </label>

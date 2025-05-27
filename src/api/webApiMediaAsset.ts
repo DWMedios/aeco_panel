@@ -1,4 +1,4 @@
-import { MediaAssetUpload } from '../../interfaces/mediaAsset'
+import { MediaAssetUpload } from '../interfaces/mediaAsset'
 import { useFetchWithAuth } from './fetch'
 
 export const useWebMediaAsset = () => {

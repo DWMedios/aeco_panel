@@ -4,7 +4,7 @@ import {
   MediaAssetResponse,
   MediaAssetUpload,
 } from '../../interfaces/mediaAsset'
-import { useWebMediaAsset } from '../../utils/api/webApiMediaAsset'
+import { useWebMediaAsset } from '../../api/webApiMediaAsset'
 import { Camera, VideoCamera } from '@phosphor-icons/react'
 
 interface Props {

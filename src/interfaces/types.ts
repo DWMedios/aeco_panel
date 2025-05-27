@@ -86,6 +86,16 @@ export interface Reward {
   metadata: Record<string, any>
 }
 
+export interface Contractor {
+  id?: number
+  name: string
+  email: string
+  phone: string
+  companyId?: number
+  mediaAsset?: MediaAsset
+  logoUrl?: string
+}
+
 export interface Alert {
   message: string
   type: 'error' | 'success'

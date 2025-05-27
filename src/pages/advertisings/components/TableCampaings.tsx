@@ -2,14 +2,20 @@ import { useEffect, useState } from 'react'
 import Table from '../../../components/table'
 import usePagination from '../../../hooks/usePagination'
 import Filters from '../../../components/filters'
-import { useWebApiCampaings } from '../../../api/webApiCampaing'
 import ModalCampaings from './ModalCampaings'
+import { useWebApiCampaings } from '../../../api/webApiCampaing'
+import { Alert } from '../../../interfaces/types'
 
-const TableCampaings = () => {
+interface Props {
+  setShowAlert: (alert: Alert) => void
+}
+
+const TableCampaings = ({ setShowAlert }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [titleModal, setTitleModal] = useState<string>('Crear')
   const [data, setData] = useState<any[]>([])
   const [formData, setFormData] = useState<any | Record<string, any>>({})
+  const [mediaKey, setMediaKey] = useState<string | null>(null)
   const { deleteCampaing, getCampaings } = useWebApiCampaings()
   const { page, totalPages, setPage, refresh, setFilters } = usePagination<any>(
     getCampaings,

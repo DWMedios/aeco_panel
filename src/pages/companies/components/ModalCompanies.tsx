@@ -4,8 +4,8 @@ import { useInputUpload } from '../../../components/inputUpload'
 import ActionsButtons from '../../../components/modals/Form/components/actionsButtons'
 import SearchableSelect from '../../../components/searchableSelect'
 import { useLoading } from '../../../hooks/loading'
-import { useWebApiAeco } from '../../../utils/api/webApiAeco'
-import { useWebApiCompany } from '../../../utils/api/webApiCompany'
+import { useWebApiAeco } from '../../../api/webApiAeco'
+import { useWebApiCompany } from '../../../api/webApiCompany'
 import { cleanEmptyFields } from '../../../utils/cleanObject'
 import useFormWithValidation from '../../../hooks/useForm'
 import InputField from '../../../components/inputField'
@@ -203,6 +203,17 @@ const ModalCompanies = ({
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
               <InputField
+                name="address"
+                placeholder="Dirección"
+                value={values.address}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.address}
+                touched={touched.address}
+                divClassName="w-3/5"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
+              />
+              <InputField
                 name="state"
                 placeholder="Estado"
                 value={values.state}
@@ -210,7 +221,7 @@ const ModalCompanies = ({
                 onBlur={handleBlur}
                 error={errors.state}
                 touched={touched.state}
-                divClassName="w-1/6"
+                divClassName="w-2/6"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
               <InputField
@@ -221,7 +232,7 @@ const ModalCompanies = ({
                 onBlur={handleBlur}
                 error={errors.city}
                 touched={touched.city}
-                divClassName="w-1/6"
+                divClassName="w-2/6"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
               <InputField
@@ -232,18 +243,7 @@ const ModalCompanies = ({
                 onBlur={handleBlur}
                 error={errors.postalCode}
                 touched={touched.postalCode}
-                divClassName="w-1/6"
-                className="w-full rounded-full border-2 border-gray-300 p-2"
-              />
-              <InputField
-                name="address"
-                placeholder="Dirección"
-                value={values.address}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.address}
-                touched={touched.address}
-                divClassName="w-2/5"
+                divClassName="w-2/6"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
               <InputField

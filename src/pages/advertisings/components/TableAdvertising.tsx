@@ -2,24 +2,30 @@ import { useEffect, useState } from 'react'
 import Table from '../../../components/table'
 import usePagination from '../../../hooks/usePagination'
 import Filters from '../../../components/filters'
-import { useWebApiCampaings } from '../../../api/webApiCampaing'
-import ModalCampaings from './ModalCampaings'
+import { useWebApiAdvertising } from '../../../api/webApiAdvertising'
+import ModalAdvertising from './ModalAdvertising'
+import { Alert } from '../../../interfaces/types'
 
-const TableCampaings = () => {
+interface Props {
+  setShowAlert: (alert: Alert) => void
+}
+
+const TableAdvertising = ({ setShowAlert }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [titleModal, setTitleModal] = useState<string>('Crear')
-  const [data, setData] = useState<any[]>([])
+  const [ads, setAds] = useState<any[]>([])
   const [formData, setFormData] = useState<any | Record<string, any>>({})
-  const { deleteCampaing, getCampaings } = useWebApiCampaings()
+  const [mediaKey, setMediaKey] = useState<string | null>(null)
+  const { getAdvertisings, deleteAdvertising } = useWebApiAdvertising()
   const { page, totalPages, setPage, refresh, setFilters } = usePagination<any>(
-    getCampaings,
+    getAdvertisings,
     10,
-    setData
+    setAds
   )
 
   const handleDelete = async (id: number) => {
     try {
-      await deleteCampaing(id)
+      await deleteAdvertising(id)
       refresh()
       setIsOpen(false)
     } catch (error) {
@@ -32,6 +38,7 @@ const TableCampaings = () => {
       setTitleModal('Editar')
     }
   }, [formData])
+
   return (
     <>
       <Filters
@@ -45,14 +52,8 @@ const TableCampaings = () => {
       />
       <Table
         tableContent={{
-          headers: [
-            'Folio',
-            'Empresa',
-            'Descripcion',
-            'Descripciond del plan',
-            'Estatus',
-          ],
-          data: data.map((item: any) => ({
+          headers: ['Folio', 'Empresa', 'Contratsitas', 'Campaña', 'Estatus'],
+          data: ads.map((item: any) => ({
             ...item,
             companyName: item.company.name,
           })),
@@ -60,8 +61,8 @@ const TableCampaings = () => {
         columns={[
           'id',
           'companyName',
-          'description',
-          'planDescription',
+          'totalContractors',
+          'totalCampaigns',
           { column: 'isEnabled', type: 'chip' },
         ]}
         openModal={() => {
@@ -75,15 +76,18 @@ const TableCampaings = () => {
         setFormData={setFormData}
       />
       {isOpen && (
-        <ModalCampaings
+        <ModalAdvertising
           onClose={() => setIsOpen(false)}
           title={titleModal}
           onSaved={refresh}
-          campaingId={formData.id}
+          adsId={formData.id}
+          mediaKey={mediaKey}
+          setMediaKey={setMediaKey}
+          setShowAlert={setShowAlert}
         />
       )}
     </>
   )
 }
 
-export default TableCampaings
+export default TableAdvertising

@@ -7,6 +7,9 @@ const generateQueryString = (
 ): string => {
   const params = new URLSearchParams()
 
+  params.append('orderByDirection', 'asc')
+  params.append('orderByField', 'createdAt')
+
   Object.keys(filters).forEach((key) => {
     const value = filters[key]
     if (value !== undefined && value !== null) {

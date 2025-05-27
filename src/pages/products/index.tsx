@@ -6,11 +6,11 @@ import ContentTabs from '../../components/tabs/components/contentTabs'
 import Table from '../../components/table'
 import usePagination from '../../hooks/usePagination'
 import { Alert, Reward } from '../../interfaces/types'
-import { useWebApiProducts } from '../../utils/api/webApiProduct'
+import { useWebApiProducts } from '../../api/webApiProduct'
 import Filters from '../../components/filters'
 import ModalCapacities from './components/ModalCapacities'
 import ModalProducts from './components/ModalProducts'
-import { useWebApiCapacities } from '../../utils/api/webApiCapacity'
+import { useWebApiCapacities } from '../../api/webApiCapacity'
 
 const Products = () => {
   const [showAlert, setShowAlert] = useState<Alert | null>(null)
@@ -111,15 +111,15 @@ const Products = () => {
               data: products,
             }}
             columns={['id', 'name', 'family', 'code']}
-            pagination={{ page, totalpages: totalPages }}
-            changePage={setPage}
-            page={page}
             openModal={() => {
               setIsOpen(true)
               setFormData({})
             }}
             handleDelete={handleDelete}
             setTitleModal={setTitleModal}
+            changePage={setPage}
+            page={page}
+            pagination={{ page, totalpages: totalPages }}
           />
         ) : (
           <>

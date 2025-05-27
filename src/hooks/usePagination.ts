@@ -35,7 +35,7 @@ const usePagination = <T>(
   perPage: number,
   setData: React.Dispatch<React.SetStateAction<T[]>>
 ) => {
-  const [filters, setFilters] = useState<Record<string, any> | null>({})
+  const [filters, setFilters] = useState<Record<string, any> | null>(null)
   const [defaultFilter, setDefaultFilters] = useState<Record<
     string,
     any
@@ -78,7 +78,7 @@ const usePagination = <T>(
 
   useEffect(() => {
     if (filters) {
-      fetchData(1) // Reset to page 1 when filters change
+      fetchData(1)
     }
   }, [filters])
 

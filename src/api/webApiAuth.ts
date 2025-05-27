@@ -1,4 +1,4 @@
-import { ILoginForm } from '../../pages/login/interface'
+import { ILoginForm } from '../pages/login/interface'
 import { useFetchWithAuth } from './fetch'
 
 export const useWebApiAuth = () => {

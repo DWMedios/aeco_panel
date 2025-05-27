@@ -5,7 +5,7 @@ import Title from '../../components/title'
 import ModalUsers from './components/ModalUsers'
 import { Alert, User } from '../../interfaces/types'
 import usePagination from '../../hooks/usePagination'
-import { useWebApiUser } from '../../utils/api/webApiUser'
+import { useWebApiUser } from '../../api/webApiUser'
 import Filters from '../../components/filters'
 
 const Users = () => {

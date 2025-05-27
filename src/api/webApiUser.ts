@@ -1,5 +1,5 @@
-import { ApiResponseList, User } from '../../interfaces/types'
-import { IUserForm } from '../../pages/users/interface'
+import { ApiResponseList, User } from '../interfaces/types'
+import { IUserForm } from '../pages/users/interface'
 import { useFetchWithAuth } from './fetch'
 
 export const useWebApiUser = () => {

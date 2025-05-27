@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Table from '../../../components/table'
 import usePagination from '../../../hooks/usePagination'
 import Filters from '../../../components/filters'
-import { useWebApiContractors } from '../../../utils/api/webApiContractor'
+import { useWebApiContractors } from '../../../api/webApiContractor'
 import ModalContractors from './ModalContractors'
 
 const TableContractor = () => {

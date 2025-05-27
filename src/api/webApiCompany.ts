@@ -1,5 +1,5 @@
-import { ApiResponseList, Company } from '../../interfaces/types'
-import { ICompanyForm } from '../../pages/companies/interface'
+import { ApiResponseList, Company } from '../interfaces/types'
+import { ICompanyForm } from '../pages/companies/interface'
 import { useFetchWithAuth } from './fetch'
 
 export const useWebApiCompany = () => {

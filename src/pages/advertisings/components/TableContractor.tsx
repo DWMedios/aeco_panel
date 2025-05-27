@@ -2,28 +2,41 @@ import { useEffect, useState } from 'react'
 import Table from '../../../components/table'
 import usePagination from '../../../hooks/usePagination'
 import Filters from '../../../components/filters'
-import { useWebApiCampaings } from '../../../api/webApiCampaing'
-import ModalCampaings from './ModalCampaings'
+import { useWebApiContractors } from '../../../api/webApiContractor'
+import ModalContractors from './ModalContractors'
+import { Alert } from '../../../interfaces/types'
 
-const TableCampaings = () => {
+interface Props {
+  setShowAlert: (alert: Alert) => void
+}
+
+const TableContractor = ({ setShowAlert }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [titleModal, setTitleModal] = useState<string>('Crear')
   const [data, setData] = useState<any[]>([])
   const [formData, setFormData] = useState<any | Record<string, any>>({})
-  const { deleteCampaing, getCampaings } = useWebApiCampaings()
+  const [mediaKey, setMediaKey] = useState<string | null>(null)
+  const { deleteContractor, getContractors } = useWebApiContractors()
   const { page, totalPages, setPage, refresh, setFilters } = usePagination<any>(
-    getCampaings,
+    getContractors,
     10,
     setData
   )
 
   const handleDelete = async (id: number) => {
     try {
-      await deleteCampaing(id)
+      await deleteContractor(id)
       refresh()
       setIsOpen(false)
-    } catch (error) {
-      console.error('Error deleting user:', error)
+      setShowAlert({
+        message: 'La empresa ha sido eliminada correctamente',
+        type: 'success',
+      })
+    } catch (error: any) {
+      setShowAlert({
+        message: error.message,
+        type: 'error',
+      })
     }
   }
 
@@ -32,38 +45,31 @@ const TableCampaings = () => {
       setTitleModal('Editar')
     }
   }, [formData])
+
   return (
     <>
       <Filters
         addButton={true}
         filters={[
           { name: 'name', label: 'Nombre' },
-          { name: 'rfc', label: 'RFC' },
-          { name: 'status', label: 'Estatus' },
+          { name: 'email', label: 'Correo' },
         ]}
         setFilters={setFilters}
+        openModal={() => {
+          setTitleModal('Crear')
+          setIsOpen(true)
+          setFormData({})
+        }}
       />
       <Table
         tableContent={{
-          headers: [
-            'Folio',
-            'Empresa',
-            'Descripcion',
-            'Descripciond del plan',
-            'Estatus',
-          ],
+          headers: ['Folio', 'Nombre', 'Empresa', 'Coreo', 'Telefono'],
           data: data.map((item: any) => ({
             ...item,
             companyName: item.company.name,
           })),
         }}
-        columns={[
-          'id',
-          'companyName',
-          'description',
-          'planDescription',
-          { column: 'isEnabled', type: 'chip' },
-        ]}
+        columns={['id', 'name', 'companyName', 'email', 'phone']}
         openModal={() => {
           setIsOpen(true)
           setFormData({})
@@ -75,15 +81,18 @@ const TableCampaings = () => {
         setFormData={setFormData}
       />
       {isOpen && (
-        <ModalCampaings
+        <ModalContractors
           onClose={() => setIsOpen(false)}
           title={titleModal}
           onSaved={refresh}
-          campaingId={formData.id}
+          contractorId={formData.id}
+          mediaKey={mediaKey}
+          setMediaKey={setMediaKey}
+          setShowAlert={setShowAlert}
         />
       )}
     </>
   )
 }
 
-export default TableCampaings
+export default TableContractor

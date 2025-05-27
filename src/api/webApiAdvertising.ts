@@ -1,22 +1,22 @@
-import { Aeco, ApiResponseList } from '../../interfaces/types'
-import { IAecoForm } from '../../pages/aecos/interface'
+import { Aeco, ApiResponseList } from '../interfaces/types'
+import { IAecoForm } from '../pages/aecos/interface'
 import { useFetchWithAuth } from './fetch'
 
-export const useWebApiAds = () => {
+export const useWebApiAdvertising = () => {
   const { fetchRequest } = useFetchWithAuth()
 
-  const getAds = async (filters: string) => {
+  const getAdvertisings = async (filters: string) => {
     return fetchRequest<ApiResponseList<Aeco>>({
       url: `/advertisings${filters}`,
       method: 'GET',
     })
   }
 
-  const getAdsById = async (id: number) => {
+  const getAdvertisingById = async (id: number) => {
     return fetchRequest<Aeco>({ url: `/advertisings/${id}`, method: 'GET' })
   }
 
-  const createAds = async (aeco: IAecoForm) => {
+  const createAdvertising = async (aeco: IAecoForm) => {
     return fetchRequest<Aeco>({
       url: `/advertisings`,
       method: 'POST',
@@ -24,7 +24,7 @@ export const useWebApiAds = () => {
     })
   }
 
-  const updateAds = async (id: number, aeco: IAecoForm) => {
+  const updateAdvertising = async (id: number, aeco: IAecoForm) => {
     return fetchRequest<Aeco>({
       url: `/advertisings/${id}`,
       method: 'PUT',
@@ -32,15 +32,15 @@ export const useWebApiAds = () => {
     })
   }
 
-  const deleteAds = async (id: number) => {
+  const deleteAdvertising = async (id: number) => {
     return fetchRequest<any>({ url: `/advertisings/${id}`, method: 'DELETE' })
   }
 
   return {
-    getAds,
-    getAdsById,
-    createAds,
-    updateAds,
-    deleteAds,
+    getAdvertisings,
+    getAdvertisingById,
+    createAdvertising,
+    updateAdvertising,
+    deleteAdvertising,
   }
 }

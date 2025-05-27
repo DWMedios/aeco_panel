@@ -6,7 +6,7 @@ import useFormWithValidation from '../../../hooks/useForm'
 import { initialValuesProduct, validationRulesProduct } from './formValidates'
 import InputField from '../../../components/inputField'
 import InputSelect from '../../../components/inputSelect'
-import { useWebApiCapacities } from '../../../utils/api/webApiCapacity'
+import { useWebApiCapacities } from '../../../api/webApiCapacity'
 import { Alert } from '../../../interfaces/types'
 
 interface Props {

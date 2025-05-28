@@ -47,7 +47,7 @@ const Table = ({
           />
         </table>
       </div>
-      {tableContent.data.length > 9 && (
+      {pagination && pagination.totalpages > 1 && (
         <div className="w-[90%] m-6 flex justify-center content-center">
           {pagination && (
             <Pagination

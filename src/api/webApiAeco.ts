@@ -1,5 +1,5 @@
-import { Aeco, ApiResponseList } from '../../interfaces/types'
-import { IAecoForm } from '../../pages/aecos/interface'
+import { Aeco, ApiResponseList } from '../interfaces/types'
+import { IAecoForm } from '../pages/aecos/interface'
 import { useFetchWithAuth } from './fetch'
 
 export const useWebApiAeco = () => {

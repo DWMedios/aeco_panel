@@ -5,7 +5,7 @@ import Title from '../../components/title'
 import ModalUsers from './components/ModalUsers'
 import { Alert, User } from '../../interfaces/types'
 import usePagination from '../../hooks/usePagination'
-import { useWebApiUser } from '../../utils/api/webApiUser'
+import { useWebApiUser } from '../../api/webApiUser'
 import Filters from '../../components/filters'
 
 const Users = () => {
@@ -86,10 +86,11 @@ const Users = () => {
           setIsOpen(true)
           setFormData({})
         }}
+        handleDelete={handleDelete}
         setTitleModal={setTitleModal}
         pagination={{ page, totalpages: totalPages }}
+        page={page}
         changePage={setPage}
-        handleDelete={handleDelete}
         setFormData={setFormData}
       />
       {isOpen && (

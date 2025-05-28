@@ -1,7 +1,7 @@
 import { ILoginForm } from '../interface'
 import { useLoading } from '../../../hooks/loading'
 import { useAuth } from '../../../hooks/useAuth'
-import { useWebApiAuth } from '../../../utils/api/webApiAuth'
+import { useWebApiAuth } from '../../../api/webApiAuth'
 import useFormWithValidation from '../../../hooks/useForm'
 import InputField from '../../../components/inputField'
 import { initialValues, validationRules } from './formValidations'

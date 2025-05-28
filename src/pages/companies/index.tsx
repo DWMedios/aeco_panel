@@ -5,7 +5,7 @@ import Title from '../../components/title'
 import ModalCompanies from './components/ModalCompanies'
 import { Alert, Company } from '../../interfaces/types'
 import usePagination from '../../hooks/usePagination'
-import { useWebApiCompany } from '../../utils/api/webApiCompany'
+import { useWebApiCompany } from '../../api/webApiCompany'
 import Filters from '../../components/filters'
 import { useInputUpload } from '../../components/inputUpload'
 
@@ -42,7 +42,6 @@ const Companies = () => {
         message: error.message,
         type: 'error',
       })
-      console.error('Error deleting:', JSON.stringify(error))
     }
   }
 
@@ -93,10 +92,11 @@ const Companies = () => {
           setIsOpen(true)
           setFormData({})
         }}
+        handleDelete={handleDelete}
         setTitleModal={setTitleModal}
         pagination={{ page, totalpages: totalPages }}
         changePage={setPage}
-        handleDelete={handleDelete}
+        page={page}
         setFormData={setFormData}
       />
       {isOpen && (

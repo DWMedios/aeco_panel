@@ -2,24 +2,30 @@ import { useEffect, useState } from 'react'
 import Table from '../../../components/table'
 import usePagination from '../../../hooks/usePagination'
 import Filters from '../../../components/filters'
-import { useWebApiAds } from '../../../utils/api/webApiAds'
-import ModalAds from './ModalAds'
+import { useWebApiAdvertising } from '../../../api/webApiAdvertising'
+import ModalAdvertising from './ModalAdvertising'
+import { Alert } from '../../../interfaces/types'
 
-const TableAds = () => {
+interface Props {
+  setShowAlert: (alert: Alert) => void
+}
+
+const TableAdvertising = ({ setShowAlert }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [titleModal, setTitleModal] = useState<string>('Crear')
   const [ads, setAds] = useState<any[]>([])
   const [formData, setFormData] = useState<any | Record<string, any>>({})
-  const { getAds, deleteAds } = useWebApiAds()
+  const [mediaKey, setMediaKey] = useState<string | null>(null)
+  const { getAdvertisings, deleteAdvertising } = useWebApiAdvertising()
   const { page, totalPages, setPage, refresh, setFilters } = usePagination<any>(
-    getAds,
+    getAdvertisings,
     10,
     setAds
   )
 
   const handleDelete = async (id: number) => {
     try {
-      await deleteAds(id)
+      await deleteAdvertising(id)
       refresh()
       setIsOpen(false)
     } catch (error) {
@@ -70,15 +76,18 @@ const TableAds = () => {
         setFormData={setFormData}
       />
       {isOpen && (
-        <ModalAds
+        <ModalAdvertising
           onClose={() => setIsOpen(false)}
           title={titleModal}
           onSaved={refresh}
           adsId={formData.id}
+          mediaKey={mediaKey}
+          setMediaKey={setMediaKey}
+          setShowAlert={setShowAlert}
         />
       )}
     </>
   )
 }
 
-export default TableAds
+export default TableAdvertising

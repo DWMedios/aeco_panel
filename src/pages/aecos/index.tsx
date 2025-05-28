@@ -5,7 +5,7 @@ import Title from '../../components/title'
 import ModalMachines from './components/ModalMachines'
 import { Aeco, Alert } from '../../interfaces/types'
 import usePagination from '../../hooks/usePagination'
-import { useWebApiAeco } from '../../utils/api/webApiAeco'
+import { useWebApiAeco } from '../../api/webApiAeco'
 import Filters from '../../components/filters'
 
 const Aecos = () => {
@@ -76,10 +76,11 @@ const Aecos = () => {
           setIsOpen(true)
           setFormData({})
         }}
+        handleDelete={handleDelete}
         setTitleModal={setTitleModal}
         pagination={{ page, totalpages: totalPages }}
+        page={page}
         changePage={setPage}
-        handleDelete={handleDelete}
         setFormData={setFormData}
       />
       {isOpen && (

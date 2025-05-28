@@ -2,11 +2,12 @@ import { useState } from 'react'
 import MainLayout from '../../components/layout'
 import Title from '../../components/title'
 import Tabs from '../../components/tabs'
-import TableAds from './components/TableAds'
 import TableContractors from './components/TableContractor'
 import TableCampaings from './components/TableCampaings'
+import TableAdvertising from './components/TableAdvertising'
 
-const Ads = () => {
+const Advertising = () => {
+  const [showAlert, setShowAlert] = useState<Alert | null>(null)
   const [tab, setTab] = useState<string>('ads')
 
   const tabs = [
@@ -16,20 +17,20 @@ const Ads = () => {
   ]
 
   return (
-    <MainLayout>
+    <MainLayout alertProps={showAlert}>
       <Title title="Publicidad" />
       <div className="flex justify-between items-center mt-10 w-full">
         <Tabs tabs={tabs} selected={tab} action={(data) => setTab(data)} />
       </div>
 
       {tab == 'ads' ? (
-        <TableAds />
+        <TableAdvertising setShowAlert={setShowAlert} />
       ) : tab == 'contractors' ? (
-        <TableContractors />
+        <TableContractors setShowAlert={setShowAlert} />
       ) : (
-        <TableCampaings />
+        <TableCampaings setShowAlert={setShowAlert} />
       )}
     </MainLayout>
   )
 }
-export default Ads
+export default Advertising

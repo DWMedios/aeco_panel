@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useFetchWithAuth } from '../utils/api/fetch'
+import { useFetchWithAuth } from '../api/fetch'
 import { format, eachDayOfInterval, parseISO } from 'date-fns'
 
 interface Params {

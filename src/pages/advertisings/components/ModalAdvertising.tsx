@@ -1,13 +1,25 @@
 import Modal from '../../../components/modals/Form'
+import { Alert } from '../../../interfaces/types'
 
 interface Props {
   onClose: () => void
   onSaved: () => void
   title?: string
-  contractorId?: number | null
+  adsId?: number | null
+  mediaKey: string | null
+  setMediaKey: (key: string | null) => void
+  setShowAlert: (alert: Alert) => void
 }
 
-const ModalContractors = ({ onClose, title, onSaved, companyId }: Props) => {
+const ModalAdvertising = ({
+  onClose,
+  title,
+  onSaved,
+  companyId,
+  mediaKey,
+  setMediaKey,
+  setShowAlert,
+}: Props) => {
   return (
     <Modal
       onClose={() => {
@@ -74,4 +86,4 @@ const ModalContractors = ({ onClose, title, onSaved, companyId }: Props) => {
   )
 }
 
-export default ModalContractors
+export default ModalAdvertising

@@ -2,24 +2,30 @@ import { useEffect, useState } from 'react'
 import Table from '../../../components/table'
 import usePagination from '../../../hooks/usePagination'
 import Filters from '../../../components/filters'
-import { useWebApiContractors } from '../../../utils/api/webApiContractor'
-import ModalContractors from './ModalContractors'
+import ModalCampaings from './ModalCampaings'
+import { useWebApiCampaings } from '../../../api/webApiCampaing'
+import { Alert } from '../../../interfaces/types'
 
-const TableContractor = () => {
+interface Props {
+  setShowAlert: (alert: Alert) => void
+}
+
+const TableCampaings = ({ setShowAlert }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [titleModal, setTitleModal] = useState<string>('Crear')
   const [data, setData] = useState<any[]>([])
   const [formData, setFormData] = useState<any | Record<string, any>>({})
-  const { deleteContractor, getContractors } = useWebApiContractors()
+  const [mediaKey, setMediaKey] = useState<string | null>(null)
+  const { deleteCampaing, getCampaings } = useWebApiCampaings()
   const { page, totalPages, setPage, refresh, setFilters } = usePagination<any>(
-    getContractors,
+    getCampaings,
     10,
     setData
   )
 
   const handleDelete = async (id: number) => {
     try {
-      await deleteContractor(id)
+      await deleteCampaing(id)
       refresh()
       setIsOpen(false)
     } catch (error) {
@@ -38,19 +44,32 @@ const TableContractor = () => {
         addButton={true}
         filters={[
           { name: 'name', label: 'Nombre' },
-          { name: 'email', label: 'Email' },
+          { name: 'rfc', label: 'RFC' },
+          { name: 'status', label: 'Estatus' },
         ]}
         setFilters={setFilters}
       />
       <Table
         tableContent={{
-          headers: ['Folio', 'Nombre', 'Empresa', 'Telefono'],
+          headers: [
+            'Folio',
+            'Empresa',
+            'Descripcion',
+            'Descripciond del plan',
+            'Estatus',
+          ],
           data: data.map((item: any) => ({
             ...item,
             companyName: item.company.name,
           })),
         }}
-        columns={['id', 'name', 'companyName', 'phone']}
+        columns={[
+          'id',
+          'companyName',
+          'description',
+          'planDescription',
+          { column: 'isEnabled', type: 'chip' },
+        ]}
         openModal={() => {
           setIsOpen(true)
           setFormData({})
@@ -62,15 +81,15 @@ const TableContractor = () => {
         setFormData={setFormData}
       />
       {isOpen && (
-        <ModalContractors
+        <ModalCampaings
           onClose={() => setIsOpen(false)}
           title={titleModal}
           onSaved={refresh}
-          contractorId={formData.id}
+          campaingId={formData.id}
         />
       )}
     </>
   )
 }
 
-export default TableContractor
+export default TableCampaings

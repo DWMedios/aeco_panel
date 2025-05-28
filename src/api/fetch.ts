@@ -2,7 +2,7 @@ import { useAuth } from '../hooks/useAuth'
 import { ApiParams } from '../interfaces/api'
 import { useCallback } from 'react'
 
-const api = import.meta.env.VITE_API_BASE_URL
+const api = import.meta.env.VITE_API_BASE_URL || 'https://ayuntaeco.com/api/v1'
 
 export const useFetchWithAuth = () => {
   const { logout, getToken } = useAuth()

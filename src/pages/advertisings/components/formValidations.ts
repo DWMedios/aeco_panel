@@ -6,6 +6,35 @@ export const initialValuesContractors = {
   mediaAsset: '',
 }
 
+export const initialValuesCampaigns = {
+  name: '',
+  description: '',
+  startDate: '',
+  endDate: '',
+  companyId: '',
+  contractorId: '',
+  isEnabled: true,
+  mediaAsset: '',
+}
+
+export const initialValuesAdvertisings = {
+  isEnabled: 'true',
+  companyId: '',
+  contractors: '',
+  campaigns: '',
+}
+
+export const validationRulesAdvertisings = (advertising: any) => {
+  return {
+    companyId: {
+      required: Object.keys(advertising).length === 0 ? true : false,
+      errorMessages: {
+        required: 'La empresa es obligatoria',
+      },
+    },
+  }
+}
+
 export const validationRulesContractors = (contractor: any) => {
   return {
     name: {
@@ -30,6 +59,41 @@ export const validationRulesContractors = (contractor: any) => {
     },
     companyId: {
       required: Object.keys(contractor).length === 0 ? true : false,
+      errorMessages: {
+        required: 'La empresa es obligatoria',
+      },
+    },
+  }
+}
+
+export const validationRulesCampaigns = (campaign: any) => {
+  return {
+    name: {
+      required: true,
+      errorMessages: {
+        required: 'El nombre de la campaña es obligatorio',
+      },
+    },
+    description: {
+      required: true,
+      errorMessages: {
+        required: 'La descripción de la campaña es obligatoria',
+      },
+    },
+    startDate: {
+      required: true,
+      errorMessages: {
+        required: 'La fecha de inicio es obligatoria',
+      },
+    },
+    endDate: {
+      required: true,
+      errorMessages: {
+        required: 'La fecha de fin es obligatoria',
+      },
+    },
+    companyId: {
+      required: Object.keys(campaign).length === 0 ? true : false,
       errorMessages: {
         required: 'La empresa es obligatoria',
       },

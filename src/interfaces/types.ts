@@ -96,6 +96,27 @@ export interface Contractor {
   logoUrl?: string
 }
 
+export interface Advertising {
+  id?: number
+  isEnabled: boolean
+  companyId: number
+  contractors?: Contractor[]
+  campaigns: Campaign[]
+}
+
+export interface Campaign {
+  id?: number
+  contractName: string
+  description: string
+  startDate: string
+  endDate: string
+  isEnabled?: boolean
+  contractorId?: number
+  companyId?: number
+  mediaAsset?: MediaAsset
+  aecos: any[]
+}
+
 export interface Alert {
   message: string
   type: 'error' | 'success'

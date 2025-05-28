@@ -159,7 +159,7 @@ const ModalContractors = ({
             <div className="flex items-center justify-start gap-4 flex-wrap">
               <InputField
                 name="name"
-                placeholder="Nombre de la empresa"
+                placeholder="Nombre del contratista"
                 value={values.name}
                 onChange={handleChange}
                 onBlur={handleBlur}

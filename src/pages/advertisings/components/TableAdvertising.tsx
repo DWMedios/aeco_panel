@@ -15,7 +15,6 @@ const TableAdvertising = ({ setShowAlert }: Props) => {
   const [titleModal, setTitleModal] = useState<string>('Crear')
   const [ads, setAds] = useState<any[]>([])
   const [formData, setFormData] = useState<any | Record<string, any>>({})
-  const [mediaKey, setMediaKey] = useState<string | null>(null)
   const { getAdvertisings, deleteAdvertising } = useWebApiAdvertising()
   const { page, totalPages, setPage, refresh, setFilters } = usePagination<any>(
     getAdvertisings,
@@ -49,6 +48,10 @@ const TableAdvertising = ({ setShowAlert }: Props) => {
           { name: 'status', label: 'Estatus' },
         ]}
         setFilters={setFilters}
+        openModal={() => {
+          setIsOpen(true)
+          setFormData({})
+        }}
       />
       <Table
         tableContent={{
@@ -65,14 +68,11 @@ const TableAdvertising = ({ setShowAlert }: Props) => {
           'totalCampaigns',
           { column: 'isEnabled', type: 'chip' },
         ]}
-        openModal={() => {
-          setIsOpen(true)
-          setFormData({})
-        }}
         setTitleModal={setTitleModal}
         pagination={{ page, totalpages: totalPages }}
         changePage={setPage}
         handleDelete={handleDelete}
+        page={page}
         setFormData={setFormData}
       />
       {isOpen && (
@@ -81,8 +81,6 @@ const TableAdvertising = ({ setShowAlert }: Props) => {
           title={titleModal}
           onSaved={refresh}
           adsId={formData.id}
-          mediaKey={mediaKey}
-          setMediaKey={setMediaKey}
           setShowAlert={setShowAlert}
         />
       )}

@@ -1,5 +1,4 @@
-import { Aeco, ApiResponseList } from '../interfaces/types'
-import { IAecoForm } from '../pages/aecos/interface'
+import { ApiResponseList, Campaign } from '../interfaces/types'
 import { useFetchWithAuth } from './fetch'
 
 export const useWebApiCampaings = () => {
@@ -13,25 +12,25 @@ export const useWebApiCampaings = () => {
   }
 
   const getCampaing = async (id: number) => {
-    return fetchRequest<Aeco>({
+    return fetchRequest<Campaign>({
       url: `/advertisings/campaigns/${id}`,
       method: 'GET',
     })
   }
 
-  const createCampaing = async (aeco: IAecoForm) => {
-    return fetchRequest<Aeco>({
+  const createCampaing = async (campaign: any) => {
+    return fetchRequest<Campaign>({
       url: `/advertisings/campaigns`,
       method: 'POST',
-      body: aeco,
+      body: campaign,
     })
   }
 
-  const updateCampaing = async (id: number, aeco: IAecoForm) => {
-    return fetchRequest<Aeco>({
+  const updateCampaing = async (id: number, campaign: any) => {
+    return fetchRequest<Campaign>({
       url: `/advertisings/campaigns/${id}`,
       method: 'PUT',
-      body: aeco,
+      body: campaign,
     })
   }
 

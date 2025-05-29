@@ -7,7 +7,7 @@ export const initialValuesContractors = {
 }
 
 export const initialValuesCampaigns = {
-  name: '',
+  contractName: '',
   description: '',
   startDate: '',
   endDate: '',
@@ -68,7 +68,7 @@ export const validationRulesContractors = (contractor: any) => {
 
 export const validationRulesCampaigns = (campaign: any) => {
   return {
-    name: {
+    contractName: {
       required: true,
       errorMessages: {
         required: 'El nombre de la campaña es obligatorio',
@@ -78,18 +78,6 @@ export const validationRulesCampaigns = (campaign: any) => {
       required: true,
       errorMessages: {
         required: 'La descripción de la campaña es obligatoria',
-      },
-    },
-    startDate: {
-      required: true,
-      errorMessages: {
-        required: 'La fecha de inicio es obligatoria',
-      },
-    },
-    endDate: {
-      required: true,
-      errorMessages: {
-        required: 'La fecha de fin es obligatoria',
       },
     },
     companyId: {

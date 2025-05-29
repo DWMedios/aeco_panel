@@ -68,6 +68,10 @@ const TableAdvertising = ({ setShowAlert }: Props) => {
           'totalCampaigns',
           { column: 'isEnabled', type: 'chip' },
         ]}
+        openModal={() => {
+          setIsOpen(true)
+          setFormData({})
+        }}
         setTitleModal={setTitleModal}
         pagination={{ page, totalpages: totalPages }}
         changePage={setPage}

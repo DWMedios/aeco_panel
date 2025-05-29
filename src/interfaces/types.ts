@@ -115,6 +115,7 @@ export interface Campaign {
   companyId?: number
   mediaAsset?: MediaAsset
   aecos: any[]
+  mediaUrl?: string
 }
 
 export interface Alert {

@@ -17,6 +17,8 @@ import {
 import InputSelect from '../../../components/inputSelect'
 import SearchableSelect from '../../../components/searchableSelect'
 import { useWebApiAeco } from '../../../api/webApiAeco'
+import InputDateRangePicker from './dateRangePicker'
+import { ca } from 'date-fns/locale'
 
 interface Props {
   onClose: () => void
@@ -43,6 +45,10 @@ const ModalCampaings = ({
   const [selectedAeco, setSelectedAeco] = useState<any>([])
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [campaingData, setCampaingData] = useState<any>({})
+  const [dateSelected, setDateSelected] = useState<string[]>([])
+  const [mediaAssetType, setMediaAssetType] = useState<'image' | 'video'>(
+    'image'
+  )
   const { getAecos } = useWebApiAeco()
 
   const { createCampaing, updateCampaing, getCampaing } = useWebApiCampaings()
@@ -53,7 +59,7 @@ const ModalCampaings = ({
     key,
   } = useInputUpload({
     title: 'Personalizacion',
-    type: 'image',
+    type: mediaAssetType,
     previewUrl,
   })
 
@@ -112,12 +118,13 @@ const ModalCampaings = ({
   }, [campaingId])
 
   useEffect(() => {
-    if (campaingData && Object.keys(campaingData).length > 0)
+    if (campaingData && Object.keys(campaingData).length > 0) {
       setValues({
         ...structuredClone(initialValuesCampaigns),
         ...structuredClone(campaingData),
       })
-    else resetForm()
+      setDateSelected([campaingData.startDate, campaingData.endDate])
+    } else resetForm()
   }, [campaingData, setValues])
 
   const getcampaingData = async (id: number) => {
@@ -125,7 +132,13 @@ const ModalCampaings = ({
       const response = (await getCampaing(id)) as Campaign
       setCampaingData(response)
       setMediaKey(response?.mediaAsset?.fileKey ?? null)
-      // setPreviewUrl(response?.logoUrl || null)
+      setPreviewUrl(response?.mediaUrl || null)
+
+      if (response?.mediaAsset?.mimeType) {
+        setMediaAssetType(
+          response.mediaAsset.mimeType.split('/')[0] as 'image' | 'video'
+        )
+      }
     } catch (error) {
       console.log('Error al obtener los datos del contratista:', error)
     }
@@ -133,18 +146,37 @@ const ModalCampaings = ({
 
   const handleFormSubmit = async (data: any) => {
     try {
+      if (dateSelected.length === 0) {
+        setShowAlert({
+          message: `Selecciona un rango de fechas`,
+          type: 'error',
+        })
+        return
+      }
       const cleanedData: any = cleanEmptyFields({
         ...data,
       })
+      if (dateSelected.length > 0 && Object.keys(campaingData).length > 0) {
+        if (campaingData.startDate !== cleanedData.startDate)
+          cleanedData.startDate = dateSelected[0]
+        if (campaingData.endDate !== cleanedData.endDate)
+          cleanedData.endDate = dateSelected[1]
+      } else {
+        cleanedData.startDate = dateSelected[0]
+        cleanedData.endDate = dateSelected[1]
+      }
+
+      if (cleanedData.isEnabled)
+        cleanedData.isEnabled = cleanedData.isEnabled === 'true' ? true : false
 
       const mediaAsset = (await uploadMediaAsset()) as MediaAsset | boolean
       if (mediaAsset) cleanedData.mediaAsset = mediaAsset
 
+      if ('companyId' in cleanedData)
+        cleanedData.companyId = Number(data.companyId)
       if (campaingData && Object.keys(campaingData).length > 0) {
         await withLoading(() => updateCampaing(campaingData.id, cleanedData))
       } else {
-        if ('companyId' in cleanedData)
-          cleanedData.companyId = Number(data.companyId)
         await withLoading(() => createCampaing(cleanedData))
       }
       if (mediaKey && mediaAsset) {
@@ -166,6 +198,13 @@ const ModalCampaings = ({
       })
       console.log('Error en el envío del formulario:', error)
     }
+  }
+
+  const handleSetDates = (queryString: string[]) => {
+    setDateSelected(queryString)
+
+    // Aquí podrías hacer otra petición con los datos seleccionados
+    // por ejemplo: fetch(`/api/something${queryString}`)
   }
 
   return (
@@ -191,12 +230,12 @@ const ModalCampaings = ({
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
               <InputSelect
-                name="status"
+                name="isEnabled"
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={errors.status}
-                touched={touched.status}
-                value={values.status}
+                error={errors.isEnabled}
+                touched={touched.isEnabled}
+                value={values.isEnabled}
                 options={[
                   { value: 'true', label: 'Activo' },
                   { value: 'false', label: 'Inactivo' },
@@ -215,17 +254,6 @@ const ModalCampaings = ({
                 error={errors.description}
                 touched={touched.description}
                 divClassName="w-5/6"
-                className="w-full rounded-full border-2 border-gray-300 p-2"
-              />
-              <InputField
-                name="name"
-                placeholder="Nombre de la empresa"
-                value={values.name}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.name}
-                touched={touched.name}
-                divClassName="w-3/6"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
             </div>
@@ -261,6 +289,12 @@ const ModalCampaings = ({
                 )}
               </div>
             )}
+            <InputDateRangePicker
+              setDates={handleSetDates}
+              companyId={values.companyId}
+              setShowAlert={setShowAlert}
+              campaingData={campaingData}
+            />
           </div>
         </div>
         <ActionsButtons loading={loading} onClose={onClose} />

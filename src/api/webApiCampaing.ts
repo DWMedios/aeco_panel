@@ -41,11 +41,19 @@ export const useWebApiCampaings = () => {
     })
   }
 
+  const getCampaingsByDate = async (filters: string) => {
+    return fetchRequest<ApiResponseList<any>>({
+      url: `/advertisings/campaigns/by-date?${filters}`,
+      method: 'GET',
+    })
+  }
+
   return {
     getCampaings,
     getCampaing,
     createCampaing,
     updateCampaing,
     deleteCampaing,
+    getCampaingsByDate,
   }
 }

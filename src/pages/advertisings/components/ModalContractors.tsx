@@ -187,7 +187,7 @@ const ModalContractors = ({
                 onBlur={handleBlur}
                 error={errors.phone}
                 touched={touched.phone}
-                divClassName="w-3/6"
+                divClassName="w-2/6"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
               {contractorId == null && (

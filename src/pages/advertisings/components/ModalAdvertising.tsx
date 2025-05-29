@@ -1,13 +1,25 @@
+import { useEffect, useState } from 'react'
+import InputSelect from '../../../components/inputSelect'
 import Modal from '../../../components/modals/Form'
-import { Alert } from '../../../interfaces/types'
+import { Advertising, Alert } from '../../../interfaces/types'
+import { cleanEmptyFields } from '../../../utils/cleanObject'
+import { useWebApiAdvertising } from '../../../api/webApiAdvertising'
+import { useWebApiCompany } from '../../../api/webApiCompany'
+import ActionsButtons from '../../../components/modals/Form/components/actionsButtons'
+import useFormWithValidation from '../../../hooks/useForm'
+import {
+  initialValuesAdvertisings,
+  validationRulesAdvertisings,
+} from './formValidations'
+import { useLoading } from '../../../hooks/loading'
+import { useWebApiCampaings } from '../../../api/webApiCampaing'
+import { useWebApiContractors } from '../../../api/webApiContractor'
 
 interface Props {
   onClose: () => void
   onSaved: () => void
   title?: string
   adsId?: number | null
-  mediaKey: string | null
-  setMediaKey: (key: string | null) => void
   setShowAlert: (alert: Alert) => void
 }
 
@@ -15,73 +27,208 @@ const ModalAdvertising = ({
   onClose,
   title,
   onSaved,
-  companyId,
-  mediaKey,
-  setMediaKey,
+  adsId,
   setShowAlert,
 }: Props) => {
-  return (
-    <Modal
-      onClose={() => {
-        onClose()
-        // resetForm()
-      }}
-      title={`${title} empresa`}
-    >
-      <div className="flex justify-center bg-gray-300 p-3 rounded-full w-36">
-        Folio: 1234567
-      </div>
-      <div className="flex flex-col gap-4 rounded-xl bg-[#F8F8F8] mt-8 p-4">
-        <div className="flex items-center justify-start gap-6">
-          <img src="/images/user.png" alt="" /> <span>Datos del usuario</span>
-        </div>
-        <span>Los siguientes campos conformarán el perfil del usuario</span>
-        <div className="flex items-center justify-start gap-2">
-          <input
-            type="text"
-            className="w-2/4 rounded-full border-2 border-gray-300 p-2"
-            placeholder="Nombre del encargado"
-          />
-          <input
-            type="text"
-            className="w-1/4 rounded-full border-2 border-gray-300 p-2"
-            placeholder="Puesto"
-          />
-          <input
-            type="text"
-            className="w-1/4 rounded-full border-2 border-gray-300 p-2"
-            placeholder="Teléfono"
-          />
-        </div>
-      </div>
-      <div className="flex items-center justify-start gap-2 mt-6"></div>
-      <div>
-        <div className="flex flex-col mt-6">
-          <span className="text-2xl">Credenciales de acceso</span>
+  const { withLoading, loading } = useLoading()
+  const [companies, setCompanies] = useState<any[]>([])
+  const [campaings, setCampaings] = useState<any[]>([])
+  const [contractors, setContractors] = useState<any[]>([])
+  const [advertisingData, setAdvertisingData] = useState<any>({})
+  const { createAdvertising, getAdvertising, updateAdvertising } =
+    useWebApiAdvertising()
 
-          <span>
-            Los siguientes datos serán para el ingreso al panel administrativo
-            de la empresa en cuestión.
-          </span>
+  const { getCompanies } = useWebApiCompany()
+  const { getCampaings } = useWebApiCampaings()
+  const { getContractors } = useWebApiContractors()
+  const mergedValues =
+    advertisingData && Object.keys(advertisingData).length > 0
+      ? {
+          ...structuredClone(initialValuesAdvertisings),
+          ...structuredClone(advertisingData),
+        }
+      : structuredClone(initialValuesAdvertisings)
+  const validationRules = validationRulesAdvertisings(advertisingData)
+  const {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    setValues,
+    resetForm,
+  } = useFormWithValidation(mergedValues, { validationRules })
+
+  useEffect(() => {
+    fetchInitialData()
+  }, [])
+
+  const changeCompany = async (value: any) => {
+    const [campaingsRes, contractorsRes] = await withLoading(() =>
+      Promise.all([
+        getCampaings(`?companyId=${value.target.value}&isEnabled=true`),
+        getContractors(`?companyId=${value.target.value}`),
+      ])
+    )
+
+    const responseCampaings = campaingsRes.records.map((camp: any) => ({
+      value: camp.id,
+      label: camp.contractName,
+    }))
+
+    const responseContractors = contractorsRes.records.map((camp: any) => ({
+      value: camp.id,
+      label: camp.name,
+    }))
+
+    setCampaings(responseCampaings)
+    setContractors(responseContractors)
+  }
+
+  const fetchInitialData = async () => {
+    const [companiesRes] = await withLoading(() =>
+      Promise.all([getCompanies('')])
+    )
+
+    const responseCompanies = companiesRes.records.map((company: any) => ({
+      value: company.id,
+      label: company.name,
+    }))
+
+    setCompanies(responseCompanies)
+  }
+
+  useEffect(() => {
+    console.log('🚀 ~ adsId:', adsId)
+    if (adsId) getAdvertisingData(adsId)
+  }, [adsId])
+
+  useEffect(() => {
+    if (advertisingData && Object.keys(advertisingData).length > 0)
+      setValues({
+        ...structuredClone(initialValuesAdvertisings),
+        ...structuredClone(advertisingData),
+      })
+    else resetForm()
+  }, [advertisingData, setValues])
+
+  const getAdvertisingData = async (id: number) => {
+    try {
+      const response = (await getAdvertising(id)) as Advertising
+      setAdvertisingData(response)
+    } catch (error) {
+      console.log('Error al obtener los datos del contratista:', error)
+    }
+  }
+
+  const handleFormSubmit = async (data: any) => {
+    try {
+      const cleanedData: any = cleanEmptyFields({
+        ...data,
+        companyId: Number(data.companyId),
+        campaigns: [Number(data.campaigns)],
+        contractors: [Number(data.contractors)],
+      })
+
+      console.log('🚀 ~ handleFormSubmit ~ cleanedData:', cleanedData)
+      if (cleanedData.isEnabled)
+        cleanedData.isEnabled = cleanedData.isEnabled === 'true' ? true : false
+
+      if (advertisingData && Object.keys(advertisingData).length > 0) {
+        await withLoading(() =>
+          updateAdvertising(advertisingData.id, cleanedData)
+        )
+      } else {
+        await withLoading(() => createAdvertising(cleanedData))
+      }
+
+      onSaved()
+      resetForm()
+      onClose()
+      setShowAlert({
+        message: `Empresa guardada correctamente`,
+        type: 'success',
+      })
+    } catch (error: any) {
+      setShowAlert({
+        message: error.message,
+        type: 'error',
+      })
+      console.log('Error en el envío del formulario:', error)
+    }
+  }
+
+  return (
+    <Modal onClose={onClose} title={`${title} publicidad`}>
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
+        <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
+          <div className="flex flex-col gap-4 rounded-xl mt-2 p-4">
+            <div className="flex items-center justify-start gap-6">
+              <span>Datos de la publicidad</span>
+            </div>
+            <span>Los siguientes campos conformarán el perfil del usuario</span>
+            <div className="flex items-center justify-start gap-4 flex-wrap">
+              <InputSelect
+                name="isEnabled"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.isEnabled}
+                touched={touched.isEnabled}
+                value={values.isEnabled}
+                options={[
+                  { value: 'true', label: 'Activo' },
+                  { value: 'false', label: 'Inactivo' },
+                ]}
+                placeholder="Estatus"
+                divClassName="w-2/5"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
+                defaultPlaceholder="Selecciona un estatus"
+              />
+              <InputSelect
+                name="companyId"
+                onChange={(data: any) => {
+                  handleChange(data)
+                  changeCompany(data)
+                }}
+                onBlur={handleBlur}
+                error={errors.companyId}
+                touched={touched.companyId}
+                value={values.companyId}
+                options={companies}
+                placeholder="Contractante"
+                divClassName="w-1/4"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
+              />
+              <InputSelect
+                name="campaigns"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.campaigns}
+                touched={touched.campaigns}
+                value={values.campaigns}
+                options={campaings}
+                placeholder="Campañas"
+                divClassName="w-1/4"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
+              />
+              <InputSelect
+                name="contractors"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.contractors}
+                touched={touched.contractors}
+                value={values.contractors}
+                options={contractors}
+                placeholder="Contratistas"
+                divClassName="w-1/4"
+                className="w-full rounded-full border-2 border-gray-300 p-2"
+              />
+            </div>
+          </div>
         </div>
-        <div className="flex items-center justify-start gap-2 mt-6">
-          <input
-            type="text"
-            className="w-1/3 rounded-full border-2 border-gray-300 p-2"
-            placeholder="Correo"
-          />
-          <input
-            type="text"
-            className="w-1/3 rounded-full border-2 border-gray-300 p-2"
-            placeholder="Contraseña"
-          />
-          <input
-            type="text"
-            className="w-1/3 rounded-full border-2 border-gray-300 p-2"
-            placeholder="Confirmación de contraseña"
-          />
-        </div>
-      </div>
+        <ActionsButtons loading={loading} onClose={onClose} />
+      </form>
     </Modal>
   )
 }

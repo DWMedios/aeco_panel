@@ -78,6 +78,7 @@ const TableContractor = ({ setShowAlert }: Props) => {
         pagination={{ page, totalpages: totalPages }}
         changePage={setPage}
         handleDelete={handleDelete}
+        page={page}
         setFormData={setFormData}
       />
       {isOpen && (

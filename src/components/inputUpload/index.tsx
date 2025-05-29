@@ -6,6 +6,10 @@ import {
 } from '../../interfaces/mediaAsset'
 import { useWebMediaAsset } from '../../api/webApiMediaAsset'
 import { Camera, VideoCamera } from '@phosphor-icons/react'
+import {
+  generateThumbnailFromVideoUrl,
+  generateVideoThumbnail,
+} from '../../utils/mediaAssets'
 
 interface Props {
   title: string
@@ -21,18 +25,36 @@ export function useInputUpload({ title, type, previewUrl }: Props) {
   const { uploadAsset, deleteAsset } = useWebMediaAsset()
 
   useEffect(() => {
-    setPreview(previewUrl ?? null)
+    if (previewUrl) {
+      generateThumbnailFromVideoUrl(previewUrl)
+        .then(setPreview)
+        .catch(() => setPreview(previewUrl)) // fallback, muestra el video
+    } else {
+      setPreview(previewUrl ?? null)
+    }
   }, [previewUrl])
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0]
     if (file) {
       setFile(file)
-      setPreview(URL.createObjectURL(file))
+      if (file.type.split('/')[0] === 'video') {
+        try {
+          const thumbnail = await generateVideoThumbnail(file)
+          setPreview(thumbnail)
+        } catch {
+          // fallback en caso de error
+          setPreview(URL.createObjectURL(file))
+        }
+      } else {
+        setPreview(URL.createObjectURL(file))
+      }
       setMediaUpload({
         fileName: file.name,
         mimeType: file.type,
-        assetType: type,
+        assetType: file.type.split('/')[0],
         fileExtension: file.name.split('.').pop() || '',
       })
     }
@@ -112,7 +134,9 @@ export function useInputUpload({ title, type, previewUrl }: Props) {
             onChange={handleImageChange}
           />
         </label>
-        {type === 'video' ? (
+        {file && file.type.split('/')[0] == 'video' ? (
+          <VideoCamera size={25} className="mt-16 -ml-12 z-50" />
+        ) : type === 'video' ? (
           <VideoCamera size={25} className="mt-16 -ml-12 z-50" />
         ) : (
           <Camera size={25} className="mt-16 -ml-12 z-50" />

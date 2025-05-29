@@ -5,6 +5,7 @@ import Tabs from '../../components/tabs'
 import TableContractors from './components/TableContractor'
 import TableCampaings from './components/TableCampaings'
 import TableAdvertising from './components/TableAdvertising'
+import { Alert } from '../../interfaces/types'
 
 const Advertising = () => {
   const [showAlert, setShowAlert] = useState<Alert | null>(null)

@@ -67,7 +67,7 @@ export const menu = [
   },
   {
     title: 'Usuarios',
-    icon: '/images/users.png',
+    icon: '/images/user.png',
     subMenu: [
       {
         title: 'Control',

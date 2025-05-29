@@ -28,8 +28,15 @@ const TableCampaings = ({ setShowAlert }: Props) => {
       await deleteCampaing(id)
       refresh()
       setIsOpen(false)
-    } catch (error) {
-      console.error('Error deleting user:', error)
+      setShowAlert({
+        message: 'La empresa ha sido eliminada correctamente',
+        type: 'success',
+      })
+    } catch (error: any) {
+      setShowAlert({
+        message: error.message,
+        type: 'error',
+      })
     }
   }
 
@@ -43,19 +50,25 @@ const TableCampaings = ({ setShowAlert }: Props) => {
       <Filters
         addButton={true}
         filters={[
-          { name: 'name', label: 'Nombre' },
-          { name: 'rfc', label: 'RFC' },
-          { name: 'status', label: 'Estatus' },
+          { name: 'contractName', label: 'Nombre' },
+          { name: 'description', label: 'Descripcion' },
         ]}
         setFilters={setFilters}
+        openModal={() => {
+          setTitleModal('Crear')
+          setIsOpen(true)
+          setFormData({})
+        }}
       />
       <Table
         tableContent={{
           headers: [
             'Folio',
-            'Empresa',
+            'Nombre',
             'Descripcion',
-            'Descripciond del plan',
+            'Fecha de inicio',
+            'Fecha de fin',
+            'Empresa',
             'Estatus',
           ],
           data: data.map((item: any) => ({
@@ -65,9 +78,11 @@ const TableCampaings = ({ setShowAlert }: Props) => {
         }}
         columns={[
           'id',
-          'companyName',
+          'contractName',
           'description',
-          'planDescription',
+          'startDate',
+          'endDate',
+          'companyName',
           { column: 'isEnabled', type: 'chip' },
         ]}
         openModal={() => {
@@ -78,6 +93,7 @@ const TableCampaings = ({ setShowAlert }: Props) => {
         pagination={{ page, totalpages: totalPages }}
         changePage={setPage}
         handleDelete={handleDelete}
+        page={page}
         setFormData={setFormData}
       />
       {isOpen && (
@@ -86,6 +102,9 @@ const TableCampaings = ({ setShowAlert }: Props) => {
           title={titleModal}
           onSaved={refresh}
           campaingId={formData.id}
+          mediaKey={mediaKey}
+          setMediaKey={setMediaKey}
+          setShowAlert={setShowAlert}
         />
       )}
     </>

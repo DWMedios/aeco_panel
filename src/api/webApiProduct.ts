@@ -1,5 +1,4 @@
 import { Aeco, ApiResponseList } from '../interfaces/types'
-import { IAecoForm } from '../pages/aecos/interface'
 import { useFetchWithAuth } from './fetch'
 
 export const useWebApiProducts = () => {
@@ -16,11 +15,11 @@ export const useWebApiProducts = () => {
     return fetchRequest<Aeco>({ url: `/products/${id}`, method: 'GET' })
   }
 
-  const createProduct = async (aeco: IAecoForm) => {
+  const createProduct = async (aeco: any) => {
     return fetchRequest<Aeco>({ url: `/products`, method: 'POST', body: aeco })
   }
 
-  const updateProduct = async (id: number, aeco: IAecoForm) => {
+  const updateProduct = async (id: number, aeco: any) => {
     return fetchRequest<Aeco>({
       url: `/products/${id}`,
       method: 'PUT',

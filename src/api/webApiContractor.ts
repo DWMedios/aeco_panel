@@ -1,5 +1,4 @@
 import { ApiResponseList, Contractor } from '../interfaces/types'
-import { IAecoForm } from '../pages/aecos/interface'
 import { useFetchWithAuth } from './fetch'
 
 export const useWebApiContractors = () => {
@@ -19,7 +18,7 @@ export const useWebApiContractors = () => {
     })
   }
 
-  const createContractor = async (contractor: IAecoForm) => {
+  const createContractor = async (contractor: any) => {
     return fetchRequest<Contractor>({
       url: `/advertisings/contractors`,
       method: 'POST',
@@ -27,7 +26,7 @@ export const useWebApiContractors = () => {
     })
   }
 
-  const updateContractor = async (id: number, contractor: IAecoForm) => {
+  const updateContractor = async (id: number, contractor: any) => {
     return fetchRequest<Contractor>({
       url: `/advertisings/contractors/${id}`,
       method: 'PUT',

@@ -1,5 +1,4 @@
 import { Aeco, ApiResponseList } from '../interfaces/types'
-import { IAecoForm } from '../pages/aecos/interface'
 import { useFetchWithAuth } from './fetch'
 
 export const useWebApiCapacities = () => {
@@ -19,7 +18,7 @@ export const useWebApiCapacities = () => {
     })
   }
 
-  const createCapacity = async (aeco: IAecoForm) => {
+  const createCapacity = async (aeco: any) => {
     return fetchRequest<Aeco>({
       url: `/products/capacities`,
       method: 'POST',
@@ -27,7 +26,7 @@ export const useWebApiCapacities = () => {
     })
   }
 
-  const updateCapacity = async (id: number, aeco: IAecoForm) => {
+  const updateCapacity = async (id: number, aeco: any) => {
     return fetchRequest<Aeco>({
       url: `/products/capacities/${id}`,
       method: 'PUT',

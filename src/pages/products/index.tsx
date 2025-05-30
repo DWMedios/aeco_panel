@@ -42,6 +42,12 @@ const Products = () => {
     setPage(1)
   }, [tab])
 
+  useEffect(() => {
+    if (formData.id) {
+      setTitleModal('Editar')
+    }
+  }, [formData])
+
   const handleDelete = async (id: number) => {
     try {
       if (tab === 'products') {
@@ -82,14 +88,12 @@ const Products = () => {
           filters={
             tab == 'products'
               ? [
-                  { name: 'folio', label: 'Folio' },
                   { name: 'name', label: 'Nombre' },
                   { name: 'family', label: 'Familia' },
                   { name: 'code', label: 'Codigo' },
                 ]
               : [
-                  { name: 'id', label: 'Folio' },
-                  { name: 'description', label: 'Descripcion' },
+                  { name: 'description', label: 'Nombre' },
                   { name: 'packaging', label: 'Empaque' },
                   { name: 'factor', label: 'Factor' },
                   { name: 'weight', label: 'Peso' },
@@ -120,12 +124,13 @@ const Products = () => {
             changePage={setPage}
             page={page}
             pagination={{ page, totalpages: totalPages }}
+            setFormData={setFormData}
           />
         ) : (
           <>
             <Table
               tableContent={{
-                headers: ['Folio', 'Decripcion', 'Empaque', 'Factor', 'Peso'],
+                headers: ['Folio', 'Nombre', 'Empaque', 'Factor', 'Peso'],
                 data: capacities,
               }}
               columns={['id', 'description', 'packaging', 'factor', 'weight']}
@@ -141,6 +146,7 @@ const Products = () => {
               }}
               handleDelete={handleDelete}
               setTitleModal={setTitleModal}
+              setFormData={setFormData}
             />
           </>
         )}
@@ -151,7 +157,7 @@ const Products = () => {
             onClose={() => setIsOpen(false)}
             title={titleModal}
             onSaved={refresh}
-            reward={formData}
+            product={formData}
             setShowAlert={setShowAlert}
           />
         ) : (
@@ -159,7 +165,7 @@ const Products = () => {
             onClose={() => setIsOpen(false)}
             title={titleModal}
             onSaved={refresh}
-            reward={formData}
+            capacity={formData}
             setShowAlert={setShowAlert}
           />
         ))}

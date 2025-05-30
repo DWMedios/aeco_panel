@@ -8,12 +8,14 @@ import InputField from '../../../components/inputField'
 import InputSelect from '../../../components/inputSelect'
 import { useWebApiCapacities } from '../../../api/webApiCapacity'
 import { Alert } from '../../../interfaces/types'
+import { cleanEmptyFields } from '../../../utils/cleanObject'
+import { useWebApiProducts } from '../../../api/webApiProduct'
 
 interface Props {
   onClose: () => void
   onSaved: () => void
   title?: string
-  reward?: any
+  product?: any
   setShowAlert: (alert: Alert) => void
 }
 
@@ -21,16 +23,17 @@ const ModalProducts = ({
   onClose,
   onSaved,
   title,
-  reward,
+  product,
   setShowAlert,
 }: Props) => {
   const [capacities, setCapacities] = useState<any[]>([])
   const { withLoading, loading } = useLoading()
   const { getCapacities } = useWebApiCapacities()
+  const { createProduct, updateProduct } = useWebApiProducts()
 
   const mergedValues =
-    reward && Object.keys(reward).length > 0
-      ? { ...initialValuesProduct, ...reward }
+    product && Object.keys(product).length > 0
+      ? { ...initialValuesProduct, ...product }
       : initialValuesProduct
   const validationRules = validationRulesProduct
   const {
@@ -44,14 +47,16 @@ const ModalProducts = ({
   } = useFormWithValidation(mergedValues, { validationRules })
 
   useEffect(() => {
-    if (reward && Object.keys(reward).length > 0) {
-      setValues({ ...initialValuesProduct, ...reward })
+    if (product && Object.keys(product).length > 0) {
+      setValues({ ...initialValuesProduct, ...product })
     }
-  }, [reward, setValues])
+  }, [product, setValues])
 
   useEffect(() => {
-    const fetchCompanies = async () => {
-      const response: any = await withLoading(() => getCapacities(''))
+    const fetchCapacities = async () => {
+      const response: any = await withLoading(() =>
+        getCapacities('?perpage=50')
+      )
       setCapacities(
         response.records.map((capacity: any) => ({
           value: capacity.id,
@@ -59,11 +64,20 @@ const ModalProducts = ({
         }))
       )
     }
-    fetchCompanies()
+    fetchCapacities()
   }, [])
 
   const onFormSubmit = async (data: any) => {
     try {
+      const cleanedData: any = cleanEmptyFields(data)
+
+      if (product && cleanedData.capacityId !== product.capacityId)
+        cleanedData.capacityId = Number(cleanedData.capacityId)
+      else cleanedData.capacityId = Number(cleanedData.capacityId)
+
+      if (product && Object.keys(cleanedData).length > 0)
+        await withLoading(() => updateProduct(product.id, cleanedData))
+      else await withLoading(() => createProduct(cleanedData))
       onSaved()
       onClose()
       setShowAlert({
@@ -75,7 +89,6 @@ const ModalProducts = ({
         message: error.message,
         type: 'error',
       })
-      console.log('Error en el envío del formulario:', error)
     }
   }
 

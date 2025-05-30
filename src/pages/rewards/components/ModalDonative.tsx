@@ -121,14 +121,13 @@ const ModalDonative = ({
         message: error.message,
         type: 'error',
       })
-      console.log('Error en el envío del formulario:', error)
     }
   }
 
   const filterAecos = async (value: string) => {
     try {
       const response = await getAecos(
-        `?serialNumber=${value}&folio=${value}&withoutCompany=true`
+        `?serialNumber=${value}&folio=${value}&withoutCompany=true&name=${value}`
       )
       setAecoOptions(
         response.records.map((item: any) => ({

@@ -2,20 +2,19 @@ import { useEffect } from 'react'
 import Modal from '../../../components/modals/Form'
 import ActionsButtons from '../../../components/modals/Form/components/actionsButtons'
 import useFormWithValidation from '../../../hooks/useForm'
-import {
-  initialValuesCapacities,
-  validationRulesCapacity,
-} from './formValidates'
+import { initialValuesCapacity, validationRulesCapacity } from './formValidates'
 import InputField from '../../../components/inputField'
 import InputSelect from '../../../components/inputSelect'
 import { useLoading } from '../../../hooks/loading'
 import { Alert } from '../../../interfaces/types'
+import { cleanEmptyFields } from '../../../utils/cleanObject'
+import { useWebApiCapacities } from '../../../api/webApiCapacity'
 
 interface Props {
   onClose: () => void
   onSaved: () => void
   title?: string
-  reward?: any
+  capacity?: any
   setShowAlert: (alert: Alert) => void
 }
 
@@ -23,12 +22,14 @@ const ModalCapacities = ({
   onClose,
   onSaved,
   title,
-  reward,
+  capacity,
   setShowAlert,
 }: Props) => {
-  const { loading } = useLoading()
+  const { withLoading, loading } = useLoading()
 
-  const mergedValues = { ...initialValuesCapacities, ...reward }
+  const { updateCapacity, createCapacity } = useWebApiCapacities()
+
+  const mergedValues = { ...initialValuesCapacity, ...capacity }
   const validationRules = validationRulesCapacity
   const {
     values,
@@ -41,13 +42,24 @@ const ModalCapacities = ({
   } = useFormWithValidation(mergedValues, { validationRules })
 
   useEffect(() => {
-    if (reward && Object.keys(reward).length > 0) {
-      setValues({ ...initialValuesCapacities, ...reward })
+    if (capacity && Object.keys(capacity).length > 0) {
+      setValues({ ...initialValuesCapacity, ...capacity })
     }
-  }, [reward, setValues])
+  }, [capacity, setValues])
 
   const onFormSubmit = async (data: any) => {
     try {
+      const cleanedData: any = cleanEmptyFields(data)
+
+      if (cleanedData.factor) {
+        cleanedData.factor = Number(cleanedData.factor)
+      }
+      if (cleanedData.weight) {
+        cleanedData.weight = Number(cleanedData.weight)
+      }
+      if (capacity && Object.keys(cleanedData).length > 0)
+        await withLoading(() => updateCapacity(capacity.id, cleanedData))
+      else await withLoading(() => createCapacity(cleanedData))
       onSaved()
       onClose()
       setShowAlert({
@@ -70,25 +82,14 @@ const ModalCapacities = ({
           <div className="flex flex-col gap-4 rounded-xl p-4 flex-wrap">
             <div className="flex items-center justify-start gap-4 flex-wrap">
               <InputField
-                name="name"
-                placeholder="Nombre"
-                value={values.name}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.name}
-                touched={touched.name}
-                divClassName="w-3/6"
-                className="w-full rounded-full border-2 border-gray-300 p-2"
-              />
-              <InputField
                 name="description"
-                placeholder="Description"
+                placeholder="Nombre"
                 value={values.description}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={errors.description}
                 touched={touched.description}
-                divClassName="w-2/6"
+                divClassName="w-3/6"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
               <InputSelect
@@ -121,7 +122,7 @@ const ModalCapacities = ({
                 onBlur={handleBlur}
                 error={errors.factor}
                 touched={touched.factor}
-                divClassName="w-2/6"
+                divClassName="w-3/6"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
               <InputField
@@ -132,7 +133,7 @@ const ModalCapacities = ({
                 onBlur={handleBlur}
                 error={errors.weight}
                 touched={touched.weight}
-                divClassName="w-1/5"
+                divClassName="w-2/5"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
             </div>

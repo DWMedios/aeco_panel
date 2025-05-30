@@ -1,12 +1,15 @@
 export const initialValuesProduct = {
   name: '',
+  family: '',
+  code: '',
+  capacityId: '',
+}
+
+export const initialValuesCapacity = {
   description: '',
-  note: '',
-  establishment: '',
-  type: '',
-  order: '',
-  companyId: '',
-  status: '',
+  packaging: '',
+  factor: '',
+  weight: '',
 }
 
 export const validationRulesProduct = {
@@ -16,58 +19,49 @@ export const validationRulesProduct = {
       required: 'El nombre es obligatorio',
     },
   },
-  order: {
+  family: {
     required: true,
     errorMessages: {
-      required: 'El orden es obligatorio',
+      required: 'La familia obligatoria',
     },
   },
-  companyId: {
+  code: {
     required: true,
     errorMessages: {
-      required: 'La empresa es obligatoria',
+      required: 'El codigo de barras obligatorio',
     },
   },
-  // status: {
-  //   required: true,
-  //   errorMessages: {
-  //     required: 'El estatus es obligatorio',
-  //   },
-  // },
+  capacityId: {
+    required: true,
+    errorMessages: {
+      required: 'La capacidad obligatoria',
+    },
+  },
 }
 
 export const validationRulesCapacity = {
-  name: {
+  description: {
     required: true,
     errorMessages: {
       required: 'El nombre es obligatorio',
     },
   },
-  order: {
+  factor: {
     required: true,
     errorMessages: {
-      required: 'El orden es obligatorio',
+      required: 'El factor es obligatorio',
     },
   },
-  companyId: {
+  packaging: {
     required: true,
     errorMessages: {
-      required: 'La empresa es obligatoria',
+      required: 'El empaque es obligatorio',
     },
   },
-  // status: {
-  //   required: true,
-  //   errorMessages: {
-  //     required: 'El estatus es obligatorio',
-  //   },
-  // },
-}
-
-export const initialValuesCapacities = {
-  metadata: {
-    host: '',
-    apiKey: '',
-    user: '',
-    password: '',
+  weight: {
+    required: true,
+    errorMessages: {
+      required: 'El peso es obligatorio',
+    },
   },
 }

@@ -5,7 +5,6 @@ export const useWebApiCapacities = () => {
   const { fetchRequest } = useFetchWithAuth()
 
   const getCapacities = async (filters: string) => {
-    console.log('🚀 ~ getCapacities ~ filters:', filters)
     return fetchRequest<ApiResponseList<any>>({
       url: `/products/capacities${filters}`,
       method: 'GET',
@@ -36,7 +35,10 @@ export const useWebApiCapacities = () => {
   }
 
   const deleteCapacity = async (id: number) => {
-    return fetchRequest<any>({ url: `/aecos/${id}`, method: 'DELETE' })
+    return fetchRequest<any>({
+      url: `/products/capacities/${id}`,
+      method: 'DELETE',
+    })
   }
 
   return {

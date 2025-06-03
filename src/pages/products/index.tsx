@@ -24,13 +24,18 @@ const Products = () => {
   const { getProducts, deleteProduct } = useWebApiProducts()
   const { getCapacities, deleteCapacity } = useWebApiCapacities()
   const { page, totalPages, setPage, refresh, setFilters, setDefaultFilters } =
-    usePagination<Reward>(getProducts, 10, setProducts)
+    usePagination<Reward>(getProducts, 10, setProducts, 'id')
 
   const tabs = [
     { name: 'Productos', value: 'products' },
     { name: 'Capacidades', value: 'capacity' },
   ]
-  const paginationCapacities = usePagination(getCapacities, 10, setCapacities)
+  const paginationCapacities = usePagination(
+    getCapacities,
+    10,
+    setCapacities,
+    'id'
+  )
 
   useEffect(() => {
     if (tab == 'products') {

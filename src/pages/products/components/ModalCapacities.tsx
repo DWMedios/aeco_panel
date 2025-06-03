@@ -57,7 +57,10 @@ const ModalCapacities = ({
       if (cleanedData.weight) {
         cleanedData.weight = Number(cleanedData.weight)
       }
-      if (capacity && Object.keys(cleanedData).length > 0)
+      if (
+        Object.keys(capacity).length > 0 &&
+        Object.keys(cleanedData).length > 0
+      )
         await withLoading(() => updateCapacity(capacity.id, cleanedData))
       else await withLoading(() => createCapacity(cleanedData))
       onSaved()

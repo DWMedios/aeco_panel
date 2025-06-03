@@ -100,7 +100,6 @@ const ModalAdvertising = ({
   }
 
   useEffect(() => {
-    console.log('🚀 ~ adsId:', adsId)
     if (adsId) getAdvertisingData(adsId)
   }, [adsId])
 
@@ -131,7 +130,6 @@ const ModalAdvertising = ({
         contractors: [Number(data.contractors)],
       })
 
-      console.log('🚀 ~ handleFormSubmit ~ cleanedData:', cleanedData)
       if (cleanedData.isEnabled)
         cleanedData.isEnabled = cleanedData.isEnabled === 'true' ? true : false
 

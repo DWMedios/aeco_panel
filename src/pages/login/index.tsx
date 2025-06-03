@@ -1,7 +1,20 @@
+import { useEffect } from 'react'
 import LoginForm from './components/LoginForm'
 import NavbarLogin from './components/Navbar'
+import { useAuth } from '../../hooks/useAuth'
+import { useNavigate } from 'react-router-dom'
 
 function Login() {
+  const { isAuthenticated } = useAuth()
+
+  const navigation = useNavigate()
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigation('/dashboard')
+    }
+  }, [])
+
   return (
     <div className="flex flex-col h-screen items-center justify-center bg-white">
       <NavbarLogin title={'Inicio de Sesión'} />

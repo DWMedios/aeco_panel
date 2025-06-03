@@ -75,7 +75,10 @@ const ModalProducts = ({
         cleanedData.capacityId = Number(cleanedData.capacityId)
       else cleanedData.capacityId = Number(cleanedData.capacityId)
 
-      if (product && Object.keys(cleanedData).length > 0)
+      if (
+        Object.keys(product).length > 0 &&
+        Object.keys(cleanedData).length > 0
+      )
         await withLoading(() => updateProduct(product.id, cleanedData))
       else await withLoading(() => createProduct(cleanedData))
       onSaved()

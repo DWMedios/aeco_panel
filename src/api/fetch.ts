@@ -5,12 +5,13 @@ import { useCallback } from 'react'
 const api = import.meta.env.VITE_API_BASE_URL
 
 export const useFetchWithAuth = () => {
-  const { logout, getToken } = useAuth()
+  const { logout, getToken, sessionTimeout } = useAuth()
 
   const fetchRequest = useCallback(
     async <T>({ url, method, headers, body }: ApiParams): Promise<T> => {
       const token = getToken()
 
+      sessionTimeout()
       const options: RequestInit = {
         method,
         headers: {

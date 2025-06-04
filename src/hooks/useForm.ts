@@ -18,6 +18,7 @@ interface ValidationRules {
     pattern?: RegExp
     minLength?: number
     maxLength?: number
+    confirm?: boolean
     validate?: (
       value: any,
       allValues: Record<string, any>
@@ -56,7 +57,23 @@ const useFormWithValidation = <T extends Record<string, any>>(
 
   const validateField = (name: string, value: any): string => {
     const rules = getFieldRules(name)
+
     if (!rules) return ''
+
+    if (name === 'phone' || name.includes('.phone')) {
+      if (!/^\d+$/.test(String(value))) {
+        return (
+          rules.errorMessages?.pattern ||
+          'El teléfono debe contener solo números'
+        )
+      }
+      if (String(value).length !== 10) {
+        return (
+          rules.errorMessages?.minLength ||
+          'El teléfono debe tener exactamente 10 dígitos numéricos'
+        )
+      }
+    }
 
     if (rules.required && (!value || value === '')) {
       return rules.errorMessages?.required || `Este campo es obligatorio`
@@ -266,6 +283,19 @@ const useFormWithValidation = <T extends Record<string, any>>(
 
       if (validateOnSubmit && !validateForm()) {
         setIsSubmitting(false)
+        return
+      }
+      if (
+        Object.keys(changedValues).length >= 3 &&
+        changedValues.password &&
+        changedValues.password !== ''
+      ) {
+        setErrors((prev) => {
+          return {
+            ...prev,
+            ['passwordConfirmation']: 'Las contraseñas no coinciden',
+          }
+        })
         return
       }
 

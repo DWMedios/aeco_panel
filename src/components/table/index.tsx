@@ -16,6 +16,7 @@ interface Props {
   handleDelete?: (id: number) => void
   setFormData?: (data: any) => void
   page?: number
+  actionRemove?: boolean
 }
 const Table = ({
   tableContent,
@@ -27,6 +28,7 @@ const Table = ({
   handleDelete,
   setFormData,
   page = 1,
+  actionRemove = false,
 }: Props) => {
   const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false)
   const [deleteId, setDeleteId] = useState<number>(0)
@@ -44,6 +46,7 @@ const Table = ({
             openModalDelete={() => setIsOpenDelete(true)}
             setDeleteId={setDeleteId}
             setFormData={setFormData}
+            actionRemove={actionRemove}
           />
         </table>
       </div>

@@ -286,7 +286,7 @@ const ModalService = ({
 
           <div className="flex flex-col gap-4 rounded-xl bg-[#F8F8F8] mt-4 p-4">
             <div className="flex items-center justify-start gap-6">
-              <span className="text-lg">Asignacion de maquinas</span>
+              <span className="text-lg">Asignación de maquinas</span>
             </div>
             <InputSelect
               name="companyId"

@@ -14,6 +14,8 @@ export interface ApiResponseList<T> extends ApiResponseBase {
 export interface FilterOption {
   name: string
   label: string
+  type?: string
+  options?: { label: string; value: any }[]
 }
 
 export interface User {

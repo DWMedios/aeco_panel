@@ -17,7 +17,16 @@ export const cleanEmptyFields = <T extends Cleanable>(obj: T): Partial<T> => {
   const cleaned: Partial<T> = {}
 
   Object.keys(obj).forEach((key) => {
-    const value = obj[key]
+    let value = obj[key]
+
+    // Convierte los strings "true" y "false" a booleanos
+    if (typeof value === 'string') {
+      if (value.toLowerCase() === 'true') {
+        value = true
+      } else if (value.toLowerCase() === 'false') {
+        value = false
+      }
+    }
 
     if (typeof value === 'object' && value !== null) {
       const cleanedValue = cleanEmptyFields(value)

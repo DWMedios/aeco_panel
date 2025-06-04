@@ -65,7 +65,8 @@ const usePagination = <T>(
       const response = await fetchDataFunction(queryString)
       setData(response.records || [])
       setTotalPages(response.totalpages || 1)
-      setPage(response.page || 1)
+      if (response.records.length === 0) setPage(page - 1)
+      else setPage(response.page || 1)
     } catch (err) {
       console.log('Error al cargar los datos', err)
       setError('Error al cargar los datos')

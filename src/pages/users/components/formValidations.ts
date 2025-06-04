@@ -9,9 +9,11 @@ export const initialValues = {
     id: '',
     role: '',
   },
+  password: '',
+  passwordConfirmation: '',
 }
 
-export const validationRulesUser = () => {
+export const validationRulesUser = (user: any) => {
   return {
     name: {
       required: true,
@@ -38,6 +40,26 @@ export const validationRulesUser = () => {
         required: 'El correo electrónico es obligatorio',
         pattern: 'Por favor ingresa un correo electrónico válido',
       },
+    },
+    password: {
+      required: Object.keys(user).length === 0,
+      minLength: 6,
+      errorMessages: {
+        required: 'La contraseña es obligatoria',
+        minLength: 'La contraseña debe tener al menos 6 caracteres',
+      },
+    },
+    passwordConfirmation: {
+      required: user.password,
+      confirm: true,
+      errorMessages: {
+        required: 'Las contraseñas no coinciden',
+      },
+
+      validate: (value: any, allValues: any) =>
+        value !== allValues?.password
+          ? 'Las contraseñas no coinciden'
+          : undefined,
     },
   }
 }

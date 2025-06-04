@@ -63,7 +63,7 @@ const TableContractor = ({ setShowAlert }: Props) => {
       />
       <Table
         tableContent={{
-          headers: ['Folio', 'Nombre', 'Empresa', 'Coreo', 'Telefono'],
+          headers: ['Id', 'Nombre', 'Empresa', 'Coreo', 'Teléfono'],
           data: data.map((item: any) => ({
             ...item,
             companyName: item.company.name,

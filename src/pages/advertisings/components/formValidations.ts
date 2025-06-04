@@ -53,8 +53,12 @@ export const validationRulesContractors = (contractor: any) => {
     },
     phone: {
       required: true,
+      minLength: 10,
+      maxLength: 10,
+      pattern: /^\d{10}$/,
       errorMessages: {
         required: 'El teléfono es obligatorio',
+        pattern: 'El teléfono debe tener exactamente 10 dígitos numéricos',
       },
     },
     companyId: {

@@ -46,14 +46,24 @@ const Users = () => {
 
   return (
     <MainLayout alertProps={showAlert}>
-      <Title title="Users" />
+      <Title title="Usuarios" />
       <Filters
         addButton={true}
         filters={[
           { name: 'name', label: 'Nombre' },
           { name: 'email', label: 'Correo' },
           { name: 'position', label: 'Puesto' },
-          { name: 'role', label: 'Rol' },
+          {
+            name: 'role',
+            label: 'Rol',
+            type: 'select',
+            options: [
+              { value: 'admin', label: 'Administrador' },
+              { value: 'operator', label: 'Operador' },
+              { value: 'maintenance', label: 'Mantenimiento' },
+              { value: 'recolector', label: 'Recolector' },
+            ],
+          },
         ]}
         setFilters={setFilters}
         openModal={() => {
@@ -65,11 +75,12 @@ const Users = () => {
       <Table
         tableContent={{
           headers: [
-            'Folio',
+            'Id',
             'Nombre',
-            'Telefono',
+            'Teléfono',
             'Correo',
             'Puesto',
+            'Role',
             'Estatus',
           ],
           data: users,
@@ -80,6 +91,7 @@ const Users = () => {
           'phone',
           'email',
           'position',
+          'role.role',
           { column: 'isActive', type: 'chip' },
         ]}
         openModal={() => {
@@ -89,8 +101,8 @@ const Users = () => {
         handleDelete={handleDelete}
         setTitleModal={setTitleModal}
         pagination={{ page, totalpages: totalPages }}
-        page={page}
         changePage={setPage}
+        page={page}
         setFormData={setFormData}
       />
       {isOpen && (

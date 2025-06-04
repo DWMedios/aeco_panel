@@ -52,7 +52,18 @@ const Aecos = () => {
         filters={[
           { name: 'folio', label: 'Folio' },
           { name: 'name', label: 'Nombre' },
-          { name: 'status', label: 'Estatus' },
+          {
+            name: 'status',
+            label: 'Estatus',
+            type: 'select',
+            options: [
+              { value: 'enabled', label: 'Activo' },
+              { value: 'disabled', label: 'Inactivo' },
+              { value: 'suspended', label: 'Suspendido' },
+              { value: 'deactivated', label: 'Desactivado' },
+              { value: 'maintenance', label: 'Mantenimiento' },
+            ],
+          },
         ]}
         setFilters={setFilters}
         openModal={() => {
@@ -63,7 +74,7 @@ const Aecos = () => {
       />
       <Table
         tableContent={{
-          headers: ['Folio', 'Nombre', 'Numero de serie', 'Estatus'],
+          headers: ['Folio', 'Nombre', 'Número de serie', 'Estatus'],
           data: aecos,
         }}
         columns={[

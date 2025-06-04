@@ -110,7 +110,7 @@ const ModalAeco = ({ onClose, title, onSaved, aeco, setShowAlert }: Props) => {
           <div className="flex items-center justify-start gap-6">
             <span className="text-2xl">Datos de la máquina</span>
           </div>
-          <div className="flex items-center justify-start gap-2">
+          <div className="flex items-center justify-start gap-2 flex-wrap">
             <InputField
               name="name"
               placeholder="Nombre"
@@ -119,7 +119,7 @@ const ModalAeco = ({ onClose, title, onSaved, aeco, setShowAlert }: Props) => {
               error={errors.name}
               touched={touched.name}
               value={values.name}
-              divClassName="w-1/4"
+              divClassName="w-2/5"
               className="w-full rounded-full border-2 border-gray-300 p-2"
             />
             <InputSelect
@@ -131,18 +131,18 @@ const ModalAeco = ({ onClose, title, onSaved, aeco, setShowAlert }: Props) => {
               value={values.status}
               options={aecoStatus}
               placeholder="Estatus"
-              divClassName="w-1/4"
+              divClassName="w-2/5"
               className="w-full rounded-full border-2 border-gray-300 p-2"
             />
             <InputField
               name="serialNumber"
-              placeholder="Numero de serie"
+              placeholder="Número de serie"
               onChange={handleChange}
               onBlur={handleBlur}
               error={errors.serialNumber}
               touched={touched.serialNumber}
               value={values.serialNumber}
-              divClassName="w-1/4"
+              divClassName="w-2/5"
               className="w-full rounded-full border-2 border-gray-300 p-2"
             />
             <InputSelect
@@ -154,7 +154,7 @@ const ModalAeco = ({ onClose, title, onSaved, aeco, setShowAlert }: Props) => {
               value={values.companyId}
               options={companies}
               placeholder="Empresa"
-              divClassName="w-1/4"
+              divClassName="w-2/5"
               className="w-full rounded-full border-2 border-gray-300 p-2"
             />
           </div>

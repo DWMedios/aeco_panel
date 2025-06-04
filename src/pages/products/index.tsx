@@ -116,7 +116,7 @@ const Products = () => {
         {tab === 'products' ? (
           <Table
             tableContent={{
-              headers: ['Folio', 'Nombre', 'Familia', 'Codigo'],
+              headers: ['Id', 'Nombre', 'Familia', 'Codigo'],
               data: products,
             }}
             columns={['id', 'name', 'family', 'code']}
@@ -135,7 +135,7 @@ const Products = () => {
           <>
             <Table
               tableContent={{
-                headers: ['Folio', 'Nombre', 'Empaque', 'Factor', 'Peso'],
+                headers: ['Id', 'Nombre', 'Empaque', 'Factor', 'Peso'],
                 data: capacities,
               }}
               columns={['id', 'description', 'packaging', 'factor', 'weight']}

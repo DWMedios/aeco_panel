@@ -37,6 +37,10 @@ export const validationRulesCompany = (companyData: any) => {
         required: 'El RFC es obligatorio',
       },
     },
+    phone: {
+      minLength: 10,
+      maxLength: 10,
+    },
     'userAdmin.name': {
       required: Object.keys(companyData).length === 0,
       errorMessages: {
@@ -71,6 +75,10 @@ export const validationRulesCompany = (companyData: any) => {
       errorMessages: {
         pattern: 'Por favor ingresa un correo electrónico válido',
       },
+    },
+    'legalRepresentative.phone': {
+      minLength: 10,
+      maxLength: 10,
     },
   }
 }

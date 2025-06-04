@@ -8,6 +8,7 @@ interface Props {
   className?: string
   setSelected: (option: any) => void
   selected: any[]
+  handleDelete?: (id: number) => void
 }
 
 const SearchableSelect = ({
@@ -17,6 +18,7 @@ const SearchableSelect = ({
   setSelected,
   selected = [],
   title = 'maquinas',
+  handleDelete,
 }: Props) => {
   const [inputValue, setInputValue] = useState('')
   const [showOptions, setShowOptions] = useState(false)
@@ -68,7 +70,7 @@ const SearchableSelect = ({
             onChange={handleInputChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
-            placeholder="Buscar maquina..."
+            placeholder="Buscar máquina..."
             className=" text-xs border-2 border-gray-300 rounded-full 
         focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 
         dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
@@ -92,9 +94,11 @@ const SearchableSelect = ({
       <Table
         columns={['value', 'label', { column: 'status', type: 'chip' }]}
         tableContent={{
-          headers: ['Id', 'Nombre', 'status'],
+          headers: ['Id', 'Nombre', 'Estatus'],
           data: [...selected],
         }}
+        actionRemove={true}
+        handleDelete={handleDelete}
       />
     </div>
   )

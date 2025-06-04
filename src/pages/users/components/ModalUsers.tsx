@@ -31,7 +31,7 @@ const ModalUsers = ({ onClose, title, onSaved, user, setShowAlert }: Props) => {
     user && Object.keys(user).length > 0
       ? { ...initialValues, ...user }
       : initialValues
-  const validationRules = validationRulesUser()
+  const validationRules = validationRulesUser(user)
   const {
     values,
     errors,
@@ -58,7 +58,7 @@ const ModalUsers = ({ onClose, title, onSaved, user, setShowAlert }: Props) => {
 
   useEffect(() => {
     if (user && Object.keys(user).length > 0)
-      setValues({ ...initialValues, ...user })
+      setValues({ ...initialValues, ...user, role: user.role.role })
     else resetForm()
   }, [user, setValues])
 
@@ -221,6 +221,7 @@ const ModalUsers = ({ onClose, title, onSaved, user, setShowAlert }: Props) => {
               touched={touched.password}
               divClassName="w-2/5"
               className="w-full rounded-full border-2 border-gray-300 p-2"
+              type="password"
             />
             <InputField
               name="passwordConfirmation"

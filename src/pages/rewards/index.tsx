@@ -92,7 +92,15 @@ const Rewards = () => {
             { name: 'name', label: 'Nombre' },
             { name: 'type', label: 'Categoria' },
             { name: 'establishment', label: 'Establecimiento' },
-            { name: 'status', label: 'Estatus' },
+            {
+              name: 'status',
+              label: 'Estatus',
+              type: 'select',
+              options: [
+                { value: true, label: 'Activo' },
+                { value: false, label: 'Inactivo' },
+              ],
+            },
           ]}
           setFilters={setFilters}
           openModal={() => {

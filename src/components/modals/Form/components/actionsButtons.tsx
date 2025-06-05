@@ -15,7 +15,7 @@ const ActionsButtons = ({ loading, onClose }: Props) => {
       </button>
       <button
         type="submit"
-        className="rounded-full text-sm bg-green-600 p-2 w-28 text-white dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
+        className="flex justify-center rounded-full text-sm bg-green-600 p-2 w-28 text-white dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
         disabled={loading}
       >
         {loading && (

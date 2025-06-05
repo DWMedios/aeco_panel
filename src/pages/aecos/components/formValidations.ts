@@ -23,10 +23,13 @@ export const validationRules = {
     required: true,
     minLength: 6,
     maxLength: 20,
+    pattern: /^[a-zA-Z0-9]+$/,
     errorMessages: {
       required: 'El serial es obligatorio',
       minLength: 'El número de serie debe tener al menos 6 caracteres',
       maxLength: 'El número de serie no puede tener más de 20 caracteres',
+      pattern:
+        'El número de serie no puede tener espacios ni caracteres especiales',
     },
   },
   status: {

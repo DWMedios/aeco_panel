@@ -59,7 +59,15 @@ const Companies = () => {
         filters={[
           { name: 'name', label: 'Nombre' },
           { name: 'rfc', label: 'RFC' },
-          { name: 'status', label: 'Estatus' },
+          {
+            name: 'status',
+            label: 'Estatus',
+            type: 'select',
+            options: [
+              { label: 'Activo', value: true },
+              { label: 'Inactivo', value: false },
+            ],
+          },
         ]}
         setFilters={setFilters}
         openModal={() => {
@@ -70,14 +78,7 @@ const Companies = () => {
       />
       <Table
         tableContent={{
-          headers: [
-            'Folio',
-            'Nombre',
-            'Maquinas',
-            'Dirección',
-            'Rfc',
-            'Estatus',
-          ],
+          headers: ['Id', 'Nombre', 'Maquinas', 'Dirección', 'Rfc', 'Estatus'],
           data: companies,
         }}
         columns={[

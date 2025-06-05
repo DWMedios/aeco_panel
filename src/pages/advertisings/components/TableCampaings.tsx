@@ -51,7 +51,16 @@ const TableCampaings = ({ setShowAlert }: Props) => {
         addButton={true}
         filters={[
           { name: 'contractName', label: 'Nombre' },
-          { name: 'description', label: 'Descripcion' },
+          { name: 'description', label: 'Descripción' },
+          {
+            name: 'isEnabled',
+            label: 'Estatus',
+            type: 'select',
+            options: [
+              { value: 'true', label: 'Activo' },
+              { value: 'false', label: 'Inactivo' },
+            ],
+          },
         ]}
         setFilters={setFilters}
         openModal={() => {
@@ -65,7 +74,7 @@ const TableCampaings = ({ setShowAlert }: Props) => {
           headers: [
             'Folio',
             'Nombre',
-            'Descripcion',
+            'Descripción',
             'Fecha de inicio',
             'Fecha de fin',
             'Empresa',
@@ -73,6 +82,8 @@ const TableCampaings = ({ setShowAlert }: Props) => {
           ],
           data: data.map((item: any) => ({
             ...item,
+            startDate: item.startDate.substring(1, 10),
+            endDate: item.endDate.substring(1, 10),
             companyName: item.company.name,
           })),
         }}

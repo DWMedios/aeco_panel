@@ -29,12 +29,14 @@ const InputSelect = ({
 }: Props) => {
   return (
     <div className={`relative ${divClassName}`}>
-      <label
-        htmlFor={name}
-        className="absolute -top-2 left-2 text-xs bg-white px-1 text-gray-600 z-10"
-      >
-        {placeholder}
-      </label>
+      {value && (
+        <label
+          htmlFor={name}
+          className="absolute -top-2 left-2 text-xs bg-white px-1 text-gray-600 z-10"
+        >
+          {placeholder}
+        </label>
+      )}
       <select
         id={name}
         name={name}
@@ -45,14 +47,16 @@ const InputSelect = ({
         }}
         className={`rounded-full border-2 border-gray-300 p-2 text-xs ${className}`}
       >
-        <option value="">{defaultPlaceholder}</option>
+        <option value="" disabled hidden>
+          {placeholder ?? defaultPlaceholder}
+        </option>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
           </option>
         ))}
       </select>
-      {touched && error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+      {touched && error && <p className="text-red-500 text-xs mt-1">{error}</p>}
     </div>
   )
 }

@@ -43,9 +43,17 @@ const TableAdvertising = ({ setShowAlert }: Props) => {
       <Filters
         addButton={true}
         filters={[
-          { name: 'name', label: 'Nombre' },
-          { name: 'rfc', label: 'RFC' },
-          { name: 'status', label: 'Estatus' },
+          // { name: 'name', label: 'Nombre' },
+          // { name: 'rfc', label: 'RFC' },
+          {
+            name: 'status',
+            label: 'Estatus',
+            type: 'select',
+            options: [
+              { value: 'true', label: 'Activo' },
+              { value: 'false', label: 'Inactivo' },
+            ],
+          },
         ]}
         setFilters={setFilters}
         openModal={() => {
@@ -55,7 +63,7 @@ const TableAdvertising = ({ setShowAlert }: Props) => {
       />
       <Table
         tableContent={{
-          headers: ['Folio', 'Empresa', 'Contratsitas', 'Campaña', 'Estatus'],
+          headers: ['Id', 'Empresa', 'Contratsitas', 'Campaña', 'Estatus'],
           data: ads.map((item: any) => ({
             ...item,
             companyName: item.company.name,

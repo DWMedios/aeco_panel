@@ -5,8 +5,8 @@ import { useFetchWithAuth } from './fetch'
 export const useWebApiUser = () => {
   const { fetchRequest } = useFetchWithAuth()
 
-  const getUsers = async (): Promise<ApiResponseList<User>> => {
-    return fetchRequest({ url: '/users', method: 'GET' })
+  const getUsers = async (filters: string): Promise<ApiResponseList<User>> => {
+    return fetchRequest({ url: `/users${filters}`, method: 'GET' })
   }
 
   const createUser = async (user: IUserForm): Promise<User> => {

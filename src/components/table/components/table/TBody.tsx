@@ -1,6 +1,7 @@
 import { ColumnType } from '../../../../interfaces/table'
 import { Aeco, Company, Reward, User } from '../../../../interfaces/types'
 import { chipColor, chipText } from '../../../../utils/chipColor'
+import { userRole } from '../../../../utils/labeName'
 import ActtionMenu from '../ActionMenu'
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
   openModalDelete?: () => void
   setDeleteId: (id: number) => void
   setFormData?: (data: any) => void
+  actionRemove: boolean
 }
 
 const TBody = ({
@@ -21,6 +23,7 @@ const TBody = ({
   openModalDelete,
   setDeleteId,
   setFormData,
+  actionRemove,
 }: Props) => {
   return (
     <tbody className="relative overflow-visible ">
@@ -55,7 +58,11 @@ const TBody = ({
             : ''
         }`}
               >
-                {columnType === 'chip' ? (
+                {column === 'role.role' ? (
+                  userRole(
+                    columnName.split('.').reduce((obj, key) => obj?.[key], item)
+                  )
+                ) : columnType === 'chip' ? (
                   <span
                     id="badge-dismiss-green"
                     className={`inline-flex justify-center items-center px-2 py-1 me-2 text-xs font-medium text-white ${chipColor(
@@ -64,6 +71,10 @@ const TBody = ({
                   >
                     {chipText(item[columnName as keyof typeof item])}
                   </span>
+                ) : columnName.includes('.') ? (
+                  columnName
+                    .split('.')
+                    .reduce((obj, key) => obj?.[key], item) ?? '-'
                 ) : (
                   item[columnName as keyof typeof item] ?? '-'
                 )}
@@ -79,6 +90,7 @@ const TBody = ({
               item={item}
               setDeleteId={(id: number) => setDeleteId(id)}
               setFormData={setFormData}
+              actionRemove={actionRemove}
             />
           </td>
         </tr>

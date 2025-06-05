@@ -43,7 +43,7 @@ const ModalCompanies = ({
     deleteMediaAsset,
     key,
   } = useInputUpload({
-    title: 'Personalizacion',
+    title: 'Personalización',
     type: 'image',
     previewUrl,
   })
@@ -92,6 +92,7 @@ const ModalCompanies = ({
             label: item.name,
             value: item.id,
             status: item.status,
+            id: item.id,
           }))
         )
       }
@@ -152,6 +153,10 @@ const ModalCompanies = ({
     } catch (error) {
       console.log('Error buscando AECOs:', error)
     }
+  }
+
+  const handleDelete = (id: number) => {
+    setSelectedAeco(selectedAeco.filter((item: any) => item.value !== id))
   }
 
   const getValue = (path: string) => {
@@ -402,6 +407,7 @@ const ModalCompanies = ({
               className="w-2/4"
               setSelected={setSelectedAeco}
               selected={selectedAeco}
+              handleDelete={handleDelete}
             />
           </div>
         </div>

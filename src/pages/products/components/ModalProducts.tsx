@@ -125,7 +125,7 @@ const ModalProducts = ({
               />
               <InputField
                 name="code"
-                placeholder="Codigo de barras"
+                placeholder="Código de barras"
                 value={values.code}
                 onChange={handleChange}
                 onBlur={handleBlur}

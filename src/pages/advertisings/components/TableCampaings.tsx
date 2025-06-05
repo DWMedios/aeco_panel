@@ -82,8 +82,8 @@ const TableCampaings = ({ setShowAlert }: Props) => {
           ],
           data: data.map((item: any) => ({
             ...item,
-            startDate: item.startDate.substring(1, 10),
-            endDate: item.endDate.substring(1, 10),
+            startDate: item.startDate.substring(0, 10),
+            endDate: item.endDate.substring(0, 10),
             companyName: item.company.name,
           })),
         }}

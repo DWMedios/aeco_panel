@@ -78,7 +78,7 @@ const Companies = () => {
       />
       <Table
         tableContent={{
-          headers: ['Id', 'Nombre', 'Maquinas', 'Dirección', 'RFC', 'Estatus'],
+          headers: ['Id', 'Nombre', 'Máquinas', 'Dirección', 'RFC', 'Estatus'],
           data: companies,
         }}
         columns={[

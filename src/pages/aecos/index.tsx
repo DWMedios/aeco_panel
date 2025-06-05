@@ -46,7 +46,7 @@ const Aecos = () => {
 
   return (
     <MainLayout alertProps={showAlert}>
-      <Title title="Maquinas" />
+      <Title title="Máquinas" />
       <Filters
         addButton={true}
         filters={[

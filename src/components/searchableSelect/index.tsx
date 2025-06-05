@@ -17,7 +17,7 @@ const SearchableSelect = ({
   className = '',
   setSelected,
   selected = [],
-  title = 'maquinas',
+  title = 'máquinas',
   handleDelete,
 }: Props) => {
   const [inputValue, setInputValue] = useState('')

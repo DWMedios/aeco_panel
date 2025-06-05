@@ -46,7 +46,7 @@ const ModalContractors = ({
     deleteMediaAsset,
     key,
   } = useInputUpload({
-    title: 'Personalizacion',
+    title: 'Personalización',
     type: 'image',
     previewUrl,
   })

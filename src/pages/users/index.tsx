@@ -80,7 +80,7 @@ const Users = () => {
             'Teléfono',
             'Correo',
             'Puesto',
-            'Role',
+            'Rol',
             'Estatus',
           ],
           data: users,

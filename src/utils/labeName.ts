@@ -12,6 +12,9 @@ export const userRole = (role: string) => {
     case 'recolector':
       return 'Recolector'
 
+    case 'super_admin':
+      return 'Super Administrador'
+
     default:
       break
   }

@@ -1,8 +1,17 @@
 import { Power } from '@phosphor-icons/react'
 import { useAuth } from '../../hooks/useAuth'
+import { useEffect, useState } from 'react'
+import { userRole } from '../../utils/labeName'
 
 const CardProfile = () => {
-  const { logout } = useAuth()
+  const [userProfile, setUserProfile] = useState<any>(null)
+  const { logout, profile } = useAuth()
+
+  useEffect(() => {
+    const user = profile()
+    if (user) setUserProfile(user)
+  }, [])
+
   return (
     <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 text-white">
       <div className="flex flex-col items-center bg-slate-950 rounded-2xl">
@@ -13,9 +22,11 @@ const CardProfile = () => {
           alt="Bonnie image"
         />
         <h5 className="mb-1 text-xl font-medium dark:text-white">
-          User Profile
+          {userProfile?.username}
         </h5>
-        <span className="text-sm dark:text-gray-400">Admin</span>
+        <span className="text-sm dark:text-gray-400">
+          {userRole(userProfile?.roleType)}
+        </span>
         <ul className="my-4 space-y-3 w-full">
           <li>
             <a
@@ -25,7 +36,7 @@ const CardProfile = () => {
             >
               <Power size={25} color="white" />
               <span className="flex-1 ms-3 whitespace-nowrap">
-                Cerrar sesion
+                Cerrar sesión
               </span>
             </a>
           </li>

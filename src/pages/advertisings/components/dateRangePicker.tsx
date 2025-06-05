@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { DateRange } from 'react-date-range'
 import 'react-date-range/dist/styles.css'
 import 'react-date-range/dist/theme/default.css'
@@ -132,11 +132,19 @@ const InputDateRangePicker = ({
     }
   }, [selectionRange])
 
+  const pickerRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (open && pickerRef.current) {
+      pickerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }, [open])
+
   return (
     <div className="relative">
       <input
         type="text"
-        className="w-full p-3 border border-gray-300 rounded-md focus:outline-none text-xs handPointer"
+        className="w-72 p-3 border border-gray-300 rounded-md focus:outline-none text-xs handPointer"
         value={
           selectionRange.startDate && selectionRange.endDate
             ? `${selectionRange.startDate.toLocaleDateString(
@@ -148,7 +156,10 @@ const InputDateRangePicker = ({
         readOnly
       />
       {open && (
-        <div className="absolute z-10 mt-2 -ml-10 bg-white shadow-lg rounded-md p-2">
+        <div
+          ref={pickerRef}
+          className=" bg-white shadow ring-4 ring-slate-200 mt-1 rounded-md max-w-[60%]"
+        >
           <DateRange
             ranges={[selectionRange]}
             onChange={handleSelect}

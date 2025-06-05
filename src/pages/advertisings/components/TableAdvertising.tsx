@@ -43,8 +43,6 @@ const TableAdvertising = ({ setShowAlert }: Props) => {
       <Filters
         addButton={true}
         filters={[
-          // { name: 'name', label: 'Nombre' },
-          // { name: 'rfc', label: 'RFC' },
           {
             name: 'status',
             label: 'Estatus',

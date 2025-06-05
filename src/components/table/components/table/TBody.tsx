@@ -33,7 +33,7 @@ const TBody = ({
           className={`relative bg-[#F8F8F8] text-center hover:bg-gray-300 ${
             index < content.length - 1 &&
             'border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200'
-          } group`}
+          } group `}
         >
           {columns.map((column, colIndex) => {
             const columnName =
@@ -43,7 +43,7 @@ const TBody = ({
             return (
               <td
                 key={colIndex}
-                className={`px-6 py-2 text-gray-900 dark:text-white 
+                className={`px-6 py-2 min-w-32 text-gray-900 dark:text-white 
         ${
           index === content.length - 1 &&
           (colIndex === 0

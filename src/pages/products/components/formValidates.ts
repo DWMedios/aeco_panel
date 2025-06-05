@@ -28,13 +28,13 @@ export const validationRulesProduct = {
   code: {
     required: true,
     errorMessages: {
-      required: 'El codigo de barras obligatorio',
+      required: 'El código de barras es obligatorio',
     },
   },
   capacityId: {
     required: true,
     errorMessages: {
-      required: 'La capacidad obligatoria',
+      required: 'La capacidad es obligatoria',
     },
   },
 }

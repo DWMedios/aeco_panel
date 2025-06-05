@@ -95,7 +95,7 @@ const Products = () => {
               ? [
                   { name: 'name', label: 'Nombre' },
                   { name: 'family', label: 'Familia' },
-                  { name: 'code', label: 'Codigo' },
+                  { name: 'code', label: 'Código' },
                 ]
               : [
                   { name: 'description', label: 'Nombre' },
@@ -116,7 +116,7 @@ const Products = () => {
         {tab === 'products' ? (
           <Table
             tableContent={{
-              headers: ['Id', 'Nombre', 'Familia', 'Codigo'],
+              headers: ['Id', 'Nombre', 'Familia', 'Código'],
               data: products,
             }}
             columns={['id', 'name', 'family', 'code']}

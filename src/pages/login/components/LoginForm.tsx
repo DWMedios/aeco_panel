@@ -20,6 +20,7 @@ const LoginForm = () => {
       const response: any = await withLoading(() =>
         loginApi(data as ILoginForm)
       )
+      console.log('🚀 ~ handleFormSubmit ~ response:', response)
       login(response?.access_token)
     } catch (error) {
       console.log('error:', error)

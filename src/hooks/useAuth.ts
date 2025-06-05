@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
+import { jwtDecode } from 'jwt-decode'
 
 export const useAuth = () => {
   const navigate = useNavigate()
@@ -17,6 +18,19 @@ export const useAuth = () => {
   const isAuthenticated = () => {
     const token = Cookies.get('token')
     return Boolean(token && token.trim() !== '')
+  }
+
+  const profile = () => {
+    const token = Cookies.get('token')
+    if (!token) return false
+
+    try {
+      const decoded = jwtDecode(token)
+      return decoded
+    } catch (err) {
+      console.error('Token inválido:', err)
+      return false
+    }
   }
 
   const getToken = () => {
@@ -42,5 +56,6 @@ export const useAuth = () => {
     isAuthenticated,
     getToken,
     sessionTimeout,
+    profile,
   }
 }

@@ -90,7 +90,7 @@ const Rewards = () => {
           filters={[
             { name: 'folio', label: 'Folio' },
             { name: 'name', label: 'Nombre' },
-            { name: 'type', label: 'Categoria' },
+            { name: 'type', label: 'Categoría' },
             { name: 'establishment', label: 'Establecimiento' },
             {
               name: 'status',
@@ -114,7 +114,7 @@ const Rewards = () => {
             headers: [
               'Folio',
               'Nombre',
-              'Categoria',
+              'Categoría',
               'Establecimiento',
               'Estatus',
             ],

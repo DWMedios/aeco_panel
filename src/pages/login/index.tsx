@@ -16,10 +16,10 @@ function Login() {
   }, [])
 
   return (
-    <div className="flex flex-col h-screen items-center justify-center bg-white">
+    <div className="flex flex-col h-screen items-center justify-center bg-white p-2">
       <NavbarLogin title={'Inicio de Sesión'} />
       <div className="flex w-full h-[70%] max-w-7xl border border:bg-gray-100 shadow-lg rounded-lg ">
-        <div className="w-1/2 flex flex-col items-center justify-center p-8 border-r-2">
+        <div className="w-1/2 hidden md:flex flex-col items-center justify-center p-8 border-r-2">
           <img
             src="/images/ayuntaeco.png"
             alt="AyuntaEco Logo"
@@ -35,7 +35,7 @@ function Login() {
           />
         </div>
 
-        <div className="flex flex-col w-1/2 justify-center items-center ">
+        <div className="flex flex-col w-full md:w-1/2 justify-center items-center ">
           <LoginForm />
         </div>
       </div>

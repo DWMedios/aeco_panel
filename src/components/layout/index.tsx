@@ -19,14 +19,23 @@ const MainLayout = ({ children, alertProps }: Props) => {
   }, [alertProps])
 
   return (
-    <>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Navbar fijo en la parte superior */}
       <Navbar />
+      
+      {/* Sidebar */}
       <SideBar />
-      <div className="p-4 sm:ml-[225px]">
-        <div className="p-4">{children}</div>
+      
+      {/* Contenido principal con margen responsivo que coincide con el sidebar */}
+      <div className="transition-all duration-300 ease-in-out sm:ml-56 md:ml-60 lg:ml-64 xl:ml-72 ml-0 pt-16">
+        <div className="p-4 sm:p-6 md:p-8 lg:p-10">
+          {children}
+        </div>
       </div>
+      
+      {/* Modal de alertas */}
       {AlertModal}
-    </>
+    </div>
   )
 }
 

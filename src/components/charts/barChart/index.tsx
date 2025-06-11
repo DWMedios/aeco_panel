@@ -1,5 +1,4 @@
-import { ApexOptions } from 'apexcharts'
-import ReactApexChart from 'react-apexcharts'
+import React from 'react'
 
 interface Props {
   title: string
@@ -8,79 +7,47 @@ interface Props {
 }
 
 const BarChart = ({ subTitle, title, data }: Props) => {
-  const series = [
-    {
-      name: 'Cantidad',
-      data,
-    },
-  ]
-
-  const options: ApexOptions = {
-    chart: {
-      type: 'bar',
-      toolbar: { show: false },
-    },
-    plotOptions: {
-      bar: {
-        barHeight: '20px',
-        horizontal: true,
-        borderRadius: 10,
-        dataLabels: {
-          position: 'bottom',
-        },
-      },
-    },
-    colors: ['#F4A8A3'],
-    dataLabels: {
-      enabled: true,
-      style: {
-        colors: ['#000'],
-        fontSize: '10px',
-      },
-      formatter: (_val, opts) => {
-        return `${opts.w.config.series[0].data[opts.dataPointIndex].x}`
-      },
-      textAnchor: 'start',
-      offsetX: 0,
-    },
-    xaxis: {
-      labels: { show: false },
-    },
-    yaxis: {
-      labels: { show: false },
-    },
-    grid: { show: false },
-    tooltip: { enabled: true },
-  }
-
   return (
-    <div className="p-2 rounded-lg shadow-lg" style={{ fontWeight: 400 }}>
-      <h2 className="text-xl font-semibold mb-2">{title}</h2>
-      <div className="flex justify-between text-sm font-semibold mb-2">
-        <span>{subTitle}</span>
-        <span>Cantidad</span>
+    <div className="w-full h-full overflow-hidden p-2" style={{ fontWeight: 400 }}>
+      <h2 className="text-lg sm:text-xl font-semibold mb-2 truncate">{title}</h2>
+      <div className="flex justify-between text-xs sm:text-sm font-semibold mb-4">
+        <span className="truncate flex-1">{subTitle}</span>
+        <span className="ml-2">Cantidad</span>
       </div>
-      <div className="flex ">
-        <div className="flex-grow">
-          <ReactApexChart
-            options={options}
-            series={series}
-            type="bar"
-            height={250}
-          />
-        </div>
-        <div className="flex flex-col h-[100%vh] p-8">
-          <div className={`grid grid-rows-${data.length} h-full text-sm`}>
-            {data.map(({ y }, index) => (
-              <div
-                key={index}
-                className="border p-2 flex items-center justify-center"
-              >
-                <span>{y >= 1000 ? `${(y / 1000).toFixed(1)}K` : y}</span>
+      
+      {/* Contenedor principal - las barras y números deben estar alineados */}
+      <div className="w-full">
+        {data.map((item, index) => (
+          <div key={index} className="flex items-center mb-3 w-full group">
+            {/* Contenedor de la barra individual */}
+            <div className="flex-1 min-w-0 mr-3">
+              <div className="flex items-center">
+                {/* Etiqueta del producto con tooltip */}
+                <div 
+                  className="w-16 sm:w-20 text-xs mr-2 truncate cursor-pointer"
+                  title={item.x} // Tooltip nativo para mostrar el nombre completo
+                >
+                  {item.x.length > 10 ? item.x.substring(0, 8) + '...' : item.x}
+                </div>
+                {/* Barra de progreso visual */}
+                <div className="flex-1 bg-gray-300 rounded-full h-4 relative overflow-hidden">
+                  <div 
+                    className="bg-[#F4A8A3] h-4 rounded-full transition-all duration-300 group-hover:bg-[#F08A84]"
+                    style={{ 
+                      width: `${Math.min((item.y / Math.max(...data.map(d => d.y))) * 100, 100)}%` 
+                    }}
+                  />
+                </div>
               </div>
-            ))}
+            </div>
+            {/* Número alineado con cada barra */}
+            <div className="w-10 sm:w-12 text-right flex-shrink-0">
+              <span className="text-xs font-medium">
+                {item.y >= 1000 ? `${(item.y / 1000).toFixed(1)}K` : item.y}
+              </span>
+            </div>
           </div>
-        </div>
+        ))}
       </div>
     </div>
   )

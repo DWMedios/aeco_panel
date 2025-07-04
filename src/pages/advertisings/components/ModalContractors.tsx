@@ -73,7 +73,7 @@ const ModalContractors = ({
 
   useEffect(() => {
     const fetchCompanies = async () => {
-      const response: any = await withLoading(() => getCompanies(''))
+      const response: any = await withLoading(() => getCompanies('?perpage=50'))
       setCompanies(
         response.records.map((company: any) => ({
           value: company.id,

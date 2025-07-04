@@ -84,7 +84,7 @@ const ModalCampaings = ({
 
   useEffect(() => {
     const fetchCompanies = async () => {
-      const response: any = await withLoading(() => getCompanies(''))
+      const response: any = await withLoading(() => getCompanies('?perpage=50'))
       setCompanies(
         response.records.map((company: any) => ({
           value: company.id,
@@ -164,9 +164,6 @@ const ModalCampaings = ({
         cleanedData.startDate = dateSelected[0]
         cleanedData.endDate = dateSelected[1]
       }
-
-      if (cleanedData.isEnabled)
-        cleanedData.isEnabled = cleanedData.isEnabled === 'true' ? true : false
 
       const mediaAsset = (await uploadMediaAsset()) as MediaAsset | boolean
       if (mediaAsset) cleanedData.mediaAsset = mediaAsset

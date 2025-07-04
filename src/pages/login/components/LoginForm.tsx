@@ -6,8 +6,11 @@ import useFormWithValidation from '../../../hooks/useForm'
 import InputField from '../../../components/inputField'
 import { initialValues, validationRules } from './formValidations'
 import { CircleNotch, EnvelopeSimple, LockKey } from '@phosphor-icons/react'
+import { jwtDecode } from 'jwt-decode'
+import { useEffect, useState } from 'react'
 
 const LoginForm = () => {
+  const [error, setError] = useState<boolean>(false)
   const { withLoading, loading } = useLoading()
   const { login } = useAuth()
   const { login: loginApi } = useWebApiAuth()
@@ -15,14 +18,24 @@ const LoginForm = () => {
   const { values, errors, touched, handleChange, handleBlur, handleSubmit } =
     useFormWithValidation(mergedValues, { validationRules })
 
+  useEffect(() => {
+    const timer = setTimeout(() => setError(false), 3000)
+    return () => clearTimeout(timer)
+  }, [error])
+
   const handleFormSubmit = async (data: Partial<ILoginForm>) => {
     try {
       const response: any = await withLoading(() =>
         loginApi(data as ILoginForm)
       )
-      console.log('🚀 ~ handleFormSubmit ~ response:', response)
+      const decoded = jwtDecode(response?.access_token) as any
+      if (decoded?.roleType !== 'super_admin') {
+        setError(true)
+        return
+      }
       login(response?.access_token)
     } catch (error) {
+      setError(true)
       console.log('error:', error)
     }
   }
@@ -97,6 +110,34 @@ const LoginForm = () => {
           )}
           Iniciar Sesión
         </button>
+
+        {error ? (
+          <div>
+            <div className={`p-4 border-l-4 bg-red-200 border-red-500`}>
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg
+                    className={`w-5 h-5 text-red-400`}
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10A8 8 0 1110 2a8 8 0 018 8zm-9-3a1 1 0 012 0v3a1 1 0 01-2 0V7zm0 6a1 1 0 102 0 1 1 0 00-2 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className={`text-sm text-red-600`}>
+                    Error al iniciar sesión. Por favor, verifica tus
+                    credenciales.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : null}
 
         <div className="text-right">
           <a href="#" className="text-blue-600 text-sm hover:underline">

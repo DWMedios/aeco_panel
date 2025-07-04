@@ -82,13 +82,31 @@ const ModalAdvertising = ({
       label: camp.name,
     }))
 
-    setCampaings(responseCampaings)
-    setContractors(responseContractors)
+    setCampaings(
+      responseCampaings.length > 0
+        ? responseCampaings
+        : [
+            {
+              value: '',
+              label: 'No hay campañas disponibles para la empresa',
+            },
+          ]
+    )
+    setContractors(
+      responseContractors.length > 0
+        ? responseContractors
+        : [
+            {
+              value: '',
+              label: 'No hay contratistas disponibles para la empresa',
+            },
+          ]
+    )
   }
 
   const fetchInitialData = async () => {
     const [companiesRes] = await withLoading(() =>
-      Promise.all([getCompanies('')])
+      Promise.all([getCompanies('?perpage=50')])
     )
 
     const responseCompanies = companiesRes.records.map((company: any) => ({
@@ -115,7 +133,14 @@ const ModalAdvertising = ({
   const getAdvertisingData = async (id: number) => {
     try {
       const response = (await getAdvertising(id)) as Advertising
-      setAdvertisingData(response)
+      changeCompany({ target: { value: response?.company?.id } })
+
+      const { campaigns, contractors, ...data } = response
+      setAdvertisingData({
+        ...data,
+        campaigns: campaigns.map((camp: any) => camp.id),
+        contractors: contractors?.map((cont: any) => cont.id),
+      })
     } catch (error) {
       console.log('Error al obtener los datos del contratista:', error)
     }
@@ -129,9 +154,6 @@ const ModalAdvertising = ({
         campaigns: [Number(data.campaigns)],
         contractors: [Number(data.contractors)],
       })
-
-      if (cleanedData.isEnabled)
-        cleanedData.isEnabled = cleanedData.isEnabled === 'true' ? true : false
 
       if (advertisingData && Object.keys(advertisingData).length > 0) {
         await withLoading(() =>

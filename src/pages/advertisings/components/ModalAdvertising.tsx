@@ -216,7 +216,7 @@ const ModalAdvertising = ({
                 touched={touched.companyId}
                 value={values.companyId}
                 options={companies}
-                placeholder="Contractante"
+                placeholder="Anunciante"
                 divClassName="w-1/4"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />

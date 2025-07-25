@@ -167,7 +167,7 @@ const ModalAdvertising = ({
       resetForm()
       onClose()
       setShowAlert({
-        message: `Empresa guardada correctamente`,
+        message: `Publicidad guardada correctamente`,
         type: 'success',
       })
     } catch (error: any) {

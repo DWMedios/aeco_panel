@@ -67,6 +67,14 @@ const ModalDonative = ({
 
   useEffect(() => {
     if (reward && Object.keys(reward).length > 0) {
+      setSelectedAeco(
+        reward.aecos.map((item: any) => ({
+          label: item.name,
+          value: item.id,
+          status: item.status,
+        }))
+      )
+      console.log('🚀 ~ ModalDonative ~ reward:', reward)
       setPreviewUrl(reward.imageUrl ?? null)
       setValues({ ...initialValues, ...reward })
     }
@@ -97,6 +105,7 @@ const ModalDonative = ({
       })
       const mediaAsset = (await uploadMediaAsset()) as MediaAsset | boolean
       if (mediaAsset) cleanedData.mediaAsset = mediaAsset
+      console.log('🚀 ~ onFormSubmit ~ cleanedData:', cleanedData)
 
       if (reward && Object.keys(reward).length > 0) {
         delete cleanedData.companyId
@@ -127,7 +136,7 @@ const ModalDonative = ({
   const filterAecos = async (value: string) => {
     try {
       const response = await getAecos(
-        `?serialNumber=${value}&folio=${value}&withoutCompany=true&name=${value}`
+        `?name=${value}&withoutCompany=false&companyId=${values.companyId}`
       )
       setAecoOptions(
         response.records.map((item: any) => ({

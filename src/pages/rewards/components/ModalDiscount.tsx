@@ -74,6 +74,7 @@ const ModalDiscount = ({
 
   useEffect(() => {
     if (reward && Object.keys(reward).length > 0) {
+      setSelectedAeco(reward.aecos)
       setPreviewUrl(reward.imageUrl ?? null)
       setValues({
         ...structuredClone(initialValuesDiscount),
@@ -143,7 +144,7 @@ const ModalDiscount = ({
   const filterAecos = async (value: string) => {
     try {
       const response = await getAecos(
-        `?serialNumber=${value}&folio=${value}&withoutCompany=true`
+        `?name=${value}&withoutCompany=false&companyId=${values.companyId}`
       )
       setAecoOptions(
         response.records.map((item: any) => ({

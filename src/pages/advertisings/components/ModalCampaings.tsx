@@ -98,7 +98,7 @@ const ModalCampaings = ({
   const filterAecos = async (value: string) => {
     try {
       const response = await getAecos(
-        `?serialNumber=${value}&folio=${value}&withoutCompany=true`
+        `?name=${value}&withoutCompany=false&companyId=${values.companyId}`
       )
       setAecoOptions(
         response.records.map((item: any) => ({
@@ -167,6 +167,7 @@ const ModalCampaings = ({
 
       const mediaAsset = (await uploadMediaAsset()) as MediaAsset | boolean
       if (mediaAsset) cleanedData.mediaAsset = mediaAsset
+      cleanedData.aecos = selectedAeco.map((item: any) => item.value)
 
       if ('companyId' in cleanedData)
         cleanedData.companyId = Number(data.companyId)
@@ -183,7 +184,7 @@ const ModalCampaings = ({
       resetForm()
       onClose()
       setShowAlert({
-        message: `Empresa guardada correctamente`,
+        message: `Campaña guardada correctamente`,
         type: 'success',
       })
     } catch (error: any) {

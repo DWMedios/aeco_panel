@@ -134,7 +134,7 @@ const ModalContractors = ({
       resetForm()
       onClose()
       setShowAlert({
-        message: `Empresa guardada correctamente`,
+        message: `Contratista guardado correctamente`,
         type: 'success',
       })
     } catch (error: any) {

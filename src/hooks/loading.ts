@@ -1,3 +1,4 @@
+import { set } from 'lodash'
 import { useState, useCallback } from 'react'
 
 export function useLoading() {
@@ -17,5 +18,5 @@ export function useLoading() {
     []
   )
 
-  return { loading, withLoading }
+  return { loading, withLoading, setLoading }
 }

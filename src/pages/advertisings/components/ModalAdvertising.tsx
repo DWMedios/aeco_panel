@@ -30,7 +30,7 @@ const ModalAdvertising = ({
   adsId,
   setShowAlert,
 }: Props) => {
-  const { withLoading, loading } = useLoading()
+  const { withLoading, loading, setLoading } = useLoading()
   const [companies, setCompanies] = useState<any[]>([])
   const [campaings, setCampaings] = useState<any[]>([])
   const [contractors, setContractors] = useState<any[]>([])
@@ -98,7 +98,7 @@ const ModalAdvertising = ({
         : [
             {
               value: '',
-              label: 'No hay contratistas disponibles para la empresa',
+              label: 'No hay anunciantes disponibles para la empresa',
             },
           ]
     )
@@ -147,6 +147,7 @@ const ModalAdvertising = ({
   }
 
   const handleFormSubmit = async (data: any) => {
+    setLoading(true)
     try {
       const cleanedData: any = cleanEmptyFields({
         ...data,
@@ -240,7 +241,7 @@ const ModalAdvertising = ({
                 touched={touched.contractors}
                 value={values.contractors}
                 options={contractors}
-                placeholder="Contratistas"
+                placeholder="Anunciantes"
                 divClassName="w-1/4"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />

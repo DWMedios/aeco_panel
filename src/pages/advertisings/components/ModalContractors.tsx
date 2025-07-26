@@ -35,7 +35,7 @@ const ModalContractors = ({
   setMediaKey,
   setShowAlert,
 }: Props) => {
-  const { withLoading, loading } = useLoading()
+  const { withLoading, loading, setLoading } = useLoading()
   const [companies, setCompanies] = useState<any[]>([])
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const { createContractor, updateContractor, getContractor } =
@@ -109,6 +109,7 @@ const ModalContractors = ({
   }
 
   const handleFormSubmit = async (data: any) => {
+    setLoading(true)
     try {
       const cleanedData: any = cleanEmptyFields({
         ...data,

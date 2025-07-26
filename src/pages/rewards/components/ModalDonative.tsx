@@ -258,6 +258,11 @@ const ModalDonative = ({
                   className="w-2/4"
                   setSelected={setSelectedAeco}
                   selected={selectedAeco}
+                  handleDelete={(option: any) => {
+                    setSelectedAeco(
+                      selectedAeco.filter((item) => item.value !== option.value)
+                    )
+                  }}
                 />
               </div>
             )}

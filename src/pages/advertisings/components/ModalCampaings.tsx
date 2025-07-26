@@ -18,6 +18,7 @@ import InputSelect from '../../../components/inputSelect'
 import SearchableSelect from '../../../components/searchableSelect'
 import { useWebApiAeco } from '../../../api/webApiAeco'
 import InputDateRangePicker from './dateRangePicker'
+import { set } from 'lodash'
 
 interface Props {
   onClose: () => void
@@ -38,7 +39,7 @@ const ModalCampaings = ({
   setMediaKey,
   setShowAlert,
 }: Props) => {
-  const { withLoading, loading } = useLoading()
+  const { withLoading, loading, setLoading } = useLoading()
   const [companies, setCompanies] = useState<any[]>([])
   const [aecoOptions, setAecoOptions] = useState<any>([])
   const [selectedAeco, setSelectedAeco] = useState<any>([])
@@ -144,6 +145,7 @@ const ModalCampaings = ({
   }
 
   const handleFormSubmit = async (data: any) => {
+    setLoading(true)
     try {
       if (dateSelected.length === 0) {
         setShowAlert({
@@ -281,6 +283,13 @@ const ModalCampaings = ({
                       className="w-2/4"
                       setSelected={setSelectedAeco}
                       selected={selectedAeco}
+                      handleDelete={(option: any) => {
+                        setSelectedAeco(
+                          selectedAeco.filter(
+                            (item) => item.value !== option.value
+                          )
+                        )
+                      }}
                     />
                   </div>
                 )}

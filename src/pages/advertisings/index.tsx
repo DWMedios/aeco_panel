@@ -13,7 +13,7 @@ const Advertising = () => {
 
   const tabs = [
     { name: 'Publicidad', value: 'ads' },
-    { name: 'Contratistas', value: 'contractors' },
+    { name: 'Anunciantes', value: 'contractors' },
     { name: 'Campañas', value: 'campaings' },
   ]
 

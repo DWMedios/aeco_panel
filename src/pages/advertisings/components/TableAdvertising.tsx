@@ -19,7 +19,9 @@ const TableAdvertising = ({ setShowAlert }: Props) => {
   const { page, totalPages, setPage, refresh, setFilters } = usePagination<any>(
     getAdvertisings,
     10,
-    setAds
+    setAds,
+    'createdAt',
+    'desc'
   )
 
   const handleDelete = async (id: number) => {
@@ -44,7 +46,11 @@ const TableAdvertising = ({ setShowAlert }: Props) => {
         addButton={true}
         filters={[
           {
-            name: 'status',
+            name: 'companyName',
+            label: 'Empresa',
+          },
+          {
+            name: 'isEnabled',
             label: 'Estatus',
             type: 'select',
             options: [
@@ -61,7 +67,7 @@ const TableAdvertising = ({ setShowAlert }: Props) => {
       />
       <Table
         tableContent={{
-          headers: ['Id', 'Empresa', 'Contratsitas', 'Campaña', 'Estatus'],
+          headers: ['Id', 'Empresa', 'Anunciante', 'Campaña', 'Estatus'],
           data: ads.map((item: any) => ({
             ...item,
             companyName: item.company.name,

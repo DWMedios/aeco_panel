@@ -20,7 +20,9 @@ const TableCampaings = ({ setShowAlert }: Props) => {
   const { page, totalPages, setPage, refresh, setFilters } = usePagination<any>(
     getCampaings,
     10,
-    setData
+    setData,
+    'createdAt',
+    'desc'
   )
 
   const handleDelete = async (id: number) => {
@@ -50,6 +52,10 @@ const TableCampaings = ({ setShowAlert }: Props) => {
       <Filters
         addButton={true}
         filters={[
+          {
+            name: 'companyName',
+            label: 'Empresa',
+          },
           { name: 'contractName', label: 'Nombre' },
           { name: 'description', label: 'Descripción' },
           {

@@ -52,15 +52,18 @@ const FormFilters = ({ filters, setFilters }: props) => {
               )}
             </>
           ))}
-          <button type="submit" className="h-4 w-4">
-            <img src="/images/search.png" alt="" />
+          <button
+            type="submit"
+            className="h-10 w-10 hover:bg-slate-400 rounded-lg flex items-center justify-center"
+          >
+            <img src="/images/search.png" alt="" className="w-5 h-5" />
           </button>
           <button
             onClick={() => {
               resetForm()
               setFilters({})
             }}
-            className="p-2"
+            className="p-2 hover:bg-slate-400 rounded-lg flex items-center justify-center"
           >
             <Broom size={20} color="blue" weight="fill" />
           </button>

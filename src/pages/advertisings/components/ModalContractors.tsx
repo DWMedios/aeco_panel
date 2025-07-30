@@ -35,7 +35,7 @@ const ModalContractors = ({
   setMediaKey,
   setShowAlert,
 }: Props) => {
-  const { withLoading, loading } = useLoading()
+  const { withLoading, loading, setLoading } = useLoading()
   const [companies, setCompanies] = useState<any[]>([])
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const { createContractor, updateContractor, getContractor } =
@@ -73,7 +73,7 @@ const ModalContractors = ({
 
   useEffect(() => {
     const fetchCompanies = async () => {
-      const response: any = await withLoading(() => getCompanies(''))
+      const response: any = await withLoading(() => getCompanies('?perpage=50'))
       setCompanies(
         response.records.map((company: any) => ({
           value: company.id,
@@ -109,6 +109,7 @@ const ModalContractors = ({
   }
 
   const handleFormSubmit = async (data: any) => {
+    setLoading(true)
     try {
       const cleanedData: any = cleanEmptyFields({
         ...data,
@@ -134,7 +135,7 @@ const ModalContractors = ({
       resetForm()
       onClose()
       setShowAlert({
-        message: `Empresa guardada correctamente`,
+        message: `Contratista guardado correctamente`,
         type: 'success',
       })
     } catch (error: any) {
@@ -149,7 +150,14 @@ const ModalContractors = ({
 
   return (
     <Modal onClose={onClose} title={`${title} contratista`}>
-      <form onSubmit={handleSubmit(handleFormSubmit)}>
+      <form
+        onSubmit={handleSubmit(handleFormSubmit)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault()
+          }
+        }}
+      >
         <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
           <div className="mt-2">{InputUpload}</div>
           <div className="flex flex-col gap-4 rounded-xl bg-[#F8F8F8] mt-2 p-4">

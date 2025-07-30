@@ -24,19 +24,19 @@ export const useDashboardStats = ({ companyId }: Params) => {
 
       const [daily, products, packagings, perDay] = await Promise.all([
         fetchRequest({
-          url: `/dashboard/stats/daily?companyId=${companyId}${query}`,
+          url: `/dashboard/stats/daily?${query}`,
           method: 'GET',
         }),
         fetchRequest({
-          url: `/dashboard/stats/top-products?companyId=${companyId}&limit=5&orderByDirection=desc`,
+          url: `/dashboard/stats/top-products?&limit=5&orderByDirection=desc`,
           method: 'GET',
         }),
         fetchRequest({
-          url: `/dashboard/stats/top-packagings?companyId=${companyId}${query}`,
+          url: `/dashboard/stats/top-packagings?${query}`,
           method: 'GET',
         }),
         fetchRequest({
-          url: `/dashboard/stats/packagings-per-day?companyId=${companyId}${query}`,
+          url: `/dashboard/stats/packagings-per-day?${query}`,
           method: 'GET',
         }),
       ])

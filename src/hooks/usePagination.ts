@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react'
 import { ApiResponseList } from '../interfaces/types'
+import { direction } from 'html2canvas/dist/types/css/property-descriptors/direction'
 
 const generateQueryString = (
   orderByField: string = 'createdAt',
+  direction: string = 'asc',
   filters: Record<string, any>,
   signo: boolean = true
 ): string => {
   const params = new URLSearchParams()
 
-  params.append('orderByDirection', 'asc')
+  params.append('orderByDirection', direction)
   params.append('orderByField', orderByField)
 
   Object.keys(filters).forEach((key) => {
@@ -35,7 +37,8 @@ const usePagination = <T>(
   fetchDataFunction: (queryString: string) => Promise<ApiResponseList<T>>, // Ahora toma una cadena (queryString)
   perPage: number,
   setData: React.Dispatch<React.SetStateAction<T[]>>,
-  orderByField: string = 'createdAt'
+  orderByField: string = 'createdAt',
+  direction: string = 'asc'
 ) => {
   const [filters, setFilters] = useState<Record<string, any> | null>(null)
   const [defaultFilter, setDefaultFilters] = useState<Record<
@@ -51,21 +54,29 @@ const usePagination = <T>(
     setLoading(true)
     setError(null)
 
-    let queryString = generateQueryString(orderByField, {
+    let queryString = generateQueryString(orderByField, direction, {
       ...filters,
       page,
       perpage: perPage,
     })
     if (defaultFilter) {
-      const newFilter = generateQueryString(orderByField, defaultFilter, false)
+      const newFilter = generateQueryString(
+        orderByField,
+        direction,
+        defaultFilter,
+        false
+      )
       if (!queryString.includes(newFilter)) queryString += `&${newFilter}`
     }
 
     try {
+      if (page < 1) {
+        return
+      }
       const response = await fetchDataFunction(queryString)
       setData(response.records || [])
       setTotalPages(response.totalpages || 1)
-      if (response.records.length === 0) setPage(page - 1)
+      if (response.records.length === 0) setPage(page === 0 ? 1 : page - 1)
       else setPage(response.page || 1)
     } catch (err) {
       console.log('Error al cargar los datos', err)

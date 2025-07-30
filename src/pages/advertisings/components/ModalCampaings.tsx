@@ -18,7 +18,6 @@ import InputSelect from '../../../components/inputSelect'
 import SearchableSelect from '../../../components/searchableSelect'
 import { useWebApiAeco } from '../../../api/webApiAeco'
 import InputDateRangePicker from './dateRangePicker'
-import { set } from 'lodash'
 
 interface Props {
   onClose: () => void
@@ -39,7 +38,7 @@ const ModalCampaings = ({
   setMediaKey,
   setShowAlert,
 }: Props) => {
-  const { withLoading, loading, setLoading } = useLoading()
+  const { withLoading, loading } = useLoading()
   const [companies, setCompanies] = useState<any[]>([])
   const [aecoOptions, setAecoOptions] = useState<any>([])
   const [selectedAeco, setSelectedAeco] = useState<any>([])
@@ -85,7 +84,7 @@ const ModalCampaings = ({
 
   useEffect(() => {
     const fetchCompanies = async () => {
-      const response: any = await withLoading(() => getCompanies('?perpage=50'))
+      const response: any = await withLoading(() => getCompanies(''))
       setCompanies(
         response.records.map((company: any) => ({
           value: company.id,
@@ -99,7 +98,7 @@ const ModalCampaings = ({
   const filterAecos = async (value: string) => {
     try {
       const response = await getAecos(
-        `?name=${value}&withoutCompany=false&companyId=${values.companyId}`
+        `?serialNumber=${value}&folio=${value}&withoutCompany=true`
       )
       setAecoOptions(
         response.records.map((item: any) => ({
@@ -145,7 +144,6 @@ const ModalCampaings = ({
   }
 
   const handleFormSubmit = async (data: any) => {
-    setLoading(true)
     try {
       if (dateSelected.length === 0) {
         setShowAlert({
@@ -167,9 +165,11 @@ const ModalCampaings = ({
         cleanedData.endDate = dateSelected[1]
       }
 
+      if (cleanedData.isEnabled)
+        cleanedData.isEnabled = cleanedData.isEnabled === 'true' ? true : false
+
       const mediaAsset = (await uploadMediaAsset()) as MediaAsset | boolean
       if (mediaAsset) cleanedData.mediaAsset = mediaAsset
-      cleanedData.aecos = selectedAeco.map((item: any) => item.value)
 
       if ('companyId' in cleanedData)
         cleanedData.companyId = Number(data.companyId)
@@ -186,7 +186,7 @@ const ModalCampaings = ({
       resetForm()
       onClose()
       setShowAlert({
-        message: `Campaña guardada correctamente`,
+        message: `Empresa guardada correctamente`,
         type: 'success',
       })
     } catch (error: any) {
@@ -208,14 +208,7 @@ const ModalCampaings = ({
 
   return (
     <Modal onClose={onClose} title={`${title} campaña`}>
-      <form
-        onSubmit={handleSubmit(handleFormSubmit)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault()
-          }
-        }}
-      >
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
         <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
           <div className="mt-2">{InputUpload}</div>
           <div className="flex flex-col gap-4 rounded-xl mt-2 p-4">
@@ -290,13 +283,6 @@ const ModalCampaings = ({
                       className="w-2/4"
                       setSelected={setSelectedAeco}
                       selected={selectedAeco}
-                      handleDelete={(option: any) => {
-                        setSelectedAeco(
-                          selectedAeco.filter(
-                            (item) => item.value !== option.value
-                          )
-                        )
-                      }}
                     />
                   </div>
                 )}

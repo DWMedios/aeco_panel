@@ -40,7 +40,7 @@ export const validationRulesContractors = (contractor: any) => {
     name: {
       required: true,
       errorMessages: {
-        required: 'El nombre de anunciante es obligatorio',
+        required: 'El nombre de contratante es obligatorio',
       },
     },
     email: {

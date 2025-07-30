@@ -7,7 +7,6 @@ export const initialValues = {
   order: '',
   companyId: '',
   status: '',
-  aecos: [],
 }
 
 export const validationRules = {

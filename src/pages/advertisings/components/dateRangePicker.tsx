@@ -24,13 +24,11 @@ const InputDateRangePicker = ({
   setShowAlert,
   campaingData,
 }: Props) => {
-  // Función que retorna el rango por defecto: desde hoy hasta 5 días después
+  // Función que retorna el rango por defecto: del 1 al 5 del mes actual
   const getDefaultRange = () => {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0) // Normalizar a medianoche
-    const startDate = new Date(today)
-    const endDate = new Date(today)
-    endDate.setDate(today.getDate() + 4) // 5 días total (hoy + 4 días más)
+    const now = new Date()
+    const startDate = new Date(now.getFullYear(), now.getMonth(), 1)
+    const endDate = new Date(now.getFullYear(), now.getMonth(), 5)
     return { startDate, endDate }
   }
 
@@ -44,22 +42,6 @@ const InputDateRangePicker = ({
   const [disabledDates, setDisabledDates] = useState<Date[]>([])
 
   const { getCampaingsByDate } = useWebApiCampaings()
-
-  // Función para generar fechas pasadas (menores a hoy)
-  const getPastDates = () => {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0) // Normalizar a medianoche
-    const pastDates = []
-
-    // Generar fechas desde hace un año hasta ayer
-    for (let i = 365; i > 0; i--) {
-      const pastDate = new Date(today)
-      pastDate.setDate(today.getDate() - i)
-      pastDates.push(pastDate)
-    }
-
-    return pastDates
-  }
 
   useEffect(() => {
     if (companyId) {
@@ -85,21 +67,13 @@ const InputDateRangePicker = ({
             .filter((d: any) => d.count === 5)
             .map((d: any) => new Date(d.date))
 
-          // Combinar fechas bloqueadas con fechas pasadas
-          const pastDates = getPastDates()
-          const allDisabledDates = [...fechasBloqueadas, ...pastDates]
-
-          setDisabledDates(allDisabledDates)
+          setDisabledDates(fechasBloqueadas)
         } catch (error) {
           console.error('Error al obtener las fechas:', error)
         }
       }
 
       fetchDisabledDates()
-    } else {
-      // Si no hay companyId, solo bloquear fechas pasadas
-      const pastDates = getPastDates()
-      setDisabledDates(pastDates)
     }
   }, [companyId])
 
@@ -190,6 +164,7 @@ const InputDateRangePicker = ({
             ranges={[selectionRange]}
             onChange={handleSelect}
             moveRangeOnFirstSelection={false}
+            showSelectionPreview={false}
             showDateDisplay={false}
             months={1}
             direction="horizontal"

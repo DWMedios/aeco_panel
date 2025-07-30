@@ -67,13 +67,6 @@ const ModalDonative = ({
 
   useEffect(() => {
     if (reward && Object.keys(reward).length > 0) {
-      setSelectedAeco(
-        reward.aecos.map((item: any) => ({
-          label: item.name,
-          value: item.id,
-          status: item.status,
-        }))
-      )
       setPreviewUrl(reward.imageUrl ?? null)
       setValues({ ...initialValues, ...reward })
     }
@@ -134,7 +127,7 @@ const ModalDonative = ({
   const filterAecos = async (value: string) => {
     try {
       const response = await getAecos(
-        `?name=${value}&withoutCompany=false&companyId=${values.companyId}`
+        `?serialNumber=${value}&folio=${value}&withoutCompany=true&name=${value}`
       )
       setAecoOptions(
         response.records.map((item: any) => ({
@@ -150,14 +143,7 @@ const ModalDonative = ({
 
   return (
     <Modal onClose={onClose} title={`${title} donativo`}>
-      <form
-        onSubmit={handleSubmit(onFormSubmit)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault()
-          }
-        }}
-      >
+      <form onSubmit={handleSubmit(onFormSubmit)}>
         <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
           <div className="mt-8">{InputUpload}</div>
 
@@ -263,11 +249,6 @@ const ModalDonative = ({
                   className="w-2/4"
                   setSelected={setSelectedAeco}
                   selected={selectedAeco}
-                  handleDelete={(option: any) => {
-                    setSelectedAeco(
-                      selectedAeco.filter((item) => item.value !== option.value)
-                    )
-                  }}
                 />
               </div>
             )}

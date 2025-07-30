@@ -80,7 +80,14 @@ const ModalCapacities = ({
 
   return (
     <Modal onClose={onClose} title={`${title} capacidad`}>
-      <form onSubmit={handleSubmit(onFormSubmit)}>
+      <form
+        onSubmit={handleSubmit(onFormSubmit)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault()
+          }
+        }}
+      >
         <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
           <div className="flex flex-col gap-4 rounded-xl p-4 flex-wrap">
             <div className="flex items-center justify-start gap-4 flex-wrap">

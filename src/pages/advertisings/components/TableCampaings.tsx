@@ -52,6 +52,10 @@ const TableCampaings = ({ setShowAlert }: Props) => {
       <Filters
         addButton={true}
         filters={[
+          {
+            name: 'companyName',
+            label: 'Empresa',
+          },
           { name: 'contractName', label: 'Nombre' },
           { name: 'description', label: 'Descripción' },
           {

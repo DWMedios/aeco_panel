@@ -105,7 +105,14 @@ const ModalAeco = ({ onClose, title, onSaved, aeco, setShowAlert }: Props) => {
 
   return (
     <Modal onClose={onClose} title={`${title} máquina`}>
-      <form onSubmit={handleSubmit(handleFormSubmit)}>
+      <form
+        onSubmit={handleSubmit(handleFormSubmit)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault()
+          }
+        }}
+      >
         <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
           <div className="flex items-center justify-start gap-6">
             <span className="text-2xl">Datos de la máquina</span>

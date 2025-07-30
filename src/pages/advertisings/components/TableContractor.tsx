@@ -20,9 +20,7 @@ const TableContractor = ({ setShowAlert }: Props) => {
   const { page, totalPages, setPage, refresh, setFilters } = usePagination<any>(
     getContractors,
     10,
-    setData,
-    'createdAt',
-    'desc'
+    setData
   )
 
   const handleDelete = async (id: number) => {

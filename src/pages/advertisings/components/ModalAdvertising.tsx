@@ -30,7 +30,7 @@ const ModalAdvertising = ({
   adsId,
   setShowAlert,
 }: Props) => {
-  const { withLoading, loading, setLoading } = useLoading()
+  const { withLoading, loading } = useLoading()
   const [companies, setCompanies] = useState<any[]>([])
   const [campaings, setCampaings] = useState<any[]>([])
   const [contractors, setContractors] = useState<any[]>([])
@@ -67,10 +67,8 @@ const ModalAdvertising = ({
   const changeCompany = async (value: any) => {
     const [campaingsRes, contractorsRes] = await withLoading(() =>
       Promise.all([
-        getCampaings(
-          `?companyId=${value.target.value}&isEnabled=true&page=1&perpage=50`
-        ),
-        getContractors(`?companyId=${value.target.value}&page=1&perpage=50`),
+        getCampaings(`?companyId=${value.target.value}&isEnabled=true`),
+        getContractors(`?companyId=${value.target.value}`),
       ])
     )
 
@@ -84,31 +82,13 @@ const ModalAdvertising = ({
       label: camp.name,
     }))
 
-    setCampaings(
-      responseCampaings.length > 0
-        ? responseCampaings
-        : [
-            {
-              value: '',
-              label: 'No hay campañas disponibles para la empresa',
-            },
-          ]
-    )
-    setContractors(
-      responseContractors.length > 0
-        ? responseContractors
-        : [
-            {
-              value: '',
-              label: 'No hay anunciantes disponibles para la empresa',
-            },
-          ]
-    )
+    setCampaings(responseCampaings)
+    setContractors(responseContractors)
   }
 
   const fetchInitialData = async () => {
     const [companiesRes] = await withLoading(() =>
-      Promise.all([getCompanies('?perpage=50')])
+      Promise.all([getCompanies('')])
     )
 
     const responseCompanies = companiesRes.records.map((company: any) => ({
@@ -135,21 +115,13 @@ const ModalAdvertising = ({
   const getAdvertisingData = async (id: number) => {
     try {
       const response = (await getAdvertising(id)) as Advertising
-      changeCompany({ target: { value: response?.company?.id } })
-
-      const { campaigns, contractors, ...data } = response
-      setAdvertisingData({
-        ...data,
-        campaigns: campaigns.map((camp: any) => camp.id),
-        contractors: contractors?.map((cont: any) => cont.id),
-      })
+      setAdvertisingData(response)
     } catch (error) {
       console.log('Error al obtener los datos del contratista:', error)
     }
   }
 
   const handleFormSubmit = async (data: any) => {
-    setLoading(true)
     try {
       const cleanedData: any = cleanEmptyFields({
         ...data,
@@ -157,6 +129,9 @@ const ModalAdvertising = ({
         campaigns: [Number(data.campaigns)],
         contractors: [Number(data.contractors)],
       })
+
+      if (cleanedData.isEnabled)
+        cleanedData.isEnabled = cleanedData.isEnabled === 'true' ? true : false
 
       if (advertisingData && Object.keys(advertisingData).length > 0) {
         await withLoading(() =>
@@ -170,7 +145,7 @@ const ModalAdvertising = ({
       resetForm()
       onClose()
       setShowAlert({
-        message: `Publicidad guardada correctamente`,
+        message: `Empresa guardada correctamente`,
         type: 'success',
       })
     } catch (error: any) {
@@ -184,14 +159,7 @@ const ModalAdvertising = ({
 
   return (
     <Modal onClose={onClose} title={`${title} publicidad`}>
-      <form
-        onSubmit={handleSubmit(handleFormSubmit)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault()
-          }
-        }}
-      >
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
         <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
           <div className="flex flex-col gap-4 rounded-xl mt-2 p-4">
             <div className="flex items-center justify-start gap-6">
@@ -226,7 +194,7 @@ const ModalAdvertising = ({
                 touched={touched.companyId}
                 value={values.companyId}
                 options={companies}
-                placeholder="Anunciante"
+                placeholder="Contractante"
                 divClassName="w-1/4"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />
@@ -250,7 +218,7 @@ const ModalAdvertising = ({
                 touched={touched.contractors}
                 value={values.contractors}
                 options={contractors}
-                placeholder="Anunciantes"
+                placeholder="Contratistas"
                 divClassName="w-1/4"
                 className="w-full rounded-full border-2 border-gray-300 p-2"
               />

@@ -96,14 +96,7 @@ const ModalUsers = ({ onClose, title, onSaved, user, setShowAlert }: Props) => {
 
   return (
     <Modal onClose={onClose} title={`${title} usuario`}>
-      <form
-        onSubmit={handleSubmit(handleFormSubmit)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault()
-          }
-        }}
-      >
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
         <div className="flex flex-col gap-4 rounded-xl bg-[#F8F8F8] mt-2 p-4">
           <div className="flex items-center justify-start gap-6">
             <img src="/images/user.png" alt="" className="h-4 w-4" />{' '}

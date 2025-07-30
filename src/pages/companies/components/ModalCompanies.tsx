@@ -172,14 +172,7 @@ const ModalCompanies = ({
       }}
       title={`${title} empresa`}
     >
-      <form
-        onSubmit={handleSubmit(handleFormSubmit)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault()
-          }
-        }}
-      >
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
         <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
           <div className="mt-2">{InputUpload}</div>
 

@@ -53,7 +53,7 @@ const ModalAeco = ({ onClose, title, onSaved, aeco, setShowAlert }: Props) => {
 
   useEffect(() => {
     const fetchCompanies = async () => {
-      const response: any = await withLoading(() => getCompanies('?perpage=50'))
+      const response: any = await withLoading(() => getCompanies(''))
       setCompanies(
         response.records.map((company: any) => ({
           value: company.id,
@@ -105,14 +105,7 @@ const ModalAeco = ({ onClose, title, onSaved, aeco, setShowAlert }: Props) => {
 
   return (
     <Modal onClose={onClose} title={`${title} máquina`}>
-      <form
-        onSubmit={handleSubmit(handleFormSubmit)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault()
-          }
-        }}
-      >
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
         <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
           <div className="flex items-center justify-start gap-6">
             <span className="text-2xl">Datos de la máquina</span>

@@ -60,7 +60,6 @@ const InputField = ({
         onFocus={() => setFocused(true)}
         placeholder={shouldShowLabel ? '' : placeholder}
         className={`${className} text-xs `}
-        autoComplete={type === 'password' ? 'new-password' : 'on'}
       />
       {showError && touched && error && (
         <div className="absolute -top-5 bg-red-500 text-white text-xs px-2 py-1 rounded shadow-lg z-50 flex items-start gap-2 min-w-44">

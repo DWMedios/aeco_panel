@@ -46,7 +46,11 @@ const TableAdvertising = ({ setShowAlert }: Props) => {
         addButton={true}
         filters={[
           {
-            name: 'status',
+            name: 'companyName',
+            label: 'Empresa',
+          },
+          {
+            name: 'isEnabled',
             label: 'Estatus',
             type: 'select',
             options: [

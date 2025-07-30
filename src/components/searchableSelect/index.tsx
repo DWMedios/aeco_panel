@@ -20,7 +20,6 @@ const SearchableSelect = ({
   title = 'máquinas',
   handleDelete,
 }: Props) => {
-  console.log('🚀 ~ SearchableSelect ~ selected:', selected)
   const [inputValue, setInputValue] = useState('')
   const [showOptions, setShowOptions] = useState(false)
 

@@ -74,7 +74,6 @@ const ModalDonative = ({
           status: item.status,
         }))
       )
-      console.log('🚀 ~ ModalDonative ~ reward:', reward)
       setPreviewUrl(reward.imageUrl ?? null)
       setValues({ ...initialValues, ...reward })
     }
@@ -105,7 +104,6 @@ const ModalDonative = ({
       })
       const mediaAsset = (await uploadMediaAsset()) as MediaAsset | boolean
       if (mediaAsset) cleanedData.mediaAsset = mediaAsset
-      console.log('🚀 ~ onFormSubmit ~ cleanedData:', cleanedData)
 
       if (reward && Object.keys(reward).length > 0) {
         delete cleanedData.companyId
@@ -152,7 +150,14 @@ const ModalDonative = ({
 
   return (
     <Modal onClose={onClose} title={`${title} donativo`}>
-      <form onSubmit={handleSubmit(onFormSubmit)}>
+      <form
+        onSubmit={handleSubmit(onFormSubmit)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault()
+          }
+        }}
+      >
         <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
           <div className="mt-8">{InputUpload}</div>
 

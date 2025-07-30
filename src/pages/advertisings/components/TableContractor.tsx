@@ -53,6 +53,10 @@ const TableContractor = ({ setShowAlert }: Props) => {
       <Filters
         addButton={true}
         filters={[
+          {
+            name: 'companyName',
+            label: 'Empresa',
+          },
           { name: 'name', label: 'Nombre' },
           { name: 'email', label: 'Correo' },
         ]}

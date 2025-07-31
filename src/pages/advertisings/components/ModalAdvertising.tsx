@@ -67,8 +67,10 @@ const ModalAdvertising = ({
   const changeCompany = async (value: any) => {
     const [campaingsRes, contractorsRes] = await withLoading(() =>
       Promise.all([
-        getCampaings(`?companyId=${value.target.value}&isEnabled=true`),
-        getContractors(`?companyId=${value.target.value}`),
+        getCampaings(
+          `?companyId=${value.target.value}&isEnabled=true&page=1&perpage=50`
+        ),
+        getContractors(`?companyId=${value.target.value}&page=1&perpage=50`),
       ])
     )
 
@@ -182,7 +184,14 @@ const ModalAdvertising = ({
 
   return (
     <Modal onClose={onClose} title={`${title} publicidad`}>
-      <form onSubmit={handleSubmit(handleFormSubmit)}>
+      <form
+        onSubmit={handleSubmit(handleFormSubmit)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault()
+          }
+        }}
+      >
         <div className="p-4 flex-1 max-h-[60vh] overflow-y-auto scrollbar-custom">
           <div className="flex flex-col gap-4 rounded-xl mt-2 p-4">
             <div className="flex items-center justify-start gap-6">

@@ -4,9 +4,14 @@ import { useEffect, useRef, useState } from 'react'
 interface Props {
   large?: number
   onCoordinatesChange?: (coordinates: { lat: number; lng: number }) => void
+  initialCoordinates?: { lat: number; lng: number } | null
 }
 
-const MapView = ({ large = 90, onCoordinatesChange }: Props) => {
+const MapView = ({
+  large = 90,
+  onCoordinatesChange,
+  initialCoordinates,
+}: Props) => {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<Map | null>(null)
   const markerRef = useRef<Marker | null>(null)
@@ -47,7 +52,9 @@ const MapView = ({ large = 90, onCoordinatesChange }: Props) => {
     const map = new Map({
       container: mapContainerRef.current,
       style: 'mapbox://styles/mapbox/streets-v12',
-      center: [coordinates.lng, coordinates.lat],
+      center: initialCoordinates
+        ? [initialCoordinates.lng, initialCoordinates.lat]
+        : [coordinates.lng, coordinates.lat],
       zoom: 10,
     })
 
@@ -55,7 +62,11 @@ const MapView = ({ large = 90, onCoordinatesChange }: Props) => {
     const el = document.createElement('div')
     el.className = 'marker'
     const marker = new Marker({ color: '#FF0000' })
-      .setLngLat([coordinates.lng, coordinates.lat])
+      .setLngLat(
+        initialCoordinates
+          ? [initialCoordinates.lng, initialCoordinates.lat]
+          : [coordinates.lng, coordinates.lat]
+      )
       .addTo(map)
 
     // Configurar el evento de clic
@@ -89,7 +100,6 @@ const MapView = ({ large = 90, onCoordinatesChange }: Props) => {
   // Efecto para obtener la ubicación al montar el componente
   useEffect(() => {
     getUserLocation()
-
     // Limpiar al desmontar
     return () => {
       if (mapRef.current) {
@@ -103,10 +113,16 @@ const MapView = ({ large = 90, onCoordinatesChange }: Props) => {
 
   // Efecto para inicializar el mapa cuando se tengan coordenadas
   useEffect(() => {
-    if (coordinates && !initialized.current) {
+    if (initialCoordinates) {
+      setCoordinates(initialCoordinates)
+      if (onCoordinatesChange) onCoordinatesChange(initialCoordinates)
       initializeMap()
+    } else {
+      if (coordinates && !initialized.current) {
+        initializeMap()
+      }
     }
-  }, [coordinates])
+  }, [coordinates, initialCoordinates])
 
   return (
     <div

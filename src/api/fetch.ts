@@ -11,7 +11,6 @@ export const useFetchWithAuth = () => {
     async <T>({ url, method, headers, body }: ApiParams): Promise<T> => {
       const token = getToken()
 
-      sessionTimeout()
       const options: RequestInit = {
         method,
         headers: {

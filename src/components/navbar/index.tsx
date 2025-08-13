@@ -8,9 +8,9 @@ const Navbar = () => {
   return (
     <nav className="absolute top-0 right-0 p-10">
       <div className="flex gap-4">
-        <div className="flex items-center justify-end bg-slate-200 p-2 rounded-full">
+        {/* <div className="flex items-center justify-end bg-slate-200 p-2 rounded-full">
           <Bell size={20} weight="fill" />
-        </div>
+        </div> */}
         <div
           className="flex items-center justify-end bg-orange-200 p-2 rounded-full"
           onClick={() => setOpen(!open)}

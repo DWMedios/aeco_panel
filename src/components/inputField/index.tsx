@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Eye, EyeSlash } from '@phosphor-icons/react'
 
 interface Props {
   name: string
@@ -11,6 +12,8 @@ interface Props {
   touched?: boolean
   className?: string
   divClassName?: string
+  suffix?: React.ReactNode
+  showPasswordToggle?: boolean
 }
 
 const InputField = ({
@@ -24,10 +27,35 @@ const InputField = ({
   touched,
   className = 'w-full',
   divClassName = '',
+  suffix,
+  showPasswordToggle = false,
 }: Props) => {
   const [focused, setFocused] = useState(false)
   const [showError, setShowError] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const shouldShowLabel = focused || value !== ''
+
+  // Determinar el tipo de input actual
+  const currentType =
+    showPasswordToggle && type === 'password'
+      ? showPassword
+        ? 'text'
+        : 'password'
+      : type
+
+  // Determinar si hay un sufijo (custom o password toggle)
+  const hasPasswordToggle = showPasswordToggle && type === 'password'
+  const finalSuffix = hasPasswordToggle ? (
+    <button
+      type="button"
+      onClick={() => setShowPassword(!showPassword)}
+      className="text-gray-500 hover:text-gray-700"
+    >
+      {showPassword ? <EyeSlash size={20} /> : <Eye size={20} />}
+    </button>
+  ) : (
+    suffix
+  )
 
   useEffect(() => {
     if (touched && error) {
@@ -35,7 +63,7 @@ const InputField = ({
       const timer = setTimeout(() => setShowError(false), 10000)
       return () => clearTimeout(timer)
     }
-  }, [onBlur])
+  }, [error, touched])
 
   return (
     <div className={`relative ${divClassName}`}>
@@ -50,7 +78,7 @@ const InputField = ({
       <input
         id={name}
         name={name}
-        type={type}
+        type={currentType}
         value={value}
         onChange={onChange}
         onBlur={(e) => {
@@ -59,9 +87,14 @@ const InputField = ({
         }}
         onFocus={() => setFocused(true)}
         placeholder={shouldShowLabel ? '' : placeholder}
-        className={`${className} text-xs `}
-        autoComplete={type === 'password' ? 'new-password' : 'on'}
+        className={`${className} text-xs ${finalSuffix ? 'pr-10' : ''}`}
+        autoComplete={currentType === 'password' ? 'new-password' : 'on'}
       />
+      {finalSuffix && (
+        <div className="absolute right-3 top-6 transform -translate-y-1/2 cursor-pointer">
+          {finalSuffix}
+        </div>
+      )}
       {showError && touched && error && (
         <div className="absolute -top-5 bg-red-500 text-white text-xs px-2 py-1 rounded shadow-lg z-50 flex items-start gap-2 min-w-44">
           <span className="flex-1">{error}</span>

@@ -67,6 +67,10 @@ const ModalAeco = ({ onClose, title, onSaved, aeco, setShowAlert }: Props) => {
   useEffect(() => {
     if (aeco && Object.keys(aeco).length > 0) {
       setValues({ ...initialValues, ...aeco, companyId: aeco.company.id })
+      setMarkerCoordinates({
+        lat: Number(aeco.currentCoords.latitude) || 0,
+        lng: Number(aeco.currentCoords.longitude) || 0,
+      })
     }
   }, [aeco, setValues])
 
@@ -167,7 +171,15 @@ const ModalAeco = ({ onClose, title, onSaved, aeco, setShowAlert }: Props) => {
           </div>
         </div>
         <div className="flex items-center justify-start gap-2 mt-6">
-          <MapView large={30} onCoordinatesChange={setMarkerCoordinates} />
+          <MapView
+            large={30}
+            onCoordinatesChange={setMarkerCoordinates}
+            initialCoordinates={
+              markerCoordinates.lat && markerCoordinates.lng
+                ? markerCoordinates
+                : null
+            }
+          />
         </div>
         {/* <div>
           <div className="flex flex-col mt-6">

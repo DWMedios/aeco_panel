@@ -24,10 +24,9 @@ const FormFilters = ({ filters, setFilters }: props) => {
             <span className="text-gray-400 p-2">Filtros</span>
           </div>
           {filters.map((filter, index) => (
-            <>
+            <div key={filter.name || index}>
               {filter.type === 'select' ? (
                 <select
-                  key={index}
                   onChange={handleChange}
                   name={filter.name}
                   value={values[filter.name] || ''}
@@ -35,14 +34,13 @@ const FormFilters = ({ filters, setFilters }: props) => {
                 >
                   <option value="">{filter.label}</option>
                   {filter.options?.map((option, idx) => (
-                    <option key={idx} value={option.value}>
+                    <option key={option.value || idx} value={option.value}>
                       {option.label}
                     </option>
                   ))}
                 </select>
               ) : (
                 <input
-                  key={index}
                   placeholder={filter.label}
                   onChange={handleChange}
                   name={filter.name}
@@ -50,7 +48,7 @@ const FormFilters = ({ filters, setFilters }: props) => {
                   className="border-2 border-dark-gray rounded-full px-2 py-1 m-1 text-xs"
                 />
               )}
-            </>
+            </div>
           ))}
           <button
             type="submit"

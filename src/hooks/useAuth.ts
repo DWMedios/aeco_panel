@@ -11,6 +11,7 @@ export const useAuth = () => {
   }
 
   const logout = () => {
+    console.log('Cerrando sesión...')
     Cookies.remove('token')
     navigate('/')
   }

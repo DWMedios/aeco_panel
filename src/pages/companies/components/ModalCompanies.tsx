@@ -389,6 +389,7 @@ const ModalCompanies = ({
                   touched={touched['userAdmin.password']}
                   divClassName="w-2/5"
                   className="w-full rounded-full border-2 border-gray-300 p-2"
+                  showPasswordToggle={true}
                 />
                 <InputField
                   name="passwordConfirmation"
@@ -401,6 +402,7 @@ const ModalCompanies = ({
                   touched={touched.passwordConfirmation}
                   divClassName="w-2/5"
                   className="w-full rounded-full border-2 border-gray-300 p-2"
+                  showPasswordToggle={true}
                 />
               </div>
             </div>

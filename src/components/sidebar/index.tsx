@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { menu } from '../../constants/menu'
 import MenuItem from './components/MenuItem'
 
 const Sidebar = () => {
+  const location = useLocation()
   const [isOpen, setIsOpen] = useState(false)
 
   const toggleSidebar = () => {
@@ -77,17 +79,21 @@ const Sidebar = () => {
           <ul className="flex flex-col items-center space-y-2 font-medium pb-4 w-full px-2">
             {/* Logo - responsivo */}
             <div className="mb-4 flex-shrink-0">
-              <img 
-                src="/images/dw.png" 
-                alt="Logo" 
+              <img
+                src="/images/dw.png"
+                alt="Logo"
                 className="w-auto h-10 object-contain"
               />
             </div>
-            
+
             {/* Contenedor de menú con scroll */}
             <div className="overflow-y-auto h-full w-full scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800">
               {menu.map((item, index) => (
-                <MenuItem key={index} menu={item} />
+                <MenuItem
+                  key={index}
+                  menu={item}
+                  currentPath={location.pathname}
+                />
               ))}
             </div>
           </ul>

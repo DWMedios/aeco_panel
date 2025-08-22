@@ -23,6 +23,7 @@ export function useInputUpload({ title, type, previewUrl }: Props) {
   const [preview, setPreview] = useState<string | null>(previewUrl ?? null)
   const [mediaUpload, setMediaUpload] = useState<MediaAssetUpload | null>(null)
   const { uploadAsset, deleteAsset } = useWebMediaAsset()
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (previewUrl) {
@@ -39,6 +40,20 @@ export function useInputUpload({ title, type, previewUrl }: Props) {
   ) => {
     const file = event.target.files?.[0]
     if (file) {
+      // Validar el tamaño del archivo (80MB = 80 * 1024 * 1024 bytes)
+      const maxSize = 80 * 1024 * 1024 // 80MB en bytes
+      if (file.size > maxSize) {
+        setError(
+          `El archivo es demasiado grande. El tamaño máximo permitido es 80MB. Tu archivo tiene ${(
+            file.size /
+            1024 /
+            1024
+          ).toFixed(2)}MB.`
+        )
+        event.target.value = '' // Limpiar el input
+        return
+      }
+
       setFile(file)
       if (file.type.split('/')[0] === 'video') {
         try {
@@ -106,7 +121,7 @@ export function useInputUpload({ title, type, previewUrl }: Props) {
     const commonClasses =
       'absolute inset-0 w-full h-full object-contain rounded-full'
 
-    return type === 'video' ? (
+    return file?.type.split('/')[0] === 'video' ? (
       <video src={preview} className={commonClasses} controls />
     ) : (
       <img src={preview} alt="Preview" className={commonClasses} />
@@ -150,10 +165,12 @@ export function useInputUpload({ title, type, previewUrl }: Props) {
             250px
           </p>
           <p className="font-semibold">
-            <span className="font-normal">Peso máximo</span> 20MB
+            <span className="font-normal">Peso máximo</span> 80MB
           </p>
         </div>
       </div>
+
+      {error && <div className="mt-2 text-sm text-red-600">{error}</div>}
     </>
   )
 

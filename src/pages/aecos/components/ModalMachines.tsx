@@ -66,7 +66,14 @@ const ModalAeco = ({ onClose, title, onSaved, aeco, setShowAlert }: Props) => {
 
   useEffect(() => {
     if (aeco && Object.keys(aeco).length > 0) {
-      setValues({ ...initialValues, ...aeco, companyId: aeco.company.id })
+      const newdata = {
+        ...initialValues,
+        ...aeco,
+      }
+      if (aeco.company) {
+        newdata.companyId = aeco.company.id
+      }
+      setValues(newdata)
       setMarkerCoordinates({
         lat: Number(aeco.currentCoords.latitude) || 0,
         lng: Number(aeco.currentCoords.longitude) || 0,

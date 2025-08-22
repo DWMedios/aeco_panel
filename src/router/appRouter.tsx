@@ -10,6 +10,9 @@ import Aecos from '../pages/aecos'
 import Ticket from '../pages/ticket'
 import Products from '../pages/products'
 import Advertising from '../pages/advertisings'
+import ForgotPassword from '../pages/forgotPassword'
+import ResetPassword from '../pages/resetPassword'
+import EmailVerified from '../pages/emailVerified'
 
 const AppRouter = () => {
   return (
@@ -25,7 +28,10 @@ const AppRouter = () => {
           <Route path="/users" element={<Users />} />
           <Route path="/products" element={<Products />} />
         </Route>
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/ticket" element={<Ticket />} />
+        <Route path="/verify-email" element={<EmailVerified />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

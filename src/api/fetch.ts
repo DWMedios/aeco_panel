@@ -25,7 +25,7 @@ export const useFetchWithAuth = () => {
 
       const data = await response.json()
 
-      if (response.status === 403) logout()
+      // if (response.status === 403) logout()
 
       if (!response.ok) {
         throw response.status === 500

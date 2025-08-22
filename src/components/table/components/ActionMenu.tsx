@@ -8,6 +8,7 @@ interface Props {
   setDeleteId: (id: number) => void
   setFormData?: (data: any) => void
   actionRemove: boolean
+  handleDelete?: (id: number) => void
 }
 
 const ActtionMenu = ({
@@ -18,6 +19,7 @@ const ActtionMenu = ({
   setDeleteId,
   setFormData,
   actionRemove,
+  handleDelete,
 }: Props) => {
   return (
     <div
@@ -43,7 +45,7 @@ const ActtionMenu = ({
         <div className="flex justify-center items-center w-8 h-8 rounded-full bg-red-500 shadow-md handPointer">
           <Trash
             onClick={() => {
-              openModalDelete?.()
+              actionRemove ? handleDelete(item.id) : openModalDelete?.()
               setDeleteId(item.id)
             }}
             size={20}

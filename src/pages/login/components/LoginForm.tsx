@@ -8,8 +8,10 @@ import { initialValues, validationRules } from './formValidations'
 import { CircleNotch, EnvelopeSimple, LockKey } from '@phosphor-icons/react'
 import { jwtDecode } from 'jwt-decode'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const LoginForm = () => {
+  const navigation = useNavigate()
   const [error, setError] = useState<boolean>(false)
   const { withLoading, loading } = useLoading()
   const { login } = useAuth()
@@ -75,9 +77,6 @@ const LoginForm = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700  mb-2">
-            Contraseña
-          </label>
           <div className="relative mt-1">
             <InputField
               name="password"
@@ -88,9 +87,10 @@ const LoginForm = () => {
               onBlur={handleBlur}
               error={errors.password}
               touched={touched.password}
+              showPasswordToggle={true}
               className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
             />
-            <span className="absolute inset-y-0 right-3 flex items-center text-gray-400">
+            <span className="absolute inset-y-0 right-12 flex items-center text-gray-400">
               <LockKey size={20} />
             </span>
           </div>
@@ -140,7 +140,10 @@ const LoginForm = () => {
         ) : null}
 
         <div className="text-right">
-          <a href="#" className="text-blue-600 text-sm hover:underline">
+          <a
+            onClick={() => navigation('/forgot-password')}
+            className="text-blue-600 text-sm hover:underline"
+          >
             ¿Olvidaste tu contraseña?
           </a>
         </div>

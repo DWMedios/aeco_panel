@@ -47,6 +47,7 @@ const Table = ({
             setDeleteId={setDeleteId}
             setFormData={setFormData}
             actionRemove={actionRemove}
+            handleDelete={handleDelete}
           />
         </table>
       </div>

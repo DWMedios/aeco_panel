@@ -206,6 +206,11 @@ const ModalCampaings = ({
     // por ejemplo: fetch(`/api/something${queryString}`)
   }
 
+  const handleDelete = (id: number) => {
+    console.log('🚀 ~ handleDelete ~ id:', id)
+    setSelectedAeco(selectedAeco.filter((item: any) => item.id !== id))
+  }
+
   return (
     <Modal onClose={onClose} title={`${title} campaña`}>
       <form
@@ -290,13 +295,7 @@ const ModalCampaings = ({
                       className="w-2/4"
                       setSelected={setSelectedAeco}
                       selected={selectedAeco}
-                      handleDelete={(option: any) => {
-                        setSelectedAeco(
-                          selectedAeco.filter(
-                            (item) => item.value !== option.value
-                          )
-                        )
-                      }}
+                      handleDelete={handleDelete}
                     />
                   </div>
                 )}

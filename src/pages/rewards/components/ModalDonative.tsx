@@ -70,8 +70,9 @@ const ModalDonative = ({
       setSelectedAeco(
         reward.aecos.map((item: any) => ({
           label: item.name,
-          value: item.id,
+          value: item.folio,
           status: item.status,
+          id: item.id,
         }))
       )
       setPreviewUrl(reward.imageUrl ?? null)
@@ -139,8 +140,9 @@ const ModalDonative = ({
       setAecoOptions(
         response.records.map((item: any) => ({
           label: item.name,
-          value: item.id,
+          value: item.folio,
           status: item.status,
+          id: item.id,
         }))
       )
     } catch (error) {

@@ -30,8 +30,7 @@ const InputDateRangePicker = ({ setDates }: Props) => {
 
   useEffect(() => {
     const { startDate, endDate } = selectionRange
-    const isRangeSelected =
-      startDate && endDate && startDate.getTime() !== endDate.getTime()
+    const isRangeSelected = startDate && endDate
     if (isRangeSelected) {
       const queryString = `&startDate=${formatDate(
         startDate

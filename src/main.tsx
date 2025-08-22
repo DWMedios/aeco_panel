@@ -56,7 +56,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <InactivityHandler>
           <App />
         </InactivityHandler>
-        <App />
       </I18nextProvider>
     </BrowserRouter>
   </React.StrictMode>

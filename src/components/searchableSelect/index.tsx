@@ -94,7 +94,7 @@ const SearchableSelect = ({
       <Table
         columns={['value', 'label', { column: 'status', type: 'chip' }]}
         tableContent={{
-          headers: ['Id', 'Nombre', 'Estatus'],
+          headers: ['Folio', 'Nombre', 'Estatus'],
           data: [...selected],
         }}
         actionRemove={true}

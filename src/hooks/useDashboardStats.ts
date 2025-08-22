@@ -28,11 +28,11 @@ export const useDashboardStats = ({ companyId }: Params) => {
           method: 'GET',
         }),
         fetchRequest({
-          url: `/dashboard/stats/top-products?&limit=5&orderByDirection=desc`,
+          url: `/dashboard/stats/top-products?&limit=5&orderByDirection=DESC`,
           method: 'GET',
         }),
         fetchRequest({
-          url: `/dashboard/stats/top-packagings?${query}`,
+          url: `/dashboard/stats/top-packagings?${query}&orderByDirection=DESC`,
           method: 'GET',
         }),
         fetchRequest({
@@ -44,7 +44,7 @@ export const useDashboardStats = ({ companyId }: Params) => {
       setDailyStats(daily)
       setTopProducts(
         products.map((item) => ({
-          x: item.product.name, // Puedes ajustar el nombre si quieres darle un formato más específico
+          x: item.productName, // Puedes ajustar el nombre si quieres darle un formato más específico
           y: item.totalCount,
         }))
       )
@@ -109,5 +109,6 @@ export const useDashboardStats = ({ companyId }: Params) => {
     packagingsPerDay,
     loading,
     error,
+    dates,
   }
 }

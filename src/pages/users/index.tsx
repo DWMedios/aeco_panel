@@ -80,8 +80,10 @@ const Users = () => {
             'Teléfono',
             'Correo',
             'Puesto',
+            'Empresa',
             'Rol',
             'Estatus',
+            'Email verificado',
           ],
           data: users,
         }}
@@ -91,7 +93,9 @@ const Users = () => {
           'phone',
           'email',
           'position',
+          'company.name',
           'role.role',
+          { column: 'isVerified', type: 'chip' },
           { column: 'isActive', type: 'chip' },
         ]}
         openModal={() => {

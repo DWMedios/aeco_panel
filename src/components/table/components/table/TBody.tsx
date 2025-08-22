@@ -13,6 +13,7 @@ interface Props {
   setDeleteId: (id: number) => void
   setFormData?: (data: any) => void
   actionRemove: boolean
+  handleDelete?: (id: number) => void
 }
 
 const TBody = ({
@@ -24,6 +25,7 @@ const TBody = ({
   setDeleteId,
   setFormData,
   actionRemove,
+  handleDelete,
 }: Props) => {
   return (
     <tbody className="relative overflow-visible ">
@@ -91,6 +93,7 @@ const TBody = ({
               setDeleteId={(id: number) => setDeleteId(id)}
               setFormData={setFormData}
               actionRemove={actionRemove}
+              handleDelete={handleDelete}
             />
           </td>
         </tr>

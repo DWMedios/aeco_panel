@@ -50,6 +50,7 @@ const ModalCompanies = ({
   const [selectedAeco, setSelectedAeco] = useState<any>([])
   const [aecoOptions, setAecoOptions] = useState<any>([])
   const [companyData, setCompanyData] = useState<any>({})
+  const [isDataLoaded, setIsDataLoaded] = useState(false)
 
   const mergedValues =
     companyData && Object.keys(companyData).length > 0
@@ -68,20 +69,30 @@ const ModalCompanies = ({
   } = useFormWithValidation(mergedValues, { validationRules })
 
   useEffect(() => {
-    if (companyId) getCompanyData(companyId)
-  }, [companyId])
+    if (companyId) {
+      getCompanyData(companyId)
+    } else {
+      setIsDataLoaded(true)
+    }
+  }, [companyId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (companyData && Object.keys(companyData).length > 0)
-      setValues({
-        ...structuredClone(initialValues),
-        ...structuredClone(companyData),
-      })
-    else resetForm()
-  }, [companyData, setValues])
+    if (isDataLoaded) {
+      if (companyData && Object.keys(companyData).length > 0) {
+        setValues({
+          ...structuredClone(initialValues),
+          ...structuredClone(companyData),
+        })
+      } else if (!companyId) {
+        // Solo resetear el formulario si no hay companyId (nuevo registro)
+        resetForm()
+      }
+    }
+  }, [companyData, isDataLoaded]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const getCompanyData = async (id: number) => {
     try {
+      setIsDataLoaded(false)
       const response = (await getCompany(id)) as Company
       setCompanyData(response)
       setMediaKey(response?.mediaAsset?.fileKey ?? null)
@@ -90,14 +101,16 @@ const ModalCompanies = ({
         setSelectedAeco(
           response.aecos.map((item: any) => ({
             label: item.name,
-            value: item.id,
+            value: item.folio,
             status: item.status,
             id: item.id,
           }))
         )
       }
+      setIsDataLoaded(true)
     } catch (error) {
       console.log('Error al obtener los datos de la empresa:', error)
+      setIsDataLoaded(true)
     }
   }
 
@@ -106,7 +119,7 @@ const ModalCompanies = ({
       const cleanedData: any = cleanEmptyFields({
         ...data,
         status: data.status === 'true' ? true : false,
-        aecos: selectedAeco.map((item: any) => item.value),
+        aecos: selectedAeco.map((item: any) => Number(item.id)),
       })
 
       const mediaAsset = (await uploadMediaAsset()) as MediaAsset | boolean
@@ -117,6 +130,7 @@ const ModalCompanies = ({
       } else {
         await withLoading(() => createCompany(cleanedData))
       }
+
       if (mediaKey && mediaAsset) {
         deleteMediaAsset(mediaKey)
         setMediaKey(null)
@@ -156,7 +170,7 @@ const ModalCompanies = ({
   }
 
   const handleDelete = (id: number) => {
-    setSelectedAeco(selectedAeco.filter((item: any) => item.value !== id))
+    setSelectedAeco(selectedAeco.filter((item: any) => item.id !== id))
   }
 
   const getValue = (path: string) => {
@@ -173,7 +187,9 @@ const ModalCompanies = ({
       title={`${title} empresa`}
     >
       <form
-        onSubmit={handleSubmit(handleFormSubmit)}
+        onSubmit={(e) => {
+          handleSubmit(handleFormSubmit)(e)
+        }}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
             e.preventDefault()

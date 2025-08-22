@@ -1,4 +1,5 @@
 import { ApexOptions } from 'apexcharts'
+import { min } from 'lodash'
 import { useEffect, useState } from 'react'
 import ReactApexChart from 'react-apexcharts'
 
@@ -32,10 +33,10 @@ const ColumnChart = ({ categories, data }: Props) => {
 
     const startIndex = currentPage * itemsPerPage
     const endIndex = startIndex + itemsPerPage
-    
+
     return {
       data: data.slice(startIndex, endIndex),
-      categories: categories.slice(startIndex, endIndex)
+      categories: categories.slice(startIndex, endIndex),
     }
   }
 
@@ -44,12 +45,27 @@ const ColumnChart = ({ categories, data }: Props) => {
 
   // Funciones de navegación
   const goToPreviousPage = () => {
-    setCurrentPage(prev => Math.max(0, prev - 1))
+    setCurrentPage((prev) => Math.max(0, prev - 1))
   }
 
   const goToNextPage = () => {
-    setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))
+    setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))
   }
+
+  const maxValue = Math.max(...data)
+  const minValue = Math.min(...data)
+
+  // Si el máximo es muy grande comparado con los demás
+  // hacemos que el max se redondee dinámicamente
+  const magnitude = Math.pow(10, Math.floor(Math.log10(maxValue))) // orden de magnitud
+  const roundedMax = Math.ceil(maxValue / magnitude) * magnitude
+
+  // Definir un tickAmount dinámico
+  let tickAmount
+  if (maxValue > 100000) tickAmount = 10
+  else if (maxValue > 10000) tickAmount = 8
+  else if (maxValue > 1000) tickAmount = 6
+  else tickAmount = 5
 
   const [state, setState] = useState<{
     series: { name: string; data: number[] }[]
@@ -94,8 +110,10 @@ const ColumnChart = ({ categories, data }: Props) => {
         },
       },
       title: {
-        text: isMobile 
-          ? `Envases Depositados (Del ${currentPage * itemsPerPage + 1} al ${Math.min((currentPage + 1) * itemsPerPage, data.length)})`
+        text: isMobile
+          ? `Envases Depositados (Del ${
+              currentPage * itemsPerPage + 1
+            } al ${Math.min((currentPage + 1) * itemsPerPage, data.length)})`
           : 'Envases Depositados por día',
         style: {
           fontSize: isMobile ? '14px' : '16px',
@@ -103,7 +121,7 @@ const ColumnChart = ({ categories, data }: Props) => {
       },
       yaxis: {
         min: 0,
-        max: 400,
+        max: 10000,
         tickAmount: 4,
         labels: {
           style: {
@@ -166,7 +184,7 @@ const ColumnChart = ({ categories, data }: Props) => {
   // Actualizar estado cuando cambien los datos, categorías, página o tamaño de pantalla
   useEffect(() => {
     const newPaginatedData = getPaginatedData()
-    
+
     setState((prevState) => ({
       ...prevState,
       series: [
@@ -196,8 +214,10 @@ const ColumnChart = ({ categories, data }: Props) => {
         },
         title: {
           ...prevState.options.title,
-          text: isMobile 
-            ? `Envases Depositados (Del ${currentPage * itemsPerPage + 1} al ${Math.min((currentPage + 1) * itemsPerPage, data.length)})`
+          text: isMobile
+            ? `Envases Depositados (Del ${
+                currentPage * itemsPerPage + 1
+              } al ${Math.min((currentPage + 1) * itemsPerPage, data.length)})`
             : 'Envases Depositados por día',
           style: {
             fontSize: isMobile ? '12px' : '16px',
@@ -252,30 +272,33 @@ const ColumnChart = ({ categories, data }: Props) => {
                 : 'bg-[#f38687] text-white hover:bg-[#f38687] active:bg-[#f38687]'
             }`}
           >
-            <svg 
-              className="w-4 h-4 mr-1" 
-              fill="none" 
-              stroke="currentColor" 
+            <svg
+              className="w-4 h-4 mr-1"
+              fill="none"
+              stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </button>
-          
 
-            <div className="flex space-x-1">
-              {Array.from({ length: totalPages }, (_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentPage(i)}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    i === currentPage ? 'bg-[#f38687]' : 'bg-gray-300'
-                  }`}
-                />
-              ))}
-            </div>
+          <div className="flex space-x-1">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentPage(i)}
+                className={`w-2 h-2 rounded-full transition-colors ${
+                  i === currentPage ? 'bg-[#f38687]' : 'bg-gray-300'
+                }`}
+              />
+            ))}
+          </div>
 
-          
           <button
             onClick={goToNextPage}
             disabled={currentPage === totalPages - 1}
@@ -285,18 +308,23 @@ const ColumnChart = ({ categories, data }: Props) => {
                 : 'bg-[#f38687] text-white hover:bg-[#f38687] active:bg-[#f38687]'
             }`}
           >
-            <svg 
-              className="w-4 h-4 ml-1" 
-              fill="none" 
-              stroke="currentColor" 
+            <svg
+              className="w-4 h-4 ml-1"
+              fill="none"
+              stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
             </svg>
           </button>
         </div>
       )}
-      
+
       {/* Gráfica */}
       <div className="p-2 w-full overflow-hidden">
         <ReactApexChart

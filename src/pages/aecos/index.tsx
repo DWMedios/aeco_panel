@@ -74,13 +74,14 @@ const Aecos = () => {
       />
       <Table
         tableContent={{
-          headers: ['Folio', 'Nombre', 'Número de serie', 'Estatus'],
+          headers: ['Folio', 'Nombre', 'Número de serie', 'Empresa', 'Estatus'],
           data: aecos,
         }}
         columns={[
           'folio',
           'name',
           'serialNumber',
+          'company.name',
           { column: 'status', type: 'chip' },
         ]}
         openModal={() => {

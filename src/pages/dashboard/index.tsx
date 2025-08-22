@@ -6,6 +6,7 @@ import MainLayout from '../../components/layout'
 import Title from '../../components/title'
 import { containersCharts } from '../../constants/dumies/products'
 import { useDashboardStats } from '../../hooks/useDashboardStats'
+import DownloadXLSXButton from '../../components/downloadButton'
 
 const Dashboard = () => {
   const {
@@ -16,14 +17,20 @@ const Dashboard = () => {
     packagingsPerDay,
     loading,
     error,
+    dates,
   } = useDashboardStats({ companyId: 1 })
+  console.log('🚀 ~ Dashboard ~ dates:', dates)
 
   return (
     <MainLayout>
       <Title title="Inicio" />
-      
+
       {/* DateRangePicker - Mantiene diseño original en desktop */}
-      <div className="flex justify-center sm:justify-end mt-4 sm:mt-8 px-4 lg:px-0">
+      <div className="flex justify-center gap-4 sm:justify-end mt-4 sm:mt-8 px-4 lg:px-0">
+        <DownloadXLSXButton
+          title="Descargar reporte de tarjetas"
+          dates={dates}
+        />
         <div className="w-full sm:w-auto max-w-sm sm:max-w-none">
           <InputDateRangePicker setDates={setDates} />
         </div>
@@ -57,15 +64,6 @@ const Dashboard = () => {
 
       {/* Bar Charts Grid - Mantiene 2 columnas en desktop, 1 en móvil */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 px-4 lg:px-0 mt-4 sm:mt-8">
-        {/* Comentado como en el original */}
-        {/* <div className="p-6 lg:p-8 bg-gray-200 rounded-2xl sm:rounded-3xl">
-          <BarChart
-            title="Top Recompensas"
-            subTitle="Recompensas Emitidas"
-            data={[]}
-          />
-        </div> */}
-        
         <div className="p-6 lg:p-8 bg-gray-200 rounded-2xl sm:rounded-3xl overflow-hidden">
           <div className="w-full h-auto">
             <BarChart
@@ -75,7 +73,7 @@ const Dashboard = () => {
             />
           </div>
         </div>
-        
+
         <div className="p-6 lg:p-8 bg-gray-200 rounded-2xl sm:rounded-3xl overflow-hidden">
           <div className="w-full h-auto">
             <BarChart

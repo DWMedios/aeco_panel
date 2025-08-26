@@ -216,7 +216,6 @@ const ModalCampaings = ({
   }
 
   const handleDelete = (id: number) => {
-    console.log('🚀 ~ handleDelete ~ id:', id)
     setSelectedAeco(selectedAeco.filter((item: any) => item.id !== id))
   }
 

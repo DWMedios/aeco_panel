@@ -7,6 +7,8 @@ const Sidebar = () => {
   const location = useLocation()
   const [isOpen, setIsOpen] = useState(false)
 
+  const companyId = localStorage.getItem('companyId')
+
   const toggleSidebar = () => {
     setIsOpen(!isOpen)
   }
@@ -88,13 +90,25 @@ const Sidebar = () => {
 
             {/* Contenedor de menú con scroll */}
             <div className="overflow-y-auto h-full w-full scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800">
-              {menu.map((item, index) => (
-                <MenuItem
-                  key={index}
-                  menu={item}
-                  currentPath={location.pathname}
-                />
-              ))}
+              {menu
+                .filter((item) => {
+                  // Si companyId no es vacío ni undefined y el item es "Productos", brincarse ese item
+                  if (
+                    companyId &&
+                    companyId !== 'undefined' &&
+                    item.title === 'Productos'
+                  ) {
+                    return false
+                  }
+                  return true
+                })
+                .map((item, index) => (
+                  <MenuItem
+                    key={index}
+                    menu={item}
+                    currentPath={location.pathname}
+                  />
+                ))}
             </div>
           </ul>
         </div>

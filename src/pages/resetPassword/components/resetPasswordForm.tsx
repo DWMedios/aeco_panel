@@ -28,7 +28,6 @@ const ResetPasswordForm = () => {
       await withLoading(() => tokenVerify(token))
     } catch (error) {
       navigation('/notFound')
-      console.log('🚀 ~ getTokenVerify ~ error:', error)
     }
   }
 

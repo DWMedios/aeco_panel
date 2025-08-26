@@ -13,12 +13,10 @@ const generateQueryString = (
   params.append('orderByField', orderByField)
 
   const companyId = localStorage.getItem('companyId')
-  console.log('🚀 ~ generateQueryString ~ companyId:', companyId)
   let newFilters = filters
   if (companyId && companyId !== 'undefined') {
     newFilters = { ...filters, companyId }
   }
-  console.log('🚀 ~ generateQueryString ~ newFilters:', newFilters)
   Object.keys(newFilters).forEach((key) => {
     const value = newFilters[key]
     if (value !== undefined && value !== null) {

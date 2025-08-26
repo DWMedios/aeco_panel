@@ -68,7 +68,6 @@ const Rewards = () => {
     try {
       if (id) {
         const response = (await getReward(id)) as Reward
-        console.log('🚀 ~ getRewardsData ~ response:', response)
         setMediaKey(response?.mediaAsset?.fileKey ?? null)
         if (response) {
           setFormData(response)

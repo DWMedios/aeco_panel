@@ -14,7 +14,6 @@ const EmailVerified = () => {
 
   useEffect(() => {
     const token = searchParams.get('token')
-    console.log('🚀 ~ EmailVerified ~ token:', token)
     if (token && first) {
       first = false
       getEmailVerify(token)
@@ -30,7 +29,6 @@ const EmailVerified = () => {
       }, 3000)
     } catch (error) {
       navigation('/notFound')
-      console.log('🚀 ~ getEmailVerify ~ error:', error)
     }
   }
   return (

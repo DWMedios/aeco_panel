@@ -243,7 +243,6 @@ const useFormWithValidation = <T extends Record<string, any>>(
         newTouched[fieldName] = true
       })
 
-      console.log('🚀 ~ handleSubmit ~ newErrors:', newErrors)
       setErrors(newErrors)
       setTouched(newTouched)
 

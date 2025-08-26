@@ -31,7 +31,6 @@ const LoginForm = () => {
         loginApi(data as ILoginForm)
       )
       const decoded = jwtDecode(response?.access_token) as any
-      console.log('🚀 ~ handleFormSubmit ~ decoded:', decoded)
       if (!['admin', 'super_admin'].includes(decoded?.roleType)) {
         setError(true)
         return

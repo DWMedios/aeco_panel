@@ -19,7 +19,6 @@ const Dashboard = () => {
     error,
     dates,
   } = useDashboardStats({ companyId: 1 })
-  console.log('🚀 ~ Dashboard ~ dates:', dates)
 
   return (
     <MainLayout>

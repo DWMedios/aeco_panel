@@ -107,8 +107,17 @@ const ModalAdvertising = ({
   }
 
   const fetchInitialData = async () => {
+    const companyId = localStorage.getItem('companyId')
     const [companiesRes] = await withLoading(() =>
-      Promise.all([getCompanies('?perpage=50')])
+      Promise.all([
+        getCompanies(
+          `?perpage=50&${
+            companyId && companyId !== 'undefined'
+              ? `companyId=${companyId}`
+              : ''
+          }`
+        ),
+      ])
     )
 
     const responseCompanies = companiesRes.records.map((company: any) => ({

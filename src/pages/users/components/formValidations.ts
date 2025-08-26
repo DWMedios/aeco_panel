@@ -28,7 +28,7 @@ export const validationRulesUser = (user: any) => {
       },
     },
     phone: {
-      required: true,
+      required: false,
       errorMessages: {
         required: 'El teléfono es obligatorio',
       },
@@ -56,10 +56,11 @@ export const validationRulesUser = (user: any) => {
         required: 'Las contraseñas no coinciden',
       },
 
-      validate: (value: any, allValues: any) =>
-        value !== allValues?.password
+      validate: (value: any, allValues: any) => {
+        return value !== allValues?.password
           ? 'Las contraseñas no coinciden'
-          : undefined,
+          : undefined
+      },
     },
   }
 }

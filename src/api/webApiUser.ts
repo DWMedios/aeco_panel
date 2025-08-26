@@ -21,10 +21,22 @@ export const useWebApiUser = () => {
     return fetchRequest({ url: `/users/${id}`, method: 'DELETE' })
   }
 
+  const resetPasswordUser = async (
+    id: number,
+    newPassword: string
+  ): Promise<any> => {
+    return fetchRequest({
+      url: `users/${id}/reset-password`,
+      method: 'POST',
+      body: { password: newPassword },
+    })
+  }
+
   return {
     getUsers,
     createUser,
     updateUser,
     deleteUser,
+    resetPasswordUser,
   }
 }

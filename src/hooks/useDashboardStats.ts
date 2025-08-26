@@ -22,21 +22,25 @@ export const useDashboardStats = ({ companyId }: Params) => {
     try {
       setLoading(true)
 
+      const companyId = localStorage.getItem('companyId')
+      const newQuery =
+        companyId && companyId !== 'undefined' ? `&companyId=${companyId}` : ''
+
       const [daily, products, packagings, perDay] = await Promise.all([
         fetchRequest({
-          url: `/dashboard/stats/daily?${query}`,
+          url: `/dashboard/stats/daily?${query}${newQuery}`,
           method: 'GET',
         }),
         fetchRequest({
-          url: `/dashboard/stats/top-products?&limit=5&orderByDirection=DESC`,
+          url: `/dashboard/stats/top-products?${newQuery}&limit=5&orderByDirection=DESC`,
           method: 'GET',
         }),
         fetchRequest({
-          url: `/dashboard/stats/top-packagings?${query}&orderByDirection=DESC`,
+          url: `/dashboard/stats/top-packagings?${query}&orderByDirection=DESC${newQuery}`,
           method: 'GET',
         }),
         fetchRequest({
-          url: `/dashboard/stats/packagings-per-day?${query}`,
+          url: `/dashboard/stats/packagings-per-day?${query}${newQuery}`,
           method: 'GET',
         }),
       ])

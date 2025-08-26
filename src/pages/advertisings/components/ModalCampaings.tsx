@@ -85,7 +85,16 @@ const ModalCampaings = ({
 
   useEffect(() => {
     const fetchCompanies = async () => {
-      const response: any = await withLoading(() => getCompanies('?perpage=50'))
+      const companyId = localStorage.getItem('companyId')
+      const response: any = await withLoading(() =>
+        getCompanies(
+          `?perpage=50&${
+            companyId && companyId !== 'undefined'
+              ? `companyId=${companyId}`
+              : ''
+          }`
+        )
+      )
       setCompanies(
         response.records.map((company: any) => ({
           value: company.id,

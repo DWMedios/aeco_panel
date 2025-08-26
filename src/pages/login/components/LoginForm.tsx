@@ -31,10 +31,12 @@ const LoginForm = () => {
         loginApi(data as ILoginForm)
       )
       const decoded = jwtDecode(response?.access_token) as any
-      if (decoded?.roleType !== 'super_admin') {
+      console.log('🚀 ~ handleFormSubmit ~ decoded:', decoded)
+      if (!['admin', 'super_admin'].includes(decoded?.roleType)) {
         setError(true)
         return
       }
+      localStorage.setItem('companyId', decoded?.company.id || 'undefined')
       login(response?.access_token)
     } catch (error) {
       setError(true)

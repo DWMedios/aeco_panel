@@ -60,8 +60,8 @@ const InputField = ({
   useEffect(() => {
     if (touched && error) {
       setShowError(true)
-      const timer = setTimeout(() => setShowError(false), 10000)
-      return () => clearTimeout(timer)
+    } else if (!error) {
+      setShowError(false)
     }
   }, [error, touched])
 

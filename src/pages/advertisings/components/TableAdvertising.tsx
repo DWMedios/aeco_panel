@@ -21,7 +21,7 @@ const TableAdvertising = ({ setShowAlert }: Props) => {
     10,
     setAds,
     'createdAt',
-    'desc'
+    'DESC'
   )
 
   const handleDelete = async (id: number) => {

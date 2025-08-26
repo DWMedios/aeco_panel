@@ -61,17 +61,20 @@ const useFormWithValidation = <T extends Record<string, any>>(
     if (!rules) return ''
 
     if (name === 'phone' || name.includes('.phone')) {
-      if (!/^\d+$/.test(String(value))) {
-        return (
-          rules.errorMessages?.pattern ||
-          'El teléfono debe contener solo números'
-        )
-      }
-      if (String(value).length !== 10) {
-        return (
-          rules.errorMessages?.minLength ||
-          'El teléfono debe tener exactamente 10 dígitos numéricos'
-        )
+      // Only validate phone format if the field has a value
+      if (value && value !== '') {
+        if (!/^\d+$/.test(String(value))) {
+          return (
+            rules.errorMessages?.pattern ||
+            'El teléfono debe contener solo números'
+          )
+        }
+        if (String(value).length !== 10) {
+          return (
+            rules.errorMessages?.minLength ||
+            'El teléfono debe tener exactamente 10 dígitos numéricos'
+          )
+        }
       }
     }
 
@@ -289,7 +292,7 @@ const useFormWithValidation = <T extends Record<string, any>>(
       if (
         Object.keys(changedValues).length >= 3 &&
         changedValues.password &&
-        changedValues.password !== ''
+        changedValues.password == ''
       ) {
         setErrors((prev) => {
           return {

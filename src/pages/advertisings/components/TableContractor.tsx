@@ -22,7 +22,7 @@ const TableContractor = ({ setShowAlert }: Props) => {
     10,
     setData,
     'createdAt',
-    'desc'
+    'DESC'
   )
 
   const handleDelete = async (id: number) => {

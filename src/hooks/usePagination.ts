@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { ApiResponseList } from '../interfaces/types'
-import { direction } from 'html2canvas/dist/types/css/property-descriptors/direction'
 
 const generateQueryString = (
   orderByField: string = 'createdAt',
-  direction: string = 'asc',
+  direction: string = 'ASC',
   filters: Record<string, any>,
   signo: boolean = true
 ): string => {
@@ -13,8 +12,15 @@ const generateQueryString = (
   params.append('orderByDirection', direction)
   params.append('orderByField', orderByField)
 
-  Object.keys(filters).forEach((key) => {
-    const value = filters[key]
+  const companyId = localStorage.getItem('companyId')
+  console.log('🚀 ~ generateQueryString ~ companyId:', companyId)
+  let newFilters = filters
+  if (companyId && companyId !== 'undefined') {
+    newFilters = { ...filters, companyId }
+  }
+  console.log('🚀 ~ generateQueryString ~ newFilters:', newFilters)
+  Object.keys(newFilters).forEach((key) => {
+    const value = newFilters[key]
     if (value !== undefined && value !== null) {
       params.append(
         key,
@@ -38,7 +44,7 @@ const usePagination = <T>(
   perPage: number,
   setData: React.Dispatch<React.SetStateAction<T[]>>,
   orderByField: string = 'createdAt',
-  direction: string = 'asc'
+  direction: string = 'ASC'
 ) => {
   const [filters, setFilters] = useState<Record<string, any> | null>(null)
   const [defaultFilter, setDefaultFilters] = useState<Record<
